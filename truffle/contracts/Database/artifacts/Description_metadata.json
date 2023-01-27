@@ -1,0 +1,304 @@
+{
+	"compiler": {
+		"version": "0.8.17+commit.8df45f5f"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "descriptionID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "antiqueObjectID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "materialCreated",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address payable",
+						"name": "uploader",
+						"type": "address"
+					}
+				],
+				"name": "addAntiqueDescription",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "descriptionID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "antiqueID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "uploadTime",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address payable",
+						"name": "uploader",
+						"type": "address"
+					}
+				],
+				"name": "setAntiqueIDByDescriptionID",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "documentationID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "newMaterialCreated",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address payable",
+						"name": "uploader",
+						"type": "address"
+					}
+				],
+				"name": "updateAntiqueDescription",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_antiqueObjectID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "_materialCreated",
+						"type": "string"
+					},
+					{
+						"internalType": "address payable",
+						"name": "_uploader",
+						"type": "address"
+					}
+				],
+				"name": "AddDescription",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_descriptionID",
+						"type": "uint256"
+					}
+				],
+				"name": "GetDescriptionByID",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "descriptionID",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "antiqueID",
+								"type": "uint256"
+							},
+							{
+								"internalType": "string",
+								"name": "materialCreated",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "uploadTime",
+								"type": "uint256"
+							},
+							{
+								"internalType": "address payable",
+								"name": "uploader",
+								"type": "address"
+							}
+						],
+						"internalType": "struct Description.DescriptionObject",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_descriptionID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_newAntiqueID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address payable",
+						"name": "_uploader",
+						"type": "address"
+					}
+				],
+				"name": "SetAntiqueIDByDescriptionID",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_descriptionID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "_newMaterialCreated",
+						"type": "string"
+					},
+					{
+						"internalType": "address payable",
+						"name": "_uploader",
+						"type": "address"
+					}
+				],
+				"name": "UpdateDescriptionMaterials",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_descriptionID",
+						"type": "uint256"
+					}
+				],
+				"name": "ValidateDescriptionID",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "descriptionCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "name",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Database/Database/Description.sol": "Description"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Database/Database/Description.sol": {
+			"keccak256": "0xeb7f3f87b32539125cac1f6f5c57f66169ae2c7ce6e2c0d034eda48ceafd1cac",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6f53bee2e08a2ba44f4da4dd156f9e95a83189f6e5297d4a3d5d242ffb7cc427",
+				"dweb:/ipfs/QmSn5nzXzMHB844zsYVJm8hXUmf6Xj37FFxFh9Xw8ejBu3"
+			]
+		}
+	},
+	"version": 1
+}

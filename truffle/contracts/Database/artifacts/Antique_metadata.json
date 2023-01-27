@@ -1,0 +1,312 @@
+{
+	"compiler": {
+		"version": "0.8.17+commit.8df45f5f"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "antiqueID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "documentationID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "verificationID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "descriptionID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address payable",
+						"name": "uploader",
+						"type": "address"
+					}
+				],
+				"name": "AntiqueAdded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "antiqueID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "documentationID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "verificationID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "descriptionID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address payable",
+						"name": "updater",
+						"type": "address"
+					}
+				],
+				"name": "AntiqueUpdate",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_documentationID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_verificationID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_descriptionID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address payable",
+						"name": "_uploader",
+						"type": "address"
+					}
+				],
+				"name": "AddAntique",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_antiqueID",
+						"type": "uint256"
+					}
+				],
+				"name": "GetAntiqueByID",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "antiqueID",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "documentationID",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "verificationID",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "descriptionID",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Antique.AntiqueObject",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_antiqueID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_documentationID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_verificationID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_descriptionID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address payable",
+						"name": "_uploader",
+						"type": "address"
+					}
+				],
+				"name": "UpdateAntique",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_antiqueID",
+						"type": "uint256"
+					}
+				],
+				"name": "ValidateAntiqueID",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "antiqueCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "antiqueMap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "antiqueID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "documentationID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "verificationID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "descriptionID",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "name",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Database/Database/Antique.sol": "Antique"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Database/Database/Antique.sol": {
+			"keccak256": "0x592376333232fd3b38a3a25debba89c15bd763ff31e936f4dbb4d066ab4ffba3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7342cd5f1b39c62186304dc99882e64f2efc32e5ee74fb2892d0b5cfd78cab93",
+				"dweb:/ipfs/QmUFfAQzFS8pKziaDNqNAhkmDbW8buESAK2dF2PAG4YujT"
+			]
+		}
+	},
+	"version": 1
+}
