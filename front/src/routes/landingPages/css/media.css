@@ -1,0 +1,54 @@
+
+  
+@media (max-width: 62em) {
+  .section-bot {
+    column-gap: 10rem;
+    row-gap: 3rem;
+  }
+}
+
+@media (max-width: 50em) {
+  html {
+    font-size: 56.25%;
+  }
+}
+@media (min-width: 600px) {
+  .css-19r6kue-MuiContainer-root {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 43em) {
+  html {
+    font-size: 50%;
+  }
+
+  .section-top > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-top p {
+    letter-spacing: -0.2;
+    margin-right: 0;
+  }
+
+  .btn-container {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .product-description {
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+  }
+
+  .section-bot {
+    column-gap: 5rem;
+    row-gap: 5rem;
+  }
+
+}

@@ -1,0 +1,127 @@
+.centered-page {
+  max-width: 120rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 8rem;
+  padding: 6rem 2rem;
+  background-color: #efeded;
+  border: 5px solid #5c5a5a;
+  border-radius: 10px;
+}
+
+.centered-page .heading-primary {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.product-card-container {
+  max-width: 65%;
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10rem;
+  align-items: stretch;
+  margin-bottom: 4rem;
+}
+
+.product-card {
+  border-radius: 10px;
+  /* border: 2px solid black; */
+  box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.product-card .heading-secondary {
+  font-size: 2.0rem;
+  text-align: center;
+  padding: 2rem;
+  background-color: #eddea4;
+  border-bottom: 2px solid #776f52;
+}
+
+.card-content {
+  background-color: #fdfcf6;
+  padding: 2rem 0;
+}
+
+.btn-centered-container {
+  display: flex;
+  justify-content: center;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  list-style: none;
+  padding: 0 0.2rem 0 4rem;
+  margin-bottom: 3rem;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+  font-size: 1.953rem;
+}
+
+.card-icon {
+  font-size: 2.441rem;
+  color: #de744c;
+}
+
+/* --------Card Pro--------- */
+.card--pro .heading-secondary {
+  color: #222;
+  background-color: #a7cad9;
+  border-bottom: 2px solid #54656d;
+}
+
+.card--pro .card-icon {
+  color: #9e2b25;
+}
+
+.card--pro .btn {
+  background-color: #33032f;
+}
+
+.sign-in-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.4rem;
+  font-size: 1.563rem;
+  letter-spacing: 0.5px;
+}
+
+.sign-in-link:link,
+.sign-in-link:visited {
+  color: #71574b;
+  font-size: 1.953rem;
+  letter-spacing: 0;
+  padding-bottom: 0.3rem;
+  background-image: linear-gradient(90deg, #40322b, #40322b);
+  background-position: 0 100%;
+  background-size: 0 2px;
+  background-repeat: no-repeat;
+  transition: color 0.3s, background-size 0.3s;
+}
+
+.sign-in-link:hover,
+.sign-in-link:active {
+  color: #40322b;
+  background-size: 100% 2px;
+}
+
+/* Media */
+@media (min-width: 600px) {
+  .css-19r6kue-MuiContainer-root {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .centered-page{
+    margin: 4rem 2rem 2rem 2rem;
+  }
+}
