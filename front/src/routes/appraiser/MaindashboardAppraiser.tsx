@@ -1,14 +1,14 @@
-import { Grow, Stack, Typography } from "@mui/material";
+import { Button, Grow, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axios from "../../utils/axios-instance";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../../components/navbar/NavBar"
+import NavBar from "../../components/navbarAppraiser/NavBarAppraiser"
 
-interface MainDashboardProps {
+interface MainDashboardAppraiserProps {
   databaseControllerContract: any;
 }
-function MainDashboard(props: MainDashboardProps) {
+function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
   const navigate = useNavigate();
   const databaseControllerContract = props.databaseControllerContract;
   console.log("Main Dashboard Database Contract Information");
@@ -25,9 +25,9 @@ function MainDashboard(props: MainDashboardProps) {
       headerAlign: "center",
     },
     {
-      field: "AppraisalFirstName",
-      headerName: "First Name",
-      description: "First name of the person who confirmed the appointment",
+      field: "NormalFirstName",
+      headerName: "Requester First Name",
+      description: "First name of the person who requested the meeting",
       type: "string",
       flex: 1,
       minWidth: 100,
@@ -35,10 +35,10 @@ function MainDashboard(props: MainDashboardProps) {
       headerAlign: "center",
     },
     {
-      field: "AppraisalLastName",
-      headerName: "Last Name",
+      field: "UserLastName",
+      headerName: "Requester Last Name",
       description:
-        "Family name of the person who confirmed the appointment",
+        "Family name of the person who requested the appointment",
       type: "string",
       flex: 1,
       editable: false,
@@ -46,15 +46,36 @@ function MainDashboard(props: MainDashboardProps) {
       headerAlign: "center",
     },
     {
-      field: "ApproveStatus",
-      headerName: "Approve Status",
-      description: "The current status of the appointment",
+      field: "ChooseAppointmentButton",
+      headerName: "Choose Appointment",
+      description: "Click to choose an appointment",
       flex: 1,
       align: "right",
       headerAlign: "center",
       editable: false,
-      type: "boolean",
+      type: "event",
     },
+    {
+  field: "Print",
+  renderCell: (cellValues) => {
+    function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, cellValues: GridRenderCellParams<any, any, any>) {
+      event.stopPropagation(); // 
+      console.log(cellValues);  
+    }
+
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={(event) => {
+          handleClick(event, cellValues);
+        }}
+      >
+        Print
+      </Button>
+    );
+  }
+}
   ];
 
   const [dataRows, setDataRows] = useState<
@@ -62,17 +83,36 @@ function MainDashboard(props: MainDashboardProps) {
   >([]);
 
   useEffect(() => {
-    axios
-      .get("/uos", { params: {} })
-      .then((resp) => {
-        if (resp.status === 200) {
-          console.log(resp.data);
-          setDataRows(resp.data);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    // axios
+    //   .get("/uos", { params: {} })
+    //   .then((resp) => {
+    //     if (resp.status === 200) {
+    //       console.log(resp.data);
+    //       setDataRows(resp.data);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
+    const dataRows = [
+      {
+        "id":1,
+        "AppointmentDate": "2022-01-01",
+        "AppointmentTime": "10:00 AM",
+        "NormalFirstName": "John",
+        "UserLastName": "Doe",
+        "ChooseAppointmentButton": "Choose"
+      },
+      {
+        "id":2,
+        "AppointmentDate": "2022-01-02",
+        "AppointmentTime": "11:00 AM",  
+        "NormalFirstName": "Jane",
+        "UserLastName": "Smith",
+        "ChooseAppointmentButton": "click"
+      },
+    ]
+    setDataRows(dataRows);
   }, []);
 
   return (
@@ -94,7 +134,7 @@ function MainDashboard(props: MainDashboardProps) {
           component="div"
           sx={{ justifySelf: "flex-start" }}
         >
-          username, here is your upcoming appointment
+          username, Choose An Appointment Suit You!
         </Typography>
       </div>
 
@@ -107,7 +147,7 @@ function MainDashboard(props: MainDashboardProps) {
             rowsPerPageOptions={[5]}
             disableSelectionOnClick={true}
             getRowId={(row) => {
-              return row.unitId;
+              return row.id;
             }}
             onRowClick={(row) => {
               navigate(`/uos/${row.row.unitId}`);
@@ -120,4 +160,4 @@ function MainDashboard(props: MainDashboardProps) {
   );
 }
 
-export default MainDashboard;
+export default MainDashboardAppraiser;

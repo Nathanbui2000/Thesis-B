@@ -8,8 +8,9 @@ import LandingPage from './routes/landingPages/Pages/landing'
 import Information from './routes/landingPages/Pages/information'
 import React from "react";
 import UserProfileNormalUser from "./routes/normalUser/UserProfile/userProfile"
+import MainDashboardAppraiser from "./routes/appraiser/MaindashboardAppraiser"
 const routes = (databaseController: any ) => [
-    { path: "/dashboard", 
+    { path: "/normal/dashboard", 
         element: <MainDashboardNormalUser 
         databaseControllerContract = {databaseController}
         /> },
@@ -19,12 +20,12 @@ const routes = (databaseController: any ) => [
         databaseControllerContract = {databaseController}
         /> },
 
-        { path: "/dashboard/verify-antique",
+        { path: "/normal/dashboard/verify-antique",
         element: <VerifyAntiqueNormalUser 
         databaseControllerContract = {databaseController}
         /> },
 
-        { path: "/dashboard/my-antique-list",
+        { path: "/normal/dashboard/my-antique-list",
         element: <MyAntiqueListNormalUser 
         databaseControllerContract = {databaseController}
         /> },
@@ -32,14 +33,18 @@ const routes = (databaseController: any ) => [
         // element: <AppointmentNormalUser 
         // databaseControllerContract = {databaseController}
         // /> },
-        { path: "/information",
+        { path: "/",
         element: <Information 
         /> },
         { path: "/landing",
         element: <LandingPage 
         /> },
-        { path: "/user-profile",
+        { path: "/normal/user-profile",
         element: <UserProfileNormalUser 
+        /> },
+        { path: "/appraiser/dashboard",
+        element: <MainDashboardAppraiser 
+        databaseControllerContract = {databaseController}
         /> },
 ];
 
