@@ -11,12 +11,13 @@ import StepLabel from '@mui/material/StepLabel';
 import AntiqueDescription from "./Description"
 import AntiqueDocumentation from "./Documentation"
 import { borders } from '@mui/system';
+import OwnerDetail from "./OwnerDetail"
 const steps = ["Owner Details",'Antique Description', 'Antique Documentation', 'Anitque Verification','Review Details',"Submit Data"];
 interface AddAntiqueProps {
     databaseControllerContract: any;
 }
 function AddAntique(props: AddAntiqueProps) {
-    const stepComponents = [AntiqueDescription, AntiqueDescription, AntiqueDescription,AntiqueDescription,AntiqueDescription,AntiqueDescription];
+    const stepComponents = [OwnerDetail, AntiqueDescription, AntiqueDescription,AntiqueDescription,AntiqueDescription,AntiqueDescription];
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
     const navigate = useNavigate();
@@ -132,12 +133,13 @@ function AddAntique(props: AddAntiqueProps) {
                                             {React.createElement(stepComponents[activeStep])}
                                     </React.Fragment>
                             </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, paddingBottom: "10px", paddingLeft: "50px", paddingRight: "50px" }}>
                                 <Button
                                 color="inherit"
                                 disabled={activeStep === 0}
                                 onClick={handleBack}
                                 sx={{ mr: 1 }}
+                                style={{backgroundColor: "red", color: "white"}}
                                 >
                                 Back
                                 </Button>
@@ -147,7 +149,10 @@ function AddAntique(props: AddAntiqueProps) {
                                     Skip
                                 </Button>
                                 )}
-                                <Button onClick={handleNext}>
+                                <Button onClick={handleNext}
+                                        color="primary"
+                                        style={{backgroundColor: "red", color: "white"}}
+                                >
                                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                                 </Button>
                             </Box>
