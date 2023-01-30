@@ -17,7 +17,7 @@ interface AddAntiqueProps {
     databaseControllerContract: any;
 }
 function AddAntique(props: AddAntiqueProps) {
-    const stepComponents = [OwnerDetail, AntiqueDescription, AntiqueDescription,AntiqueDescription,AntiqueDescription,AntiqueDescription];
+    const stepComponents = [OwnerDetail, AntiqueDescription, AntiqueDocumentation,AntiqueDescription,AntiqueDescription,AntiqueDescription];
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
     const navigate = useNavigate();

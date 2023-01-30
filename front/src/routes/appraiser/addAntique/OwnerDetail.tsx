@@ -32,7 +32,7 @@ function OwnerDetail() {
         <Stack spacing={3} sx={{ mt: 3 }}>
         <div style={{ display: "center" }}>
             <Typography
-            variant="h3"
+            variant="h2"
             component="div"
             sx={{ justifySelf: "flex-start" }}
             >
@@ -41,7 +41,7 @@ function OwnerDetail() {
         </div>
         <div style={{ display: "center" }}>
             <Typography
-            variant="h4"
+            variant="h3"
             component="div"
             paddingTop = "2"
             sx={{ justifySelf: "flex-start" }}
