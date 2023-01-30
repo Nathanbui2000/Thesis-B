@@ -1,10 +1,10 @@
 import { Button, Grow, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import axios from "../../utils/axios-instance";
+import axios from "../../../utils/axios-instance";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../../components/navbarAppraiser/NavBarAppraiser"
-
+import NavBar from "../../../components/navbarAppraiser/NavBarAppraiser"
+import "./dashboard.css"
 interface MainDashboardAppraiserProps {
   databaseControllerContract: any;
 }
@@ -12,17 +12,41 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
   const navigate = useNavigate();
   const databaseControllerContract = props.databaseControllerContract;
   console.log("Main Dashboard Database Contract Information");
-
+  const customHeader = (props: { value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
+    <div style={{ fontWeight: "bold", fontSize: "18px" }}>
+      {props.value}
+    </div>
+  );
   console.log(databaseControllerContract);
   const columns: GridColDef[] = [
-    { field: "AppointmentDate", headerName: "Appointment Date", minWidth: 250, type:"date",headerAlign: "center"},
+    {
+      field: "AppointmentDate",
+      headerName: "Appointment Date", 
+      minWidth: 200, 
+      type:"date",
+      headerAlign: "center",
+      align:"center",
+      headerClassName: "bold-header",
+      // renderCell: (cellValues) => (
+      // <div style={{ border: "1px solid black" }}>
+      //   {cellValues.value}
+      // </div>
+      // ),
+    },
     {
       field: "AppointmentTime",
       headerName: "Time",
       minWidth: 150,
       editable: false, 
       type: "datetime",
+      align: "center",
       headerAlign: "center",
+      headerClassName: "bold-header", 
+      // renderCell: (cellValues) => (
+      // <div style={{ border: "1px solid black" }}>
+      //   {cellValues.value}
+      // </div>
+      // ),
     },
     {
       field: "NormalFirstName",
@@ -32,7 +56,9 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
       flex: 1,
       minWidth: 100,
       editable: false,
+      align:"center",
       headerAlign: "center",
+      headerClassName: "bold-header",
     },
     {
       field: "UserLastName",
@@ -42,21 +68,32 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
       type: "string",
       flex: 1,
       editable: false,
-      align: "left",
+      align: "center",
       headerAlign: "center",
+      headerClassName: "bold-header",
     },
+    // {
+    //   field: "ChooseAppointmentButton",
+    //   headerName: "Choose Appointment",
+    //   flex: 1,
+    //   align: "center",
+    //   headerAlign: "center",
+    //   editable: false,
+    //   type: "event",
+    //   headerClassName: "bold-header",
+    //   // renderCell: (cellValues) => (
+    //   // <div style={{ border: "1px solid black" }}>
+    //   //   {cellValues.value}
+    //   // </div>
+    //   // ),
+    // },
     {
-      field: "ChooseAppointmentButton",
-      headerName: "Choose Appointment",
-      description: "Click to choose an appointment",
-      flex: 1,
-      align: "right",
-      headerAlign: "center",
-      editable: false,
-      type: "event",
-    },
-    {
-  field: "Print",
+  field: "Choose Appointment",
+  align:"center",
+  minWidth: 150,
+  headerAlign:"center",
+  headerClassName: "bold-header",
+  description: "Click to choose an appointment",
   renderCell: (cellValues) => {
     function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, cellValues: GridRenderCellParams<any, any, any>) {
       event.stopPropagation(); // 
@@ -71,7 +108,7 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
           handleClick(event, cellValues);
         }}
       >
-        Print
+        Choose
       </Button>
     );
   }
@@ -139,8 +176,23 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
       </div>
 
       <Grow in={true} appear={true}>
-        <div style={{ height: "500px" }}>
+        <div 
+        style={{ 
+          height: "500px",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+          paddingBottom: "20px",
+        }}
+        >
           <DataGrid
+            sx={{
+                boxShadow: 2,
+                border: 2,
+                borderColor: 'primary.light',
+                '& .MuiDataGrid-cell:hover': {
+                  color: 'primary.main',
+                },
+            }}
             rows={dataRows}
             columns={columns}
             pageSize={5}

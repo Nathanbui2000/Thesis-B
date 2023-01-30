@@ -8,7 +8,9 @@ import LandingPage from './routes/landingPages/Pages/landing'
 import Information from './routes/landingPages/Pages/information'
 import React from "react";
 import UserProfileNormalUser from "./routes/normalUser/UserProfile/userProfile"
-import MainDashboardAppraiser from "./routes/appraiser/MaindashboardAppraiser"
+import MainDashboardAppraiser from "./routes/appraiser/dashboard/MaindashboardAppraiser"
+import MyAppointmentAppraiser from "./routes/appraiser/myAppointmentList/MyAppointmentAppraiser"
+import AddAppointmentAppraiser from "./routes/appraiser/addAntique/AddAntique"
 const routes = (databaseController: any ) => [
     { path: "/normal/dashboard", 
         element: <MainDashboardNormalUser 
@@ -44,6 +46,14 @@ const routes = (databaseController: any ) => [
         /> },
         { path: "/appraiser/dashboard",
         element: <MainDashboardAppraiser 
+        databaseControllerContract = {databaseController}
+        /> },
+        { path: "/appraiser/dashboard/my-appointment",
+        element: <MyAppointmentAppraiser 
+        databaseControllerContract = {databaseController}
+        /> },
+        { path: "/appraiser/dashboard/add-antique",
+        element: <AddAppointmentAppraiser 
         databaseControllerContract = {databaseController}
         /> },
 ];

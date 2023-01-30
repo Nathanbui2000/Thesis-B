@@ -64,7 +64,7 @@ function NavBarAppraiser() {
             >
             <Button 
                 sx={{ color: "#fff" }}
-                href = '/dashboard'
+                href = '/appraiser/dashboard'
             >Dashboard</Button>
             </Box>
             <Box
@@ -76,19 +76,18 @@ function NavBarAppraiser() {
             >
             <Button 
                 sx={{ color: "#fff" }}
-                href = '/dashborad/book-appoinments'
+                href = '/appraiser/dashboard/my-appointment'
             >My Appoitnment List</Button>
             </Box>
             <Box
             sx={{
                 display: { xs: "none", sm: "block" },
                 justifySelf: "right",
-                
                 }}  
             >
             <Button 
                 sx={{ color: "#fff" }}
-                href = '/dashboard/verify-antique'
+                href = '/appraiser/dashboard/add-antique'
             >Add Antique</Button>
             </Box>
             <Box

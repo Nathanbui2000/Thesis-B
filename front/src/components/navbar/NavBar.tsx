@@ -64,7 +64,7 @@ function NavBar() {
             >
             <Button 
                 sx={{ color: "#fff" }}
-                href = '/dashboard'
+                href = '/normal/dashboard'
             >Upcoming Appointment</Button>
             </Box>
             <Box
@@ -88,7 +88,7 @@ function NavBar() {
             >
             <Button 
                 sx={{ color: "#fff" }}
-                href = '/dashboard/verify-antique'
+                href = '/normal/dashboard/verify-antique'
             >Verify Antique</Button>
             </Box>
             <Box
@@ -99,7 +99,7 @@ function NavBar() {
             >
             {/* <Button sx={{ color: "#fff" }}>USYD</Button> */}
             <Button sx={{ color: "#fff" }}
-                    href="/dashboard/my-antique-list">My Antique List</Button>
+                    href="/normal/dashboard/my-antique-list">My Antique List</Button>
             </Box>
             {/* </div>
             )} */}
