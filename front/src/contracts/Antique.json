@@ -8771,12 +8771,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x42eba6462D9380b0b0178B535245fD8845a6c310",
-      "transactionHash": "0x8c3bfd61f47cc9e8434ab19be4acfc1db4494dcac1a2fdc47dac05dd748cf435"
+      "address": "0xeEe056823139a4C59C3F66F08136C460B48073a6",
+      "transactionHash": "0xf3f8813a85faab440805e160c6c7ed709c90803ccac3a36b6be783b8485973aa"
     }
   },
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-01-27T13:30:18.966Z",
+  "updatedAt": "2023-01-31T12:26:05.217Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

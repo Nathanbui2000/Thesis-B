@@ -13,6 +13,9 @@ contract Description {
         uint256 descriptionID;
         uint256 antiqueID;
         string materialCreated;
+        uint256 antiqueHeight;
+        uint256 antiqueLength;
+        uint256 anitqueWidth;
         uint256 uploadTime;
         address payable uploader;
     }
@@ -20,11 +23,19 @@ contract Description {
         uint256 descriptionID,
         uint256 antiqueObjectID,
         string materialCreated,
+        uint256 antiqueHeight,
+        uint256 antiqueLength,
+        uint256 anitqueWidth,
+        uint256 uploadTime,
         address payable uploader
     );
     event updateAntiqueDescription (
         uint256 documentationID,
         string newMaterialCreated,
+        uint256 antiqueHeight,
+        uint256 antiqueLength,
+        uint256 anitqueWidth,
+        uint256 uploadTime,
         address payable uploader
     );
 
@@ -41,6 +52,9 @@ contract Description {
     (
         uint256 _antiqueObjectID,
         string memory _materialCreated,
+        uint256 _antiqueHeight,
+        uint256 _antiqueLength,
+        uint256 _anitqueWidth,
         address payable _uploader
     )
     public returns (uint256)
@@ -51,6 +65,9 @@ contract Description {
         uint256 _antiqueID = 0;
 
         require(_uploader != address(0));
+        require(_antiqueHeight > 0);
+        require(_antiqueLength > 0);
+        require(_anitqueWidth > 0);
         // require(_antiqueObjectID > 0);
         if (_antiqueObjectID > 0)
         {
@@ -67,10 +84,21 @@ contract Description {
             descriptionCount,
             _antiqueID,
             antiqueMaterial,
+            _antiqueHeight,
+            _antiqueLength,
+            _anitqueWidth,
             block.timestamp,
             _uploader
         );
-        emit addAntiqueDescription (descriptionCount,_antiqueID,antiqueMaterial,_uploader); 
+        emit addAntiqueDescription 
+        (descriptionCount,
+        _antiqueID,
+        antiqueMaterial,
+        _antiqueHeight,
+        _antiqueLength,
+        _anitqueWidth,
+        block.timestamp,
+        _uploader); 
         return descriptionCount;
     }
 
@@ -79,17 +107,33 @@ contract Description {
     (
         uint256 _descriptionID,
         string memory _newMaterialCreated,
+        uint256 _antiqueHeight,
+        uint256 _antiqueLength,
+        uint256 _anitqueWidth,
         address payable _uploader
     )
     public 
     {
+        require(_antiqueHeight > 0);
+        require(_antiqueLength > 0);
+        require(_anitqueWidth > 0);
         require(_descriptionID > 0 && _descriptionID <= descriptionCount);
         require (bytes(_newMaterialCreated).length > 0);
         require(_uploader != address(0));
         DescriptionObject memory _description = descriptionMap[_descriptionID];
         _description.materialCreated = _newMaterialCreated;
+        _description.antiqueHeight = _antiqueHeight;
+        _description.antiqueLength = _antiqueLength;
+        _description.anitqueWidth = _anitqueWidth;
         descriptionMap[_descriptionID] = _description;
-        emit updateAntiqueDescription (_descriptionID , _newMaterialCreated, _uploader);
+        emit updateAntiqueDescription 
+            (_descriptionID, 
+            _newMaterialCreated,
+            _antiqueHeight,
+            _antiqueLength,
+            _anitqueWidth,
+            block.timestamp,
+            _uploader);
     }
 
     //GET Description By ID
