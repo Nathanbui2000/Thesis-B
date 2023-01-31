@@ -19,8 +19,10 @@ const landing = () => {
             <div className="centered-container">
                 <p>AntiqueIoTChain</p>
                 <div className="btn-container">
-                    <button className="btn" type="button">Sign in</button>
-                    <a href="startchoice.html">
+                    <a href="/Login">
+                        <button className="btn" type="button">Sign in</button>
+                    </a>
+                    <a href="/normal/sign-up">
                         <button className="btn btn-important" type="button">
                             Try for free
                         </button>
@@ -32,6 +34,7 @@ const landing = () => {
             <h1 className="heading-primary">AntiqueIoTChain</h1>
             <div className="product-card-container">
                 {/* Card 1*/}
+                
                 <article className="product-card">
                 <h2 className="heading-secondary">Antique's Owner</h2>
                 <div className="card-content">
@@ -50,12 +53,15 @@ const landing = () => {
                     </li>
                     </ul>
                     <div className="btn-centered-container">
-                    <button className="btn btn-important" type="button">
-                        Start for free
-                    </button>
+                        <a href="/normal/sign-up">
+                            <button className="btn btn-important" type="button">
+                                Start for free
+                            </button>
+                        </a>
                     </div>
                 </div>
                 </article>
+
 
                 {/* Card 2 */}
                 <article className="product-card card--pro">
@@ -76,9 +82,11 @@ const landing = () => {
                     </li>
                     </ul>
                     <div className="btn-centered-container">
-                    <button className="btn btn-important" type="button">
-                        Start for free
-                    </button>
+                    <a href="/appraiser/sign-up">
+                        <button className="btn btn-important" type="button">
+                            Start for free
+                        </button>
+                    </a>
                     </div>
                 </div>
                 </article>

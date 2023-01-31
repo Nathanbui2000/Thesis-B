@@ -11,6 +11,10 @@ import UserProfileNormalUser from "./routes/normalUser/UserProfile/userProfile"
 import MainDashboardAppraiser from "./routes/appraiser/dashboard/MaindashboardAppraiser"
 import MyAppointmentAppraiser from "./routes/appraiser/myAppointmentList/MyAppointmentAppraiser"
 import AddAppointmentAppraiser from "./routes/appraiser/addAntique/AddAntique"
+import AppraiserProfile from "./routes/appraiser/userProfile/appraiserProfile";
+import SignUpNormalUserView from "./routes/normalUser/SignUp";
+import SignUpAppraiserView from "./routes/appraiser/SignUp"
+import ForgotPassword  from "./routes/ForgotPassword";
 const routes = (databaseController: any ) => [
     { path: "/normal/dashboard", 
         element: <MainDashboardNormalUser 
@@ -55,6 +59,18 @@ const routes = (databaseController: any ) => [
         { path: "/appraiser/dashboard/add-antique",
         element: <AddAppointmentAppraiser 
         databaseControllerContract = {databaseController}
+        /> },
+        { path: "/appraiser/user-profile",
+        element: <AppraiserProfile 
+        /> },
+        { path: "/normal/sign-up",
+        element: <SignUpNormalUserView 
+        /> },
+        { path: "/appraiser/sign-up",
+        element: <SignUpAppraiserView 
+        /> },
+        { path: "/forgot-password",
+        element: <ForgotPassword 
         /> },
 ];
 

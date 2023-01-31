@@ -21,7 +21,7 @@ function NavBarAppraiser() {
     setAnchorEl(null);
     //Original Code 
     // navigate("/profile/" + userCtx.userSession.userId);
-    navigate("/user-profile");
+    navigate("/appraiser/user-profile");
   };
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

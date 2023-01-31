@@ -10,14 +10,16 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import AntiqueDescription from "./Description"
 import AntiqueDocumentation from "./Documentation"
+import AntiqueVerification from "./AntiqueVerification"
+import AntiqueEmailVerification from "./EmailVerification"
 import { borders } from '@mui/system';
 import OwnerDetail from "./OwnerDetail"
-const steps = ["Owner Details",'Antique Description', 'Antique Documentation', 'Anitque Verification','Review Details',"Submit Data"];
+const steps = ["Owner Details",'Antique Description', 'Antique Documentation', 'Anitque Verification','Email Verification',"Submit Data"];
 interface AddAntiqueProps {
     databaseControllerContract: any;
 }
 function AddAntique(props: AddAntiqueProps) {
-    const stepComponents = [OwnerDetail, AntiqueDescription, AntiqueDocumentation,AntiqueDescription,AntiqueDescription,AntiqueDescription];
+    const stepComponents = [OwnerDetail, AntiqueDescription, AntiqueDocumentation,AntiqueVerification,AntiqueEmailVerification,AntiqueDescription];
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
     const navigate = useNavigate();

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import cookie from "js-cookie";
 import { useNavigate } from "react-router-dom";
+
 let instance: AxiosInstance;
 
 if (process.env.NODE_ENV === "development") {
@@ -9,6 +10,10 @@ if (process.env.NODE_ENV === "development") {
 } else {
   instance = axios.create();
 }
+const NavigateLogin = () => {
+  const navigate = useNavigate();
+  navigate("/login");
+};
 instance.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
@@ -59,8 +64,5 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-const NavigateLogin = () => {
-  const navigate = useNavigate();
-  navigate("/login");
-};
+
 export default instance;
