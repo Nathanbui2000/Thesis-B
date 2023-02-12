@@ -1,5 +1,4 @@
 
-create view AntiqueIoTChain.appraiser_maindashboard As
 select appointment.appointmentid,appointment.appointment_date, appointment.appointment_time,appointment.antique_ownerid,user.first_name,user.last_name
 from appointment
          left join (
@@ -8,3 +7,4 @@ from appointment
         left join role r on ur.roles_role_id = r.role_id
 )
                    on appointment.antique_ownerid=user.user_id
+where user.user_id = 3
