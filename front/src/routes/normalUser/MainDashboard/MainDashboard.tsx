@@ -1,7 +1,7 @@
-import { Grow, Stack, Typography } from "@mui/material";
+import { Button, Grow, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axios from "../../../utils/axios-instance";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../../../components/navbar/NavBar"
 import "./dashboard.css"
@@ -15,10 +15,35 @@ function MainDashboard(props: MainDashboardProps) {
   const userCtx = useUserContext();
   const databaseControllerContract = props.databaseControllerContract;
   console.log("Main Dashboard Database Contract Information");
+  
+        function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, cellValues: GridRenderCellParams<any, any, any>) {
+            event.stopPropagation(); // 
+            console.log(cellValues);  
+            //Open Diaglog For Propose Another Time 
+  }
 
   console.log(databaseControllerContract);
   const columns: GridColDef[] = [
-    { field: "appointmentDate", headerName: "Appointment Date", minWidth: 250, type:"date",headerAlign: "center",headerClassName: "bold-header"},
+    { 
+    field: "appointmentDate", 
+    headerName: "Appointment Date", 
+    minWidth: 250, type:"date",
+    headerAlign: "center",
+    headerClassName: "bold-header ",
+    align: 'center',
+    renderCell: (cellValues) => (
+            <div style=
+                {{ 
+                    fontWeight: "bold",
+                    fontSize: 11,
+                    // border: "1px solid black" 
+                }}>
+                {cellValues.value}
+            </div>
+        ),
+    
+    
+    },
     {
       field: "appointmentTime",
       headerName: "Time",
@@ -26,7 +51,8 @@ function MainDashboard(props: MainDashboardProps) {
       editable: false, 
       type: "datetime",
       headerAlign: "center",
-      headerClassName: "bold-header"
+      headerClassName: "bold-header",
+      align: 'center'
     },
     {
       field: "appraiserFirstName",
@@ -37,7 +63,8 @@ function MainDashboard(props: MainDashboardProps) {
       minWidth: 100,
       editable: false,
       headerAlign: "center",
-      headerClassName: "bold-header"
+      headerClassName: "bold-header",
+      align: 'center'
     },
     {
       field: "appraiserLastName",
@@ -47,21 +74,50 @@ function MainDashboard(props: MainDashboardProps) {
       type: "string",
       flex: 1,
       editable: false,
-      align: "left",
+      align: "center",
       headerAlign: "center",
-      headerClassName: "bold-header"
+      headerClassName: "bold-header",
+
     },
     {
       field: "appointmentStatus",
       headerName: "Approve Status",
       description: "The current status of the appointment",
       flex: 1,
-      align: "right",
+      align: "center",
       headerAlign: "center",
       editable: false,
       type: "boolean",
-      headerClassName: "bold-header"
+      headerClassName: "bold-header",
     },
+    {
+        field: "CancelAppointment",
+        flex: 1,
+        headerName: "Cancel",
+        align:"center",
+        minWidth: 150,
+        headerAlign:"center",
+        headerClassName: "bold-header",
+        description: "Please Consider Carefully Before Cancelling Appointment",
+        renderCell: (cellValues) => {
+        function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, cellValues: GridRenderCellParams<any, any, any>) {
+            event.stopPropagation(); // 
+            console.log(cellValues);  
+            //Open Diaglog
+            }
+            return (
+                <Button
+                variant="contained"
+                color="primary"
+                onClick={(event) => {
+                    handleClick(event, cellValues);
+                }}
+                >
+                Cancel
+                </Button>
+            );
+        }
+    }
   ];
 
   const [dataRows, setDataRows] = useState<
