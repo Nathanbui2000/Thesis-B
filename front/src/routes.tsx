@@ -1,7 +1,7 @@
 import MyAntiqueListNormalUser from "./routes/normalUser/MyAntique/MyAntique";
 import AppointmentNormalUser from "./routes/normalUser/BookAppointment/appointment";
 import VerifyAntiqueNormalUser from './routes/normalUser/Verification/VerifyAntique';
-import MainDashboardNormalUser from "./routes/normalUser/MainDashboard";
+import MainDashboardNormalUser from "./routes/normalUser/MainDashboard/MainDashboard";
 // import UnitOfStudyView from "./routes/UnitOfStudyView";
 import LoginView from "./routes/LoginView";
 import LandingPage from './routes/landingPages/Pages/landing'
@@ -35,10 +35,10 @@ const routes = (databaseController: any ) => [
         element: <MyAntiqueListNormalUser 
         databaseControllerContract = {databaseController}
         /> },
-        // { path: "/dashboard/appoinment",
-        // element: <AppointmentNormalUser 
+        { path: "/normal/dashboard/book-appointment",
+        element: <AppointmentNormalUser 
         // databaseControllerContract = {databaseController}
-        // /> },
+        /> },
         { path: "/",
         element: <Information 
         /> },

@@ -23,12 +23,12 @@ function ForgotPassword() {
     const [isValid, setIsValid] = useState(false);
     const [error, setError] = useState("");
     const validateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const email = event.target.value;
-    if (emailRegex.test(email)) {
-        setIsValid(true);
-    } else {
-        setIsValid(false);
-    }
+        const email = event.target.value;
+        if (emailRegex.test(email)) {
+            setIsValid(true);
+        } else {
+            setIsValid(false);
+        }
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

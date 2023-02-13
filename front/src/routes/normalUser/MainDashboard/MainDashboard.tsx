@@ -1,10 +1,10 @@
 import { Grow, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import axios from "../../utils/axios-instance";
+import axios from "../../../utils/axios-instance";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../../components/navbar/NavBar"
-
+import NavBar from "../../../components/navbar/NavBar"
+import "./dashboard.css"
 interface MainDashboardProps {
   databaseControllerContract: any;
 }
@@ -15,7 +15,7 @@ function MainDashboard(props: MainDashboardProps) {
 
   console.log(databaseControllerContract);
   const columns: GridColDef[] = [
-    { field: "AppointmentDate", headerName: "Appointment Date", minWidth: 250, type:"date",headerAlign: "center"},
+    { field: "AppointmentDate", headerName: "Appointment Date", minWidth: 250, type:"date",headerAlign: "center",headerClassName: "bold-header"},
     {
       field: "AppointmentTime",
       headerName: "Time",
@@ -23,6 +23,7 @@ function MainDashboard(props: MainDashboardProps) {
       editable: false, 
       type: "datetime",
       headerAlign: "center",
+      headerClassName: "bold-header"
     },
     {
       field: "AppraisalFirstName",
@@ -33,6 +34,7 @@ function MainDashboard(props: MainDashboardProps) {
       minWidth: 100,
       editable: false,
       headerAlign: "center",
+      headerClassName: "bold-header"
     },
     {
       field: "AppraisalLastName",
@@ -44,6 +46,7 @@ function MainDashboard(props: MainDashboardProps) {
       editable: false,
       align: "left",
       headerAlign: "center",
+      headerClassName: "bold-header"
     },
     {
       field: "ApproveStatus",
@@ -54,6 +57,7 @@ function MainDashboard(props: MainDashboardProps) {
       headerAlign: "center",
       editable: false,
       type: "boolean",
+      headerClassName: "bold-header"
     },
   ];
 
@@ -99,8 +103,23 @@ function MainDashboard(props: MainDashboardProps) {
       </div>
 
       <Grow in={true} appear={true}>
-        <div style={{ height: "500px" }}>
+        <div 
+        style={{ 
+          height: "500px",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+          paddingBottom: "20px",
+        }}
+        >
           <DataGrid
+            sx={{
+                boxShadow: 2,
+                border: 2,
+                borderColor: 'primary.light',
+                '& .MuiDataGrid-cell:hover': {
+                  color: 'primary.main',
+                },
+            }}
             rows={dataRows}
             columns={columns}
             pageSize={5}

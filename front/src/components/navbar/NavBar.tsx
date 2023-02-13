@@ -76,7 +76,7 @@ function NavBar() {
             >
             <Button 
                 sx={{ color: "#fff" }}
-                href = '/dashborad/book-appoinments'
+                href = '/normal/dashboard/book-appointment'
             >Book Appointment</Button>
             </Box>
             <Box

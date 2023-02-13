@@ -1,4 +1,4 @@
-import { Box,Typography,TextField, Stack, Grow } from "@mui/material";
+import { Box,Typography,TextField, Stack, Grow, IconButton } from "@mui/material";
 import {GridRenderCellParams } from "@mui/x-data-grid";
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import {
@@ -10,15 +10,26 @@ import {
     Link,
     MenuItem,
     Button,  
+    InputAdornment,
+    
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { FormEvent } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 function EmailVerification() {
 
+    const [searchValue, setSearchValue] = useState("");
 
     function handleSubmit(event: FormEvent<HTMLFormElement>): void {
         event.preventDefault();
         console.log("EmailVerification Button CLicked!");
+    }
+
+    function handleChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+        throw new Error("Function not implemented.");
+    }
+
+   const sendVerificationCode = () => {
+        console.log("Send Verification Code Button Clicked!");
     }
 
     return (
@@ -51,9 +62,6 @@ function EmailVerification() {
                     {/*Antique Verification Detail Input*/}
                     <div style={{ 
                             textAlign: 'center',
-                            paddingLeft: "50px",
-                            paddingTop: "50px",
-                            paddingBottom:"50px",
                             fontWeight: "bold"
                         }}>
                             <Typography
@@ -64,15 +72,28 @@ function EmailVerification() {
                                 Verify Your Email Account
                             </Typography>
 
-                                <TextField
-                                    style={{width: '400px'}}
-                                    margin="normal"
-                                    required
-                                    name="EstimateManufactureYear"
-                                    label="Enter Verification Code"
-                                    autoComplete="VerificationCode"
-                                    id="VerificationCode"
-                                /> 
+            <div>
+                <TextField
+                    id="standard-search"
+                    label="Enter Verification Code"
+                    type="search"
+                    variant="outlined"
+                    style={{ width: "50%" }}
+                    value={searchValue}
+                    onChange={handleChange}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                onClick={sendVerificationCode}
+                                >
+                                    Send Verification Code
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+            </div>
                     </div>
                 </div>
                 {/*Upload Button*/}

@@ -55,6 +55,7 @@ function AntiqueDocumentation() {
     });
 
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+        setPageNumber(1);
         setNumPages(numPages);
     };
     const handleDownloadResource = () => {
@@ -101,7 +102,10 @@ function AntiqueDocumentation() {
             </Typography>
         </div>
         <div
-            
+        style=
+                {{
+                    display: "center"
+                }}
         >
             {/*Documentation Template Download*/}
             <div 
@@ -132,30 +136,30 @@ function AntiqueDocumentation() {
             style=
                 {{
                     display: "center", 
-                    justifyContent: 'center',
-                    alignItems: "center", 
                     paddingTop:"20px" ,
                     border: "1px solid black",
-                    maxWidth:'800px',
                 }}
             >   
                 {/*Upload File Button*/}
-                <div>
+                <div
+                    style=
+                    {{
+                        display: "flex",
+                        justifyContent: "center" 
+                    }}
+                >
                     <FileUploader 
                         handleChange={handleChange} 
                         name="file" 
                         types={fileTypes} 
                         style=
                         {{
-                            display: "center", 
-                            alignItems: "center", 
-                            cursor: "pointer",
+                            display: "center",
+                            justifyContent: "center", 
                             paddingTop:"20px" 
                         }} 
                     />
                 </div>
-                <br></br>
-                <br></br>
                 {errorMessage && <h3 style={{color: 'red'}}>{errorMessage}</h3>}
                 <div
                     style=
@@ -182,7 +186,7 @@ function AntiqueDocumentation() {
                         </Document>
                     </div>
 
-                </div>
+            </div>
             </div>
             {/*Upload Document Button*/}
             <div

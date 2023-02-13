@@ -151,6 +151,7 @@ function AddAntique(props: AddAntiqueProps) {
                                 </Button>
                                 )}
                                 <Button onClick={handleNext}
+                                        
                                         color="primary"
                                         style={{backgroundColor: "red", color: "white"}}
                                 >
