@@ -34,7 +34,8 @@ function  Appointment()
         <NavBar/>
         <Stack spacing={3} sx={{ mt: 3 }}>
             {/*Book Appointment Label*/}
-            <div style={{ display: "center" }}>
+            <div style={{ 
+                display: "center" }}>
                 <Typography
                     variant="h3"
                     component="div"
@@ -54,6 +55,7 @@ function  Appointment()
                     paddingRight:"50px",
                     paddingBottom: "50px",
                     maxwidth:"800px",
+                    height: "500px",
                     
                 }}
             >

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../../../components/navbar/NavBar"
+import "./MyAntique.css"
 interface MyAntiqueProps {
   databaseControllerContract: any;
 }
@@ -18,7 +19,8 @@ function MyAntiqueList(props:MyAntiqueProps ) {
       headerName: "UID", 
       minWidth: 50, 
       type:"number",
-      headerAlign: "center"
+      headerAlign: "center",
+      headerClassName: "bold-header"
     },
 
     {
@@ -28,6 +30,7 @@ function MyAntiqueList(props:MyAntiqueProps ) {
       editable: false, 
       type: "string",
       headerAlign: "center",
+      headerClassName: "bold-header"
     },
     {
       field: "Verifier",
@@ -38,6 +41,7 @@ function MyAntiqueList(props:MyAntiqueProps ) {
       minWidth: 100,
       editable: false,
       headerAlign: "center",
+      headerClassName: "bold-header"
     },
     {
       field: "VerifyTime",
@@ -48,6 +52,7 @@ function MyAntiqueList(props:MyAntiqueProps ) {
       minWidth: 50,
       editable: false,
       headerAlign: "center",
+      headerClassName: "bold-header"
     },
     {
       field: "CreatedYear",
@@ -60,6 +65,7 @@ function MyAntiqueList(props:MyAntiqueProps ) {
       align: "left",
       headerAlign: "center",
       minWidth: 200,
+      headerClassName: "bold-header"
     },
     {
       field: "Enthicity",
@@ -71,6 +77,7 @@ function MyAntiqueList(props:MyAntiqueProps ) {
       headerAlign: "center",
       editable: false,
       type: "boolean",
+      headerClassName: "bold-header"
     },
     {
       field: "Rareness",
@@ -81,6 +88,7 @@ function MyAntiqueList(props:MyAntiqueProps ) {
       headerAlign: "center",
       editable: false,
       type: "string",
+      headerClassName: "bold-header"
     },
   ];
 
@@ -116,8 +124,22 @@ function MyAntiqueList(props:MyAntiqueProps ) {
         </Typography>
       </div>  
       <Grow in={true} appear={true}>
-        <div style={{ height: "500px" }}>
+        <div 
+        style={{ 
+          height: "500px",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+          paddingBottom: "20px",
+        }}>
           <DataGrid
+            sx={{
+                  boxShadow: 2,
+                  border: 2,
+                  borderColor: 'primary.light',
+                  '& .MuiDataGrid-cell:hover': {
+                    color: 'primary.main',
+                  },
+              }}
             rows={dataRows}
             columns={columns}
             pageSize={5}

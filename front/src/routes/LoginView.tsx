@@ -4,6 +4,8 @@ import Checkbox from '@mui/material/Checkbox';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
+import cookie from "js-cookie";
+
 import { Select } from "@mui/material";
 import {
   Alert,
@@ -18,12 +20,29 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useUserContext } from '../store/user-context';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 interface LoginViewProps {
   databaseControllerContract: any;
 }
 function LoginView(props: LoginViewProps) {
   const databaseControllerContract = props.databaseControllerContract;
   // const [userRole, setUserRole] = useState("");
+  const [isValid, setIsValid] = useState(false);
+  const accessToken = cookie.get("accessToken");
+  const navigate = useNavigate();
+  const userCtx = useUserContext();
+  const emailRegex = /\S+@\S+\.\S+/;
+  const [userRetrieveRole,setUserRole] = useState("");
+  const validateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const email = event.target.value;
+    if (emailRegex.test(email)) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  };
 
   const [details, setDetails] = React.useState({
     emailAddress: "",
@@ -37,6 +56,12 @@ function LoginView(props: LoginViewProps) {
     { id: 0, value: "Normal User" },
     { id: 1, value: "Professional Appraisal"}
   ]);
+  const [error, setError] = useState("");
+  const clearTextError = () => {
+    setError("");
+  };
+
+
   console.log("Login Contract Database Information");
 
   console.log(databaseControllerContract);
@@ -47,7 +72,107 @@ function LoginView(props: LoginViewProps) {
     console.log({
       email: data.get('email'),
       password: data.get('password'),
+      userRole: data.get("userRole")
     });
+    if (isValid) {
+      setError("");
+      //Call Backend
+      const userDetail = {
+        username: data.get("email"),
+        password: data.get("password"),
+      };
+
+      const params = new URLSearchParams();
+      if (userDetail.username !== null && userDetail.password !== null) {
+        params.append("username", userDetail.username.toString());
+        params.append("password", userDetail.password.toString());
+        UserLogin(params, userDetail.username.toString());
+      }
+    } else {
+      setError("Email is invalid !");
+    }
+  };
+  const UserLogin = (params: URLSearchParams, username: string) => {
+    console.log("User Login Method Called");
+    //? Step 1: Validate Email From username
+    const Loginheaders = {
+      "content-type": "application/x-www-form-urlencoded",
+    };
+    const LoginOptions = {
+      method: "GET",
+      params,
+      url: "http://localhost:8080/api/v1/user/verified-email",
+    };
+    axios(LoginOptions)
+      .then(async (response) => {
+        if (response.data) {
+          //? User Has Verified Email 
+          //? Step 2: Retrieve User Role from Username
+          const retrieveUserRoleOption= {
+            method: "GET",
+            headers: { "content-type": "application/x-www-form-urlencoded" },
+            params,
+            url: "http://localhost:8080/api/v1/user/get-user-role-by-username",
+          };
+          await axios(retrieveUserRoleOption)
+            .then(async (response) => {
+              console.log(response);
+              await setUserRole(response.data[0].roleName);
+              console.log("User Role After Axios");
+              console.log(userRetrieveRole);
+              //? Try Log User In   
+              const options = {
+                method: "POST",
+                headers: { "content-type": "application/x-www-form-urlencoded" },
+                params,
+                url: "http://localhost:8080/api/v1/login",
+              };
+
+              axios(options)
+                .then((response) => {
+                  console.log(response);
+                  userCtx.setUserSession({
+                    accessToken: response.data.access_token,
+                    refreshToken: response.data.refresh_token,
+                    userName: username,
+                  });
+                  // cookie.set("access_token", response.data.access_token);
+                  // cookie.set("refresh_token", response.data.refresh_token);
+                  // Update User Tokens In Database
+                  // updateTokenDatabase(username,
+                  //                     response.data.access_Token,
+                  //                     response.data.refresh_token)
+                  //? Save Token To User
+                  //? Navigate To Main Bar
+                  if(userRetrieveRole === "ROLE_USER")
+                  {
+                    navigate("/normal/dashboard");
+                  }
+                  else if (userRetrieveRole === "ROLE_APPRAISER")
+                  {
+                    navigate("/appraiser/dashboard");
+                  }
+                  else 
+                  {
+                    setError("Something went wrong!");
+                  }
+                  //window.location.reload(); // Force reload
+                })
+                .catch((err) => {
+                  if (err.response.status === 403) {
+                    //? User Not Found Or Wrong Password
+                    setError("Username or Password is Wrong !");
+                  }
+                });
+          });
+        } else {
+          setError("Please Verify Your Email !");
+        }
+      })
+      .catch((error) => {
+        setError("Username or Password is Wrong ");
+      });
+
   };
 
   // const updateUserRole = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -82,6 +207,7 @@ function LoginView(props: LoginViewProps) {
                   name="email"
                   autoComplete="email"
                   autoFocus
+                  onChange={validateEmail}
               />
               <TextField
                   margin="normal"
@@ -92,6 +218,7 @@ function LoginView(props: LoginViewProps) {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  onChange={clearTextError}
               />
             <TextField
                   select
@@ -113,8 +240,8 @@ function LoginView(props: LoginViewProps) {
                       {userRoleListElement.value}
                     </MenuItem>
                   ))}
-
             </TextField>
+            {error && <Alert severity="error">{error}</Alert>}
               <Button
                   type="submit"
                   fullWidth

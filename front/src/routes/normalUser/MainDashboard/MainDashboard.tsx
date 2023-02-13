@@ -5,19 +5,22 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../../../components/navbar/NavBar"
 import "./dashboard.css"
+import { useUserContext } from "../../../store/user-context";
+import cookie from "js-cookie";
 interface MainDashboardProps {
   databaseControllerContract: any;
 }
 function MainDashboard(props: MainDashboardProps) {
   const navigate = useNavigate();
+  const userCtx = useUserContext();
   const databaseControllerContract = props.databaseControllerContract;
   console.log("Main Dashboard Database Contract Information");
 
   console.log(databaseControllerContract);
   const columns: GridColDef[] = [
-    { field: "AppointmentDate", headerName: "Appointment Date", minWidth: 250, type:"date",headerAlign: "center",headerClassName: "bold-header"},
+    { field: "appointmentDate", headerName: "Appointment Date", minWidth: 250, type:"date",headerAlign: "center",headerClassName: "bold-header"},
     {
-      field: "AppointmentTime",
+      field: "appointmentTime",
       headerName: "Time",
       minWidth: 150,
       editable: false, 
@@ -26,7 +29,7 @@ function MainDashboard(props: MainDashboardProps) {
       headerClassName: "bold-header"
     },
     {
-      field: "AppraisalFirstName",
+      field: "appraiserFirstName",
       headerName: "First Name",
       description: "First name of the person who confirmed the appointment",
       type: "string",
@@ -37,7 +40,7 @@ function MainDashboard(props: MainDashboardProps) {
       headerClassName: "bold-header"
     },
     {
-      field: "AppraisalLastName",
+      field: "appraiserLastName",
       headerName: "Last Name",
       description:
         "Family name of the person who confirmed the appointment",
@@ -49,7 +52,7 @@ function MainDashboard(props: MainDashboardProps) {
       headerClassName: "bold-header"
     },
     {
-      field: "ApproveStatus",
+      field: "appointmentStatus",
       headerName: "Approve Status",
       description: "The current status of the appointment",
       flex: 1,
@@ -64,8 +67,32 @@ function MainDashboard(props: MainDashboardProps) {
   const [dataRows, setDataRows] = useState<
     { [key: string]: string | number }[]
   >([]);
+  
+
+  const RetrieveUserAppointmentList = () => 
+  {
+    const params = new URLSearchParams();
+    const username= cookie.get("userName") || "" ;
+    params.append('antiqueOwnerUsername',username);
+    params.append('accessToken',userCtx.userSession.accessToken);
+    const getAppointmentOption= {
+      method: "GET",
+      params,
+      url: "http://localhost:8080/api/v1/normal-user-appointment-view/find-all-by-username",
+    };
+    axios(getAppointmentOption)
+    .then((response) => {
+        if (response.status === 200) {
+            setDataRows(response.data);
+        }
+    })
+    .catch((error) => {
+      console.log(error);
+      });
+  };
 
   useEffect(() => {
+    RetrieveUserAppointmentList()
     // axios
     //   .get("/uos", { params: {} })
     //   .then((resp) => {
@@ -119,6 +146,7 @@ function MainDashboard(props: MainDashboardProps) {
                 '& .MuiDataGrid-cell:hover': {
                   color: 'primary.main',
                 },
+
             }}
             rows={dataRows}
             columns={columns}
@@ -126,10 +154,10 @@ function MainDashboard(props: MainDashboardProps) {
             rowsPerPageOptions={[5]}
             disableSelectionOnClick={true}
             getRowId={(row) => {
-              return row.unitId;
+              return row.appointmentID;
             }}
             onRowClick={(row) => {
-              navigate(`/uos/${row.row.unitId}`);
+              navigate(`/uos/${row.row.appointmentID}`);
             }}
           />
         </div>
