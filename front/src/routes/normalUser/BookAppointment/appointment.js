@@ -29,6 +29,10 @@ function  Appointment()
 {
     const [appointmentDescription, setAppointmentDescription] = useState("");
     const [startDate, setStartDate] = useState(new Date());
+    const handleSubmit = () =>
+    {
+
+    }
     return ( 
         <>
         <NavBar/>
@@ -53,7 +57,6 @@ function  Appointment()
                     paddingTop: "50px",
                     paddingLeft:"50px",
                     paddingRight:"50px",
-                    paddingBottom: "50px",
                     maxwidth:"800px",
                     height: "500px",
                     
@@ -67,42 +70,54 @@ function  Appointment()
                 >
                     Please Choose Your Referal Date and Time
                 </Typography>
-
-                {/**NOTE - Choose Date Time Appointment */ }
-                <div>
-                <TextField
-                    id="datetime-local"
-                    label="Choose Your Appointment"
-                    type="datetime-local"
-                    // defaultValue="2017-05-24T10:30"
-                    sx={{ width: 500 }}
-                    InputLabelProps={{
-                        shrink: true,
-                }}
-                />
-                </div>
-                {/**NOTE - Appointment Description Input */}
-                <div style={{ 
-                    display: "flex", 
-                flexDirection: "column" 
-                }}
-                
-                >
-                    <Typography variant="h5" style={{ alignItems: "flex-start" ,textAlign: "left" }}     paddingTop= "50px">
-                        Enter Information For Your Appointment
-                    </Typography>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    {/**NOTE - Choose Date Time Appointment */ }
+                    <div>
                     <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="AppointmentDescription"
-                        onChange={(e) => {
-                        setAppointmentDescription(prevState => ({...prevState, appointmentDescription: e.target.value}));
-                        console.log(appointmentDescription);
-                        }}
-                        label="Appointment Description"
+                        id="datetime-local"
+                        label="Choose Your Appointment"
+                        type="datetime-local"
+                        // defaultValue="2017-05-24T10:30"
+                        sx={{ width: 500 }}
+                        InputLabelProps={{
+                            shrink: true,
+                    }}
                     />
-                </div>
+                    </div>
+                    {/**NOTE - Appointment Description Input */}
+                    <div style={{ 
+                        display: "flex", 
+                    flexDirection: "column" 
+                    }}
+                    
+                    >
+                        <Typography variant="h5" style={{ alignItems: "flex-start" ,textAlign: "left" }}     paddingTop= "50px">
+                            Enter Information For Your Appointment
+                        </Typography>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="AppointmentDescription"
+                            onChange={(e) => {
+                            setAppointmentDescription(prevState => ({...prevState, appointmentDescription: e.target.value}));
+                            console.log(appointmentDescription);
+                            }}
+                            label="Appointment Description"
+                        />
+                    </div>
+                    {/**NOTE - Button Confirmation */}
+                    <div>
+                        <Button
+                            type="submit"
+                            
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Confirm Appointment
+                        </Button>
+                    </div>
+                </Box>
             </div>
         </Stack>
         </>

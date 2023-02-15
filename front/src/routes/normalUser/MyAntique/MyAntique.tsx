@@ -4,7 +4,9 @@ import React, { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../../../components/navbar/NavBar"
-import "./MyAntique.css"
+import "./MyAntique.css";
+import cookie from "js-cookie";
+
 interface MyAntiqueProps {
   databaseControllerContract: any;
 }
@@ -95,20 +97,16 @@ function MyAntiqueList(props:MyAntiqueProps ) {
   const [dataRows, setDataRows] = useState<
     { [key: string]: string | number }[]
   >([]);
+  const retrievePersonalAppointment= () => 
+  {
+    //Todo: Retrieve List Antique based on username 
 
-//   useEffect(() => {
-//     axios
-//       .get("/uos", { params: {} })
-//       .then((resp) => {
-//         if (resp.status === 200) {
-//           console.log(resp.data);
-//           setDataRows(resp.data);
-//         }
-//       })
-//       .catch((err) => {
-//         console.error(err);
-//       });
-//   }, []);
+  }
+
+  useEffect(() => {
+    // retrievePersonalAppointment();
+  }, []);
+
 
   return (
     <div >

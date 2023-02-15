@@ -5,6 +5,9 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../../../components/navbarAppraiser/NavBarAppraiser"
 import "./myAppointment.css"
+import cookie from "js-cookie";
+import { useUserContext } from "../../../store/user-context";
+
 interface MyAppointmentAppraiserProps {
   databaseControllerContract: any;
 }
@@ -17,10 +20,13 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
         {props.value}
         </div>
     );
+
+    const userCtx = useUserContext();
+
     console.log(databaseControllerContract);
     const columns: GridColDef[] = [
     {
-        field: "AppointmentDate",
+        field: "appointmentDate",
         headerName: "Appointment Date", 
         minWidth: 150, 
         type:"date",
@@ -34,7 +40,7 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
         // ),
     },
     {
-        field: "AppointmentTime",
+        field: "appointmentTime",
         flex: 1,
         headerName: "Time",
         minWidth: 100,
@@ -50,7 +56,7 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
         // ),
     },
     {
-        field: "NormalFirstName",
+        field: "antiqueOwnerFirstName",
         headerName: "First Name",
         description: "First Name of the person who requsted the appointment",
         type: "string",
@@ -62,7 +68,7 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
         headerClassName: "bold-header",
     },
     {
-        field: "UserLastName",
+        field: "antiqueOwnerLastName",
         headerName: "Last Name",
         flex: 1,
         
@@ -76,7 +82,7 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
         headerClassName: "bold-header",
     },
     {
-        field: "AppointmentsDescription",
+        field: "appointmentDescription",
         headerName: "Description",
         description:
         "Some Information Regarding The Appointment",
@@ -89,7 +95,7 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
         headerClassName: "bold-header",
     },
     {
-        field: "AppointmentStatus",
+        field: "appointmentStatus",
         flex: 1,
         headerName: "Appointment Status",
         description:
@@ -174,98 +180,113 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
     { [key: string]: string | number }[]
     >([]);
 
-    useEffect(() => {
-    // axios
-    //   .get("/uos", { params: {} })
-    //   .then((resp) => {
-    //     if (resp.status === 200) {
-    //       console.log(resp.data);
-    //       setDataRows(resp.data);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
-    const dataRows = [
-        {
-        "id":1,
-        "AppointmentDate": "2022-01-01",
-        "AppointmentTime": "10:00 AM",
-        "NormalFirstName": "John",
-        "UserLastName": "Doe",
-        "AppointmentStatus": "Await Prooved"
-        },
-        {
-        "id":2,
-        "AppointmentDate": "2022-01-02",
-        "AppointmentTime": "11:00 AM",  
-        "NormalFirstName": "Jane",
-        "UserLastName": "Smith",
-        "AppointmentStatus": "Approved",
+    const retrieveAppraiserAppointment = () => 
+    {
+        const params = new URLSearchParams();
+        const username= cookie.get("userName") || "" ;
+        params.append('username',username);
+        params.append('accessToken',userCtx.userSession.accessToken);
+        const getAppointmentOption= {
+        method: "GET",
+        params,
+        url: "http://localhost:8080/api/v1/appraiser-user-appointment-view/find-all-by-username",
+        };
+        axios(getAppointmentOption)
+        .then((response) => {
+            if (response.status === 200) {
+                console.log(response);
+                setDataRows(response.data);
+            }
+        })
+        .catch((error) => {
+        console.log(error);
+        });
+    };
 
-        },
-    ]
-    setDataRows(dataRows);
+    
+
+    useEffect(() => {
+        retrieveAppraiserAppointment();
+        const dataRows = [
+            {
+            "id":1,
+            "AppointmentDate": "2022-01-01",
+            "AppointmentTime": "10:00 AM",
+            "NormalFirstName": "John",
+            "UserLastName": "Doe",
+            "AppointmentStatus": "Await Prooved"
+            },
+            {
+            "id":2,
+            "AppointmentDate": "2022-01-02",
+            "AppointmentTime": "11:00 AM",  
+            "NormalFirstName": "Jane",
+            "UserLastName": "Smith",
+            "AppointmentStatus": "Approved",
+
+            },
+        ]
+    //setDataRows(dataRows);
     }, []);
 
-  return (
-    <div>
-    <NavBar />
-    <Stack spacing={3} sx={{ mt: 3 }} style = {{width: "auto"}}>
-        <div style={{ display: "center" }}>
-        <Typography
-            variant="h3"
-            component="div"
-            sx={{ justifySelf: "flex-start" }}
-        >
-            Your Appointment
-        </Typography>
-        </div>
-        <div style={{ display: "center" }}>
-        <Typography
-            variant="h4"
-            component="div"
-            sx={{ justifySelf: "flex-start" }}
-        >
-            hi username, Your Upcoming Appointment Details!
-        </Typography>
-        </div>
+    return (
+        <div>
+        <NavBar />
+        <Stack spacing={3} sx={{ mt: 3 }} style = {{width: "auto"}}>
+            <div style={{ display: "center" }}>
+            <Typography
+                variant="h3"
+                component="div"
+                sx={{ justifySelf: "flex-start" }}
+            >
+                Your Appointment
+            </Typography>
+            </div>
+            <div style={{ display: "center" }}>
+            <Typography
+                variant="h4"
+                component="div"
+                sx={{ justifySelf: "flex-start" }}
+            >
+                hi username, Your Upcoming Appointment Details!
+            </Typography>
+            </div>
 
-        <Grow in={true} appear={true} style = {{width: "auto"}}>
-        <div 
-        style={{ 
-            height: "500px",
-            paddingLeft: "20px",
-            paddingRight: "20px",
-            paddingBottom: "20px",
-            width: "auto",
-        }}
-        >
-            <DataGrid
-            sx={{
-                boxShadow: 5,
-                border: 2,
-                borderColor: 'primary.light',
-                '& .MuiDataGrid-cell:hover': {
-                    color: 'primary.main',
-                },
+            <Grow in={true} appear={true} style = {{width: "auto"}}>
+            <div 
+            style={{ 
+                height: "500px",
+                paddingLeft: "20px",
+                paddingRight: "20px",
+                paddingBottom: "20px",
+                width: "auto",
             }}
-            rows={dataRows}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick={true}
-            getRowId={(row) => {
-                return row.id;
-            }}
-            onRowClick={(row) => {
-                navigate(`/uos/${row.row.unitId}`);
-            }}
-            />
+            >
+                <DataGrid
+                sx={{
+                    boxShadow: 5,
+                    border: 2,
+                    borderColor: 'primary.light',
+                    '& .MuiDataGrid-cell:hover': {
+                        color: 'primary.main',
+                    },
+                }}
+                rows={dataRows}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick={true}
+                getRowId={(row) => {
+                    return row.appointmentID;
+                }}
+                onRowClick={(row) => {
+                    navigate(`/uos/${row.row.unitId}`);
+                }}
+                />
+            </div>
+            </Grow>
+        </Stack>
         </div>
-        </Grow>
-    </Stack>
-    </div>
   );
 }
 

@@ -5,6 +5,8 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../../../components/navbarAppraiser/NavBarAppraiser"
 import "./dashboard.css"
+import cookie from "js-cookie";
+
 interface MainDashboardAppraiserProps {
   databaseControllerContract: any;
 }
@@ -20,13 +22,23 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
   console.log(databaseControllerContract);
   const columns: GridColDef[] = [
     {
-      field: "AppointmentDate",
+      field: "appointmentDate",
       headerName: "Appointment Date", 
       minWidth: 200, 
       type:"date",
       headerAlign: "center",
       align:"center",
       headerClassName: "bold-header",
+      renderCell: (cellValues) => (
+            <div style=
+                {{ 
+                    fontWeight: "bold",
+                    fontSize: 11,
+                    // border: "1px solid black" 
+                }}>
+                {cellValues.value}
+            </div>
+        ),
       // renderCell: (cellValues) => (
       // <div style={{ border: "1px solid black" }}>
       //   {cellValues.value}
@@ -34,14 +46,24 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
       // ),
     },
     {
-      field: "AppointmentTime",
+      field: "appointmentTime",
       headerName: "Time",
       minWidth: 150,
       editable: false, 
       type: "datetime",
       align: "center",
       headerAlign: "center",
-      headerClassName: "bold-header", 
+      headerClassName: "bold-header",
+      renderCell: (cellValues) => (
+            <div style=
+                {{ 
+                    fontWeight: "bold",
+                    fontSize: 11,
+                    // border: "1px solid black" 
+                }}>
+                {cellValues.value}
+            </div>
+        ), 
       // renderCell: (cellValues) => (
       // <div style={{ border: "1px solid black" }}>
       //   {cellValues.value}
@@ -49,7 +71,7 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
       // ),
     },
     {
-      field: "NormalFirstName",
+      field: "firstName",
       headerName: "Requester First Name",
       description: "First name of the person who requested the meeting",
       type: "string",
@@ -61,7 +83,7 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
       headerClassName: "bold-header",
     },
     {
-      field: "UserLastName",
+      field: "lastName",
       headerName: "Requester Last Name",
       description:
         "Family name of the person who requested the appointment",
@@ -119,18 +141,32 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
     { [key: string]: string | number }[]
   >([]);
 
+  const retrieveAllAppointments = () => 
+  {
+    //Todo: Reieve All Appointments Information
+    const params = new URLSearchParams();
+    const username= cookie.get("userName") || "" ;
+    params.append('antiqueOwnerUsername',username);
+    const getAppointmentsOption =
+    {
+      method: "GET",
+      params,
+      url: "http://localhost:8080/api/v1/all-appointment-view/all",
+    };
+      axios(getAppointmentsOption)
+      .then((response) => {
+          if (response.status === 200) {
+              setDataRows(response.data);
+              console.log(response.data); 
+          }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    };
+
+
   useEffect(() => {
-    // axios
-    //   .get("/uos", { params: {} })
-    //   .then((resp) => {
-    //     if (resp.status === 200) {
-    //       console.log(resp.data);
-    //       setDataRows(resp.data);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
     const dataRows = [
       {
         "id":1,
@@ -149,7 +185,9 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
         "ChooseAppointmentButton": "click"
       },
     ]
-    setDataRows(dataRows);
+    // setDataRows(dataRows);
+    retrieveAllAppointments();
+
   }, []);
 
   return (
@@ -199,10 +237,10 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
             rowsPerPageOptions={[5]}
             disableSelectionOnClick={true}
             getRowId={(row) => {
-              return row.id;
+              return row.appointmentID;
             }}
             onRowClick={(row) => {
-              navigate(`/uos/${row.row.unitId}`);
+              navigate(`/uos/${row.row.appointmentID}`);
             }}
           />
         </div>
@@ -213,3 +251,5 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
 }
 
 export default MainDashboardAppraiser;
+
+
