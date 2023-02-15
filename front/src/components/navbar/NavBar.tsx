@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import React, { useEffect, useState } from "react";
-
+import cookie from "js-cookie";
 function NavBar() {
   const userCtx = useUserContext();
   const navigate = useNavigate();
@@ -15,7 +15,15 @@ function NavBar() {
 
   const handleNavLogout = () => {
     // setAnchorEl(null);
+    userCtx.setUserSession({
+        accessToken: undefined,
+        refreshToken: undefined,
+        userId: undefined,
+        userName: undefined,
+    });
+    cookie.set("userName","");
     navigate("/login");
+    
   };
   const handleNavUserInfo = () => {
     setAnchorEl(null);

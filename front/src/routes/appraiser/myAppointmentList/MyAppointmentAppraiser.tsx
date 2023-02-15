@@ -7,7 +7,7 @@ import NavBar from "../../../components/navbarAppraiser/NavBarAppraiser"
 import "./myAppointment.css"
 import cookie from "js-cookie";
 import { useUserContext } from "../../../store/user-context";
-
+import {ChangeAppointmentTimeDialog} from "../../../dialog/ChangeAppointmentTimeDialog";
 interface MyAppointmentAppraiserProps {
   databaseControllerContract: any;
 }
@@ -139,6 +139,7 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
                 style={{ backgroundColor: "#003399" }}
                 onClick={(event) => {
                     handleClick(event, cellValues);
+                    <ChangeAppointmentTimeDialog/>
                 }}
                 >
                 Change Time
@@ -232,6 +233,7 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
     return (
         <div>
         <NavBar />
+
         <Stack spacing={3} sx={{ mt: 3 }} style = {{width: "auto"}}>
             <div style={{ display: "center" }}>
             <Typography
@@ -280,7 +282,7 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
                     return row.appointmentID;
                 }}
                 onRowClick={(row) => {
-                    navigate(`/uos/${row.row.unitId}`);
+                    <ChangeAppointmentTimeDialog/>
                 }}
                 />
             </div>

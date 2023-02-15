@@ -6,29 +6,37 @@ import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import React, { useEffect, useState } from "react";
+import cookie from "js-cookie";
 
 function NavBarAppraiser() {
-  const userCtx = useUserContext();
-  const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [profilePictureURL, setProfilePictureURL] = useState("");
+    const userCtx = useUserContext();
+    const navigate = useNavigate();
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [profilePictureURL, setProfilePictureURL] = useState("");
 
-  const handleNavLogout = () => {
-    // setAnchorEl(null);
-    navigate("/login");
-  };
-  const handleNavUserInfo = () => {
+    const handleNavLogout = () => {
+        // setAnchorEl(null);
+        userCtx.setUserSession({
+            accessToken: undefined,
+            refreshToken: undefined,
+            userId: undefined,
+            userName: undefined,
+        });
+        cookie.set("userName","");
+        navigate("/login");
+    };
+    const handleNavUserInfo = () => {
     setAnchorEl(null);
     //Original Code 
     // navigate("/profile/" + userCtx.userSession.userId);
     navigate("/appraiser/user-profile");
-  };
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+    };
+    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
     return (
     <Box sx={{ flexGrow: 1 }}>
         <AppBar position={"static"} enableColorOnDark color="primary">

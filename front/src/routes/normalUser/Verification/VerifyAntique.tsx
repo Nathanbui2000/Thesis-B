@@ -5,7 +5,7 @@ import axios from "../../../utils/axios-instance";
 import { useNavigate } from "react-router-dom";
 // import { makeStyles } from "@material-ui/core/styles";
 
-import {AntiqueObject} from '../../../type/AntiqueObject'
+import {AntiqueObject} from '../../../type/Truffle/AntiqueObject'
 import moment from 'moment';
 
 

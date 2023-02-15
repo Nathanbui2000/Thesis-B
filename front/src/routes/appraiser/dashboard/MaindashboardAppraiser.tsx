@@ -1,25 +1,33 @@
 import { Button, Grow, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axios from "../../../utils/axios-instance";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../../../components/navbarAppraiser/NavBarAppraiser"
 import "./dashboard.css"
 import cookie from "js-cookie";
-
+import {AppointmentView} from "../../../dialog/appointmentView";
+import {Appointment} from "../../../type/Java/Appointment";
+import {ChangeAppointmentTimeDialog} from "../../../dialog/ChangeAppointmentTimeDialog"
 interface MainDashboardAppraiserProps {
   databaseControllerContract: any;
 }
+
 function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
   const navigate = useNavigate();
-  const databaseControllerContract = props.databaseControllerContract;
+  
   console.log("Main Dashboard Database Contract Information");
   const customHeader = (props: { value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
     <div style={{ fontWeight: "bold", fontSize: "18px" }}>
       {props.value}
     </div>
   );
+
+  //Truffle Data
+  const databaseControllerContract = props.databaseControllerContract;
   console.log(databaseControllerContract);
+
+  //Table View Data
   const columns: GridColDef[] = [
     {
       field: "appointmentDate",
@@ -94,53 +102,60 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
       headerAlign: "center",
       headerClassName: "bold-header",
     },
-    // {
-    //   field: "ChooseAppointmentButton",
-    //   headerName: "Choose Appointment",
-    //   flex: 1,
-    //   align: "center",
-    //   headerAlign: "center",
-    //   editable: false,
-    //   type: "event",
-    //   headerClassName: "bold-header",
-    //   // renderCell: (cellValues) => (
-    //   // <div style={{ border: "1px solid black" }}>
-    //   //   {cellValues.value}
-    //   // </div>
-    //   // ),
-    // },
     {
-  field: "Choose Appointment",
-  align:"center",
-  minWidth: 150,
-  headerAlign:"center",
-  headerClassName: "bold-header",
-  description: "Click to choose an appointment",
-  renderCell: (cellValues) => {
-    function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, cellValues: GridRenderCellParams<any, any, any>) {
-      event.stopPropagation(); // 
-      console.log(cellValues);  
+      field: "ChooseAppointmentButton",
+      headerName: "Appointment Details",
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+      editable: false,
+      type: "event",
+      headerClassName: "bold-header",
+      renderCell: (cellValues) => {
+        return (
+          <AppointmentView
+            appointmentID = {Number(cellValues.id)}
+          />
+        )
+      }
+    },
+  {
+    field: "Choose Appointment",
+    align:"center",
+    minWidth: 150,
+    headerAlign:"center",
+    headerClassName: "bold-header",
+    description: "Click to choose an appointment",
+    renderCell: (cellValues) => 
+    {
+      function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, cellValues: GridRenderCellParams<any, any, any>)
+      {
+          event.stopPropagation(); // 
+          console.log(cellValues);  
+      }
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={(event) => {
+            handleClick(event, cellValues);
+          }}
+        >
+          Choose
+        </Button>
+      );
     }
-
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={(event) => {
-          handleClick(event, cellValues);
-        }}
-      >
-        Choose
-      </Button>
-    );
   }
-}
   ];
 
   const [dataRows, setDataRows] = useState<
     { [key: string]: string | number }[]
   >([]);
-
+  
+  // Dialog Data
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [isAppointmentViewOpen, setIsAppointmentViewOpen] = useState(false)
+  const [appointmentList, setAppointmentList] = useState<Appointment[] | null>(null);
   const retrieveAllAppointments = () => 
   {
     //Todo: Reieve All Appointments Information
@@ -156,36 +171,27 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
       axios(getAppointmentsOption)
       .then((response) => {
           if (response.status === 200) {
+              console.log(response);
               setDataRows(response.data);
+              setAppointmentList(response.data);
+              console.log(appointmentList);
+              console.log(dataRows);
               console.log(response.data); 
           }
       })
       .catch((error) => {
         console.log(error);
       });
-    };
+  };
+
+  const handleRowClick = (row :GridRowParams<Appointment>) => {
+    setSelectedAppointment(row.row as Appointment);
+    console.log(selectedAppointment);
+    setIsAppointmentViewOpen(true);
+  };
 
 
   useEffect(() => {
-    const dataRows = [
-      {
-        "id":1,
-        "AppointmentDate": "2022-01-01",
-        "AppointmentTime": "10:00 AM",
-        "NormalFirstName": "John",
-        "UserLastName": "Doe",
-        "ChooseAppointmentButton": "Choose"
-      },
-      {
-        "id":2,
-        "AppointmentDate": "2022-01-02",
-        "AppointmentTime": "11:00 AM",  
-        "NormalFirstName": "Jane",
-        "UserLastName": "Smith",
-        "ChooseAppointmentButton": "click"
-      },
-    ]
-    // setDataRows(dataRows);
     retrieveAllAppointments();
 
   }, []);
@@ -193,6 +199,7 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
   return (
     <div>
     <NavBar />
+    {/* <AppointmentView/> */}
     <Stack spacing={3} sx={{ mt: 3 }}>
       <div style={{ display: "center" }}>
         <Typography
@@ -240,11 +247,13 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
               return row.appointmentID;
             }}
             onRowClick={(row) => {
-              navigate(`/uos/${row.row.appointmentID}`);
+              handleRowClick(row);
+              //? Show Appointment Page 
             }}
           />
         </div>
       </Grow>
+      
     </Stack>
     </div>
   );
