@@ -7,9 +7,10 @@ import NavBar from "../../../components/navbarAppraiser/NavBarAppraiser"
 import "./myAppointment.css"
 import cookie from "js-cookie";
 import { useUserContext } from "../../../store/user-context";
+import {CancelAppointmentDialog} from "../../../dialog/CancelAppointmentDialog"
 import {ChangeAppointmentTimeDialog} from "../../../dialog/ChangeAppointmentTimeDialog";
 interface MyAppointmentAppraiserProps {
-  databaseControllerContract: any;
+    databaseControllerContract: any;
 }
 function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
     const navigate = useNavigate();
@@ -131,7 +132,9 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
         function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, cellValues: GridRenderCellParams<any, any, any>) {
             event.stopPropagation(); // 
             console.log(cellValues);  
-            //Open Diaglog For Propose Another Time 
+            //Open Diaglog For Propose Another Time
+            
+
             }
             return (
                 <Button
@@ -158,20 +161,13 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
         description: "Please Consider Carefully Before Cancelling Appointment",
         renderCell: (cellValues) => {
         function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, cellValues: GridRenderCellParams<any, any, any>) {
-            event.stopPropagation(); // 
-            console.log(cellValues);  
+            // event.stopPropagation(); // 
+            // console.log(cellValues);  
             //Open Diaglog
-            }
+        }
             return (
-                <Button
-                variant="contained"
-                color="primary"
-                onClick={(event) => {
-                    handleClick(event, cellValues);
-                }}
-                >
-                Cancel
-                </Button>
+                <CancelAppointmentDialog
+                appointmentID  = {Number(cellValues.id)}/> 
             );
         }
     }
@@ -204,30 +200,9 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
         });
     };
 
-    
 
     useEffect(() => {
         retrieveAppraiserAppointment();
-        const dataRows = [
-            {
-            "id":1,
-            "AppointmentDate": "2022-01-01",
-            "AppointmentTime": "10:00 AM",
-            "NormalFirstName": "John",
-            "UserLastName": "Doe",
-            "AppointmentStatus": "Await Prooved"
-            },
-            {
-            "id":2,
-            "AppointmentDate": "2022-01-02",
-            "AppointmentTime": "11:00 AM",  
-            "NormalFirstName": "Jane",
-            "UserLastName": "Smith",
-            "AppointmentStatus": "Approved",
-
-            },
-        ]
-    //setDataRows(dataRows);
     }, []);
 
     return (
@@ -250,7 +225,7 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
                 component="div"
                 sx={{ justifySelf: "flex-start" }}
             >
-                hi username, Your Upcoming Appointment Details!
+                hi {userCtx.userSession.firstName} {userCtx.userSession.lastName}, Your Upcoming Appointment Details!
             </Typography>
             </div>
 

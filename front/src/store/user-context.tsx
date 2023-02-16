@@ -43,6 +43,8 @@ export const UserContextProvider = (props: { children: React.ReactNode }) => {
     refreshToken?: string;
     userId?: string;
     userName?:string;
+    firstName? : string;
+    lastName?: string;
   }>(getTokensFromCookie());
 
   const retrieveUserDetails = () => {
@@ -66,7 +68,7 @@ export const UserContextProvider = (props: { children: React.ReactNode }) => {
       .then((resp) => {
         console.log(resp);
         setUserSession((prev) => {
-          return { ...prev, userId: resp.data.userId };
+          return { ...prev, userId: resp.data.userId, firstName: resp.data.firstName, lastName: resp.data.lastName};
         });
       })
       .catch((err) => {
@@ -83,7 +85,7 @@ export const UserContextProvider = (props: { children: React.ReactNode }) => {
     if (userSession.refreshToken && userSession.accessToken) {
       retrieveUserDetails();
     }
-  }, [userSession.refreshToken, userSession.accessToken, userSession.userName]);
+  }, [userSession.refreshToken, userSession.accessToken, userSession.userName,userSession.firstName,userSession.lastName]);
 
   return (
     <UserContext.Provider value={{ userSession, setUserSession }}>

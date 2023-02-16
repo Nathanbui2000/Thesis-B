@@ -8,14 +8,18 @@ import "./dashboard.css"
 import cookie from "js-cookie";
 import {AppointmentView} from "../../../dialog/appointmentView";
 import {Appointment} from "../../../type/Java/Appointment";
+import { useUserContext } from "../../../store/user-context";
+import {IUser} from "../../../types/user";
 import {ChangeAppointmentTimeDialog} from "../../../dialog/ChangeAppointmentTimeDialog"
+import { ChooseAppointmentDialog } from "../../../dialog/ChooseAppointmentDialog";
 interface MainDashboardAppraiserProps {
   databaseControllerContract: any;
 }
 
 function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
   const navigate = useNavigate();
-  
+  const userCtx = useUserContext();
+
   console.log("Main Dashboard Database Contract Information");
   const customHeader = (props: { value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
     <div style={{ fontWeight: "bold", fontSize: "18px" }}>
@@ -128,22 +132,11 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
     description: "Click to choose an appointment",
     renderCell: (cellValues) => 
     {
-      function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, cellValues: GridRenderCellParams<any, any, any>)
-      {
-          event.stopPropagation(); // 
-          console.log(cellValues);  
-      }
       return (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={(event) => {
-            handleClick(event, cellValues);
-          }}
-        >
-          Choose
-        </Button>
-      );
+      <ChooseAppointmentDialog
+            appointmentID = {Number(cellValues.id)}
+          />
+      )
     }
   }
   ];
@@ -151,6 +144,8 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
   const [dataRows, setDataRows] = useState<
     { [key: string]: string | number }[]
   >([]);
+
+  const [userData, setUserData] = useState<IUser | null>(null);
   
   // Dialog Data
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
@@ -190,9 +185,39 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
     setIsAppointmentViewOpen(true);
   };
 
+  const retrieveUserData = () => 
+  {
+    const authorizationValue = "Bearer " + userCtx.accessToken;
+    const params = new URLSearchParams();
+    if (cookie.get("userName"))
+    {
+      params.append("username", cookie.get("userName") || "");
+    }
+
+    const options = {
+      method: "GET",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+        Authorization: authorizationValue,
+      },
+      params,
+      url: "http://localhost:8080/api/v1/user/get-user-by-username",
+    };
+
+    axios(options)
+      .then((resp) => {
+        console.log(resp);
+        setUserData(resp.data);
+      })
+      .catch((err) => {
+        console.error(err);
+
+      });
+  } 
 
   useEffect(() => {
     retrieveAllAppointments();
+    retrieveUserData();
 
   }, []);
 
@@ -216,7 +241,7 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
           component="div"
           sx={{ justifySelf: "flex-start" }}
         >
-          username, Choose An Appointment Suit You!
+          {userData?.firstName} {userData?.lastName}, Choose An Appointment Suit You!
         </Typography>
       </div>
 
