@@ -1,11 +1,12 @@
-package com.coursemania.api.user;
+package Java.Database.user;
 
-import com.coursemania.api.role.Role;
+import Java.Database.role.Role;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public interface UserService {
 
     User getUserByUserId(Long userId);
 
-    User updateUser(String firstName, String lastName, String username, String university);
+    User updateNormalUser(String firstName, String lastName, String username);
 
     User getUserByToken(String token);
 
@@ -28,15 +29,38 @@ public interface UserService {
 
     Map<String, String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-    void ForgotPassword(String username);
+    void ForgotPassword(String username,
+                        HttpServletResponse response);
 
-    void RegisterUser(String firstName, String lastName, String username, String university, String password);
+    void RegisterNormalUser
+            (String firstName,
+             String lastName,
+             String username,
+             String password,
+             String blockchainAddress,
+             HttpServletResponse response);
+
+    void RegisterAppraiserUser
+            (String firstName,
+             String lastName,
+             String username,
+             String password,
+             String appraiserExperiences,
+             String nswDriverLicence,
+             String blockchainAddress,
+             HttpServletResponse response);
 
     ResponseEntity<Boolean> verifyUserEmail(String username, HttpServletResponse response);
 
     void verifyUser(User user);
+
+    void updateAppraiserUser(String firstName, String lastName, String username,HttpServletResponse response);
+
+    ResponseEntity<String> deleteUserByUsername(String username, HttpServletResponse response);
     /*
      * void setUpUserTokens(String username, String accessToken, String
      * refreshToken);
      */
+    ResponseEntity<Collection<Role>> getUserRoleByUsername(String username, HttpServletResponse response);
+    boolean validateUserContainRoleName(String username, String roleName);
 }

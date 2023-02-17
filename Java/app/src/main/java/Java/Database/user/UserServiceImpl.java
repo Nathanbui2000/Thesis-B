@@ -1,29 +1,13 @@
-package com.coursemania.api.user;
+package Java.Database.user;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
-import Services.MainServices;
+import Java.Database.role.Role;
+import Java.Database.role.RoleRepository;
+import Java.Services.MainServices;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.coursemania.api.role.Role;
-import com.coursemania.api.role.RoleRepository;
-import com.coursemania.api.university.University;
-import com.coursemania.api.university.UniversityService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
@@ -37,6 +21,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -47,14 +41,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   private final RoleRepository roleRepository;
   private final PasswordEncoder passwordEncoder;
   private final MainServices mainService = MainServices.getInstance();
-  private final UniversityService universityService;
+  //private final UniversityService universityService;
 
-  public User addUser(String firstName,
-      String lastName,
+  public User addUser(
+          String firstName,
+          String lastName,
 
-      String password,
-      University university,
-      String token) {
+          String password,
+          //University university,
+          String token)
+  {
     User newUser = new User();
     newUser.setFirstName(firstName);
     newUser.setLastName(lastName);
@@ -81,8 +77,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     });
 
     return new org.springframework.security.core.userdetails.User(user.getUsername(),
-        user.getPasswordHash(),
-        authorities);
+        user.getPasswordHash(), authorities);
   }
 
   @Override
@@ -126,8 +121,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
-  public Map<String, String> refreshToken(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  public Map<String, String> refreshToken
+          (HttpServletRequest request,
+           HttpServletResponse response)
+      throws IOException
+  {
     String authorizationHeader = request.getHeader(AUTHORIZATION);
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
       try {
@@ -171,23 +169,39 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
-  public void ForgotPassword(String username) {
-    if (username == null) {
-      throw new IllegalArgumentException("Username is required");
-    } else {
+  public void ForgotPassword
+          (String username,
+           HttpServletResponse response) {
+    if (username == null)
+    {
+      response.setHeader("Error","ForgotPassword Method received null username");
+      response.setStatus(BAD_REQUEST.value());
+      log.info("ForgotPassword Methods Received Null Parameters");
+      return;
+    }
+    else
+    {
 
       // ? Get User By Username
       User user = this.getUserByUserName(username);
-      if (user == null) {
-        throw new IllegalArgumentException("Username is Not Found in Database");
+      if (user == null)
+      {
+        response.setHeader("Error","Not Valid Username");
+        response.setStatus(BAD_REQUEST.value());
+        log.info("ForgotPassword Methods Received Null Parameters");
+        return;
       }
       String token = RandomString.make(30);
-      try {
+
+      try
+      {
         this.updateResetPasswordToken(token, user);
         String resetPasswordLink = "http://localhost:3000/" + "password/reset/" + token;
         mainService.sendEmailForgotPasswordServices(user.getUsername(), user.getFirstName(),
             resetPasswordLink);
-      } catch (Exception e) {
+      }
+      catch (Exception e)
+      {
         throw new RuntimeException(e.getMessage());
       }
 
@@ -209,7 +223,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
    * }
    */
 
-  public User getByResetPasswordToken(String token) {
+  public User getByResetPasswordToken(String token)
+  {
     return userRepository.findByResetPasswordToken(token);
   }
 
@@ -232,20 +247,40 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
-  public void RegisterUser(String firstName, String lastName, String username, String university,
-      String password) {
-    if (firstName == null || lastName == null || username == null || university == null
-        || password == null) {
-      throw new IllegalArgumentException("User can't be null!!");
-    } else if (this.getUserByUserName(username) != null) {
-      throw new IllegalArgumentException("User already exist");
-    } else {
+  public void RegisterNormalUser
+          (String firstName,
+           String lastName,
+           String username,
+           String password,
+           String blockchainAddress,
+           HttpServletResponse response
 
-      University uni = universityService.getByName(university);
+           )
+    {
+    if (firstName == null ||
+        lastName == null ||
+        username == null ||
+        password == null ||
+        blockchainAddress == null)
+    {
+      response.setHeader("Error", "Parameters Value Null");
+      response.setStatus(BAD_REQUEST.value());
+      log.info("RegisterNormalUser Methods Received Null Parameters");
 
+    }
+    else if (this.getUserByUserName(username) != null)
+    {
+      response.setHeader("Errpr","Username not valid, please try again");
+      response.setStatus(INTERNAL_SERVER_ERROR.value());
+      log.info("RegisterNormalUser Methods Received Already used Username");
+    }
+    else
+    {
+
+      //University uni = universityService.getByName(university);
       String encodedPassword = passwordEncoder.encode(password);
       String token = RandomString.make(30);
-      User user = new User(username, firstName, lastName, encodedPassword, uni, token);
+      User user = new User(username, firstName, lastName, encodedPassword,blockchainAddress,token);
       userRepository.save(user);
       this.addRoleToUser(username, "ROLE_USER");
 
@@ -259,21 +294,78 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
-  public User updateUser(String firstName, String lastName, String username, String university) {
-    if (firstName == null || lastName == null || username == null || university == null) {
+  public void RegisterAppraiserUser
+          (String firstName,
+           String lastName,
+           String username,
+           String password,
+           String appraiserExperiences,
+           String nswDriverLicence,
+           String blockchainAddress,
+           HttpServletResponse response)
+    {
+      if
+      (firstName == null ||
+        lastName == null ||
+        username == null ||
+        password == null ||
+        appraiserExperiences == null ||
+        nswDriverLicence == null ||
+        blockchainAddress == null
+      )
+        {
+          response.setHeader("Error","Parameters can't be null");
+          response.setStatus(INTERNAL_SERVER_ERROR.value());
+          log.info("RegisterAppraiserUser Methods Received Null Parameters");
+
+          return;
+        }
+
+        //? Validate username
+        if(userRepository.findByUsername(username) != null)
+        {
+          response.setHeader("Error", "Username is not valid in the system. Please try another username");
+          response.setStatus(BAD_REQUEST.value());
+          log.info("RegisterAppraiserUser Methods Received Matched Username");
+          return;
+        }
+        String encodedPassword = passwordEncoder.encode(password);
+        String verifiedEmailToken = RandomString.make(30);
+        User newAppraiser = new User
+        (
+                username,firstName,lastName,encodedPassword,
+                appraiserExperiences,nswDriverLicence,
+                blockchainAddress,verifiedEmailToken
+        );
+        userRepository.save(newAppraiser);
+        this.addRoleToUser(username, "ROLE_APPRAISER");
+        try
+        {
+          String url = "http://localhost:3000/" + "verify/" + verifiedEmailToken;
+          mainService.sendEmailVerifyAccountServices(username, firstName, url);
+        }
+        catch (Exception e)
+        {
+          throw new RuntimeException(e.getMessage());
+        }
+    }
+
+  @Override
+  public User updateNormalUser(String firstName, String lastName, String username)
+  {
+    if (firstName == null || lastName == null || username == null )
+    {
       throw new IllegalArgumentException("User can't be null!!");
     }
+
     User user = getUserByUserName(username);
-    if (user == null) {
+    if (user == null)
+    {
       throw new IllegalArgumentException("User does not exist");
     }
 
-    University uni = universityService.getById(Long.parseLong(university));
-
     user.setFirstName(firstName);
     user.setLastName(lastName);
-    user.setUniversity(uni);
-
     return userRepository.save(user);
   }
 
@@ -293,8 +385,93 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
-  public void verifyUser(User user) {
+  public void verifyUser(User user)
+  {
     user.verify();
     userRepository.save(user);
   }
+
+  @Override
+  public void updateAppraiserUser(String firstName, String lastName, String username, HttpServletResponse response)
+
+  {
+    List<String> parameters = new ArrayList<>();
+    parameters.add(firstName);
+    parameters.add(lastName);
+    validateMethodParameter("updateAppraiserUser",username,parameters,response);
+  }
+
+  @Override
+  public ResponseEntity<String> deleteUserByUsername(String username, HttpServletResponse response)
+  {
+    if (username == null || userRepository.findByUsername(username) == null)
+    {
+      return ResponseEntity.badRequest().body("Invalid Username Provided");
+    }
+    userRepository.deleteByUsername(username);
+    return ResponseEntity.ok().body("Success");
+
+  }
+
+  @Override
+  public ResponseEntity<Collection<Role>> getUserRoleByUsername(String username, HttpServletResponse response)
+  {
+    if (username == null || userRepository.findByUsername(username) == null)
+    {
+      response.setHeader("Error", "Invalid Username provided in method getUserRoleByUsername");
+      log.info("getUserRoleByUsername Methods received null Username");
+      return ResponseEntity.badRequest().body(null);
+    }
+
+    User userData = userRepository.findByUsername(username);
+    return ResponseEntity.ok().body(userData.getRoles());
+  }
+
+  @Override
+  public boolean validateUserContainRoleName(String username, String roleName) {
+    if(username ==null || roleName == null)
+      return false;
+    User userData = userRepository.findByUsername(username);
+    if(userData ==null)
+      return false;
+    //? Validate User Role
+    Collection<Role> userRoles = userData.getRoles();
+    for (Role i : userRoles)
+    {
+      if(i.getRoleName().equals(roleName))
+        return true;
+    }
+    return false;
+
+  }
+
+  private void validateMethodParameter(String methodName, String username, List<String> parameters, HttpServletResponse response)
+  {
+    if(username == null)
+    {
+      response.setHeader("Error",methodName + " received null parameter");
+      response.setStatus(BAD_REQUEST.value());
+      log.info( methodName + " Methods Received Null Parameters");
+      return;
+    }
+    for (int i = 0 ; i < parameters.size(); i++ )
+    {
+      if (parameters.get(i) == null)
+      {
+        response.setHeader("Error",methodName + " received null parameter");
+        response.setStatus(BAD_REQUEST.value());
+        log.info( methodName + " Methods Received Null Parameters");
+        return;
+      }
+    }
+    if (userRepository.findByUsername(username) ==null)
+    {
+      response.setHeader("Bad username",methodName + " received Not Valid UserName");
+      response.setStatus(BAD_REQUEST.value());
+      log.info( methodName + " Methods Received Not Valid Username");
+      return;
+    }
+    return;
+  }
+
 }

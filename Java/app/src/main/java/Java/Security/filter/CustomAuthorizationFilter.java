@@ -1,7 +1,7 @@
 package Java.Security.filter;
 
+import Java.Security.Token.TokenHandler;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.coursemania.api.Token.TokenHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,23 +39,42 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 request.getServletPath().equals("/login") ||
                 request.getServletPath().equals("/user/forgot-password") ||
                 request.getServletPath().equals("/user/reset-password") ||
-                request.getServletPath().equals("/user/sign-up") ||
+                request.getServletPath().equals("/user/token/refresh-token") ||
+                request.getServletPath().equals("/user/normal-user/sign-up") ||
+                request.getServletPath().equals("/user/appraiser-user/sign-up") ||
                 request.getServletPath().equals("/user/verify") ||
+                request.getServletPath().equals("/user/get-user-by-username") ||
                 request.getServletPath().equals("/user/verified-email") ||
                 request.getServletPath().equals("/user/token/refresh-token") ||
-                request.getServletPath().equals("/university/all") ||
-                request.getServletPath().equals("/university/all") ||
-                request.getServletPath().equals("resource-rating/save-resource-rating") ||
-                request.getServletPath().equals("/resource-rating/get-resource-rating") ||
-                request.getServletPath().equals("/resource-rating/all-resource-rating") ||
-                request.getServletPath().equals("/comment/save-comment") ||
-                request.getServletPath().equals("/comment/get-comment") ||
-                request.getServletPath().equals("/comment/all-comments") ||
-                request.getServletPath().equals("/resources/user/**") ||
-                request.getServletPath().equals("/user-profile/**") ||
-                request.getServletPath().equals("uos/rate/save-rating") ||
-                request.getServletPath().equals("uos/rate/get-ratings") ||
-                request.getServletPath().equals("/study-resource/get-study-resource")
+                request.getServletPath().equals("/user/get-user-role-by-username") ||
+                request.getServletPath().equals("/user/all") ||
+                request.getServletPath().equals("/user/logged-in-user") ||
+
+
+
+                request.getServletPath().equals("/appointment/appraiser-user-cancel-appointment") ||
+                request.getServletPath().equals("/appointment/get-appointment-by-id") ||
+
+                request.getServletPath().equals("/appointment/add-appointment") ||
+                request.getServletPath().equals("/appointment/update-appointment-all") ||
+                request.getServletPath().equals("/appointment/appraiser-choose-appointment") ||
+                request.getServletPath().equals("/appointment/normal-user-delete-appointment") ||
+                request.getServletPath().equals("/appointment/change-appointment") ||
+                request.getServletPath().equals("/appointment/get-appointment-status-by-id")||
+                request.getServletPath().equals("/appointment/get-all-appointment") ||
+                request.getServletPath().equals("/appointment/normal-user-get-all-appointment") ||
+                request.getServletPath().equals("/appointment/appraiser-get-all-appointment") ||
+                request.getServletPath().equals("/appointment/get-all-appointment-by-date") ||
+                request.getServletPath().equals("/appointment/validate-appointment-time") ||
+
+                request.getServletPath().equals("/all-appointment-view/all") ||
+                request.getServletPath().equals("/all-appointment-view/get-by-id") ||
+
+                request.getServletPath().equals("/normal-user-appointment-view/find-all-by-username") ||
+                request.getServletPath().equals("/appraiser-user-appointment-view/find-all-by-username") ||
+                request.getServletPath().equals("/appraiser-user-appointment-view/get-by-appointment-id")
+
+
         ) {
             filterChain.doFilter(request, response);
         } else {

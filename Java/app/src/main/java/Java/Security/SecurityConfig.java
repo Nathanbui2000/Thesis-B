@@ -1,9 +1,8 @@
-package com.coursemania.api.security;
+package Java.Security;
 
-import com.coursemania.api.filter.CustomAuthenticationFilter;
-import com.coursemania.api.filter.CustomAuthorizationFilter;
-import java.util.ArrayList;
-import java.util.List;
+
+import Java.Security.filter.CustomAuthenticationFilter;
+import Java.Security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -50,21 +52,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
            /* http.csrf().disable();
             http.sessionManagement().sessionCreationPolicy(STATELESS);*/
     // ? Production
-    http.authorizeRequests().antMatchers("/user/sign-up").permitAll();
+    http.authorizeRequests().antMatchers("/user/normal-user/sign-up").permitAll();
+    http.authorizeRequests().antMatchers("/user/appraiser-user/sign-up").permitAll();
+
     http.authorizeRequests().antMatchers("/user/verify").permitAll();
     http.authorizeRequests().antMatchers("/user/verified-email").permitAll();
     http.authorizeRequests().antMatchers("/user/user-profile/**").permitAll();
     http.authorizeRequests().antMatchers("/user/logged-in-user").permitAll();
-    http.authorizeRequests().antMatchers("/uos/resources/**").permitAll();
-    http.authorizeRequests().antMatchers("/uos/resource/**").permitAll();
-    http.authorizeRequests().antMatchers("/uos").permitAll();
-    http.authorizeRequests().antMatchers("/uos/all").permitAll();
-    http.authorizeRequests().antMatchers("/uos/**").permitAll();
+    http.authorizeRequests().antMatchers("/user/get-user-by-username").permitAll();
+    http.authorizeRequests().antMatchers("/user/delete-user-by-username").hasAnyAuthority("ROLE_ADMIN");
+    http.authorizeRequests().antMatchers("/user/get-user-role-by-username").permitAll();
+    http.authorizeRequests().antMatchers("/user/all").permitAll();
+
 
     http.authorizeRequests().antMatchers("/user/reset-password").permitAll();
-    http.authorizeRequests().antMatchers("/university/all").permitAll();
     http.authorizeRequests().antMatchers("/user/token/refresh-token").permitAll();
-    http.authorizeRequests().antMatchers("/uos/get-by-unitcode").permitAll();
+
     http.authorizeRequests().antMatchers("/user/forgot-password").permitAll().and().csrf().disable()
         .cors();
     http.authorizeRequests().antMatchers("/api/v1/login").permitAll().and().csrf().disable().cors()
@@ -74,22 +77,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http.authorizeRequests().antMatchers("/user/save-tokens").hasAnyAuthority("ROLE_USER");
 */
     http.authorizeRequests().antMatchers("/api/v1/user/**").hasAnyAuthority("ROLE_USER");
+    http.authorizeRequests().antMatchers("/appointment/add-appointment").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/update-appointment-all").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/appraiser-choose-appointment").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/change-appointment").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/normal-user-delete-appointment").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/change-appointment").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/get-appointment-status-by-id").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/get-all-appointment").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/normal-user-get-all-appointment").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/appraiser-get-all-appointment").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/get-all-appointment-by-date").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/validate-appointment-time").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/appraiser-user-cancel-appointment").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appointment/get-appointment-by-id").permitAll().and().csrf().disable().cors();
 
-    http.authorizeRequests().antMatchers("/uos/resource/save-document")
-        .hasAnyAuthority("ROLE_USER");
-    http.authorizeRequests().antMatchers("/study-resource/delete/**").hasAnyAuthority("ROLE_USER");
-    http.authorizeRequests().antMatchers("/study-resource/user-upload-document-check").hasAnyAuthority("ROLE_USER");
-    http.authorizeRequests().antMatchers("/user/update-user").hasAnyAuthority("ROLE_USER");
-    http.authorizeRequests().antMatchers("/resource-rating/save-resource-rating").permitAll();
-    http.authorizeRequests().antMatchers("/resource-rating/get-resource-rating").permitAll();
-    http.authorizeRequests().antMatchers("/resource-rating/all-resource-rating").permitAll();
-    http.authorizeRequests().antMatchers("/comment/save-comment").permitAll();
-    http.authorizeRequests().antMatchers("/comment/get-comment").permitAll();
-    http.authorizeRequests().antMatchers("/comment/all-comments").permitAll();
-    http.authorizeRequests().antMatchers("/uos/rate/save-rating").permitAll();
-    http.authorizeRequests().antMatchers("/uos/rate/get-ratings").permitAll();
-    http.authorizeRequests().antMatchers("/study-resource/get-study-resource").permitAll();
-    http.authorizeRequests().anyRequest().authenticated();
+    http.authorizeRequests().antMatchers("/all-appointment-view/all").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/all-appointment-view/get-by-id").permitAll().and().csrf().disable().cors();
+
+    http.authorizeRequests().antMatchers("/normal-user-appointment-view/find-all-by-username").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appraiser-user-appointment-view/find-all-by-username").permitAll().and().csrf().disable().cors();
+    http.authorizeRequests().antMatchers("/appraiser-user-appointment-view/get-by-appointment-id").permitAll().and().csrf().disable().cors();
+
+            http.authorizeRequests().anyRequest().authenticated();
     http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
     http.addFilterBefore(new CustomAuthorizationFilter(),
         UsernamePasswordAuthenticationFilter.class);

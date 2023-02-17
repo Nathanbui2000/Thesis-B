@@ -1,4 +1,4 @@
-package Services;
+package Java.Services;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;

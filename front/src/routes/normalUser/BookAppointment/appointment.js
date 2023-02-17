@@ -23,6 +23,7 @@ import moment from 'moment';
 import { render } from "@testing-library/react";
 import { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import cookie from "js-cookie";
 
 import "react-datepicker/dist/react-datepicker.css";
 function  Appointment() 
@@ -57,8 +58,33 @@ function  Appointment()
         else if (dateTimeObj.isAfter())
         {
             //Todo: Process Request
+            //Todo: Send Backend Request To Make Appointment  
+            const params = new URLSearchParams();
+            const username= cookie.get("userName") || "" ;
+            params.append('antiqueOwnerUsername',username);
+            params.append('appointmentDate',date);
+            params.append('appointmentTime',time);
+            params.append('appointmentConfirmed',false);
+            params.append('appointmentDescription',appointmentDescription.appointmentDescription);
+            params.append('appointmentStatus',"Awaiting Confirmation");
+
+            const getAppointmentsOption =
+            {
+            method: "POST",
+            params,
+            url: "http://localhost:8080/api/v1/appointment/add-appointment",
+            };
+            axios(getAppointmentsOption)
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log(response);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
             
-            //Todo: Send Backend Request To Make Appointment 
+           
         }
         else 
         {
@@ -146,7 +172,7 @@ function  Appointment()
                             name="AppointmentDescription"
                             onChange={(e) => {
                             setAppointmentDescription(prevState => ({...prevState, appointmentDescription: e.target.value}));
-                            console.log(appointmentDescription);
+                            console.log(appointmentDescription.appointmentDescription);
                             }}
                             label="Appointment Description"
                         />

@@ -2,11 +2,11 @@ version: '3.3'
 
 services:
   database:
-    container_name: coursemania_db
+    container_name: AntiquIoTChain
     image: mysql:8.0.30
     restart: always
     environment:
-      MYSQL_DATABASE: 'coursemania'
+      MYSQL_DATABASE: 'AntiqueIoTChain'
       MYSQL_USER: 'user' # So you don't have to use root, but you can if you like
       MYSQL_PASSWORD: 'password' # You can use whatever password you like
       MYSQL_ROOT_PASSWORD: 'password' # Password for root access

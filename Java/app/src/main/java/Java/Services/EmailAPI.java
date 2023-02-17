@@ -1,4 +1,4 @@
-package Services;
+package Java.Services;
 
 public interface EmailAPI {
     String sendEmailForgotPasswordServices(String username, String firstName, String token);

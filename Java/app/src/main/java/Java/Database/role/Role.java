@@ -1,4 +1,4 @@
-package com.coursemania.api.role;
+package Java.Database.role;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
