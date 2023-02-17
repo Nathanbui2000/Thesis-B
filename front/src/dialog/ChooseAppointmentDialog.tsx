@@ -35,6 +35,24 @@ export const ChooseAppointmentDialog = (props:ChooseAppointmentDialog) => {
     const userCtx = useUserContext();
     const [UpLoadingDialog, setUpLoadingDialog] = useState(false);
 
+    //Information Dialog
+    const [isConfirmedAppointmentDialogOpen, setIsConfirmedAppointmentDialogOpen] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState("");
+    const [dialogContent, setDialogContent] = useState("");
+
+    const handleChooseAppointmentConfirmed = () => {
+        setIsConfirmedAppointmentDialogOpen(true);
+    };
+    const handleCloseDialog =() => 
+    {
+        setIsConfirmedAppointmentDialogOpen(false);
+        setUpLoadingDialog(false);
+        setTimeout(() => {
+        // code to execute after 3 seconds
+            window.location.reload(); 
+        }, 500); 
+    }
+
     const retrieveAppointmentById = () => {
         const params = new URLSearchParams();
         params.append('appointmentID',props.appointmentID.toString());
@@ -72,12 +90,20 @@ export const ChooseAppointmentDialog = (props:ChooseAppointmentDialog) => {
             if (response.status === 200) {
                 console.log("Successfully Choose Appointment");
                 //Todo: Open Successfully Choose Appointment dialog
-                <ChooseAppointmentSuccessfulDialog></ChooseAppointmentSuccessfulDialog>
+                        //? Open Successfully Choose Appointment Dialog
+                setDialogTitle("Appointment Booked Successfully !");
+                setDialogContent
+                (
+                    "Thank you for choosing your appointment. An Email will be sent as a confirmation"
+                );
+                handleChooseAppointmentConfirmed();
+                
             }
         })
         .catch((error) => {
         console.log(error);
         });
+
     }
 
     useEffect(() => {
@@ -123,6 +149,16 @@ export const ChooseAppointmentDialog = (props:ChooseAppointmentDialog) => {
                     <Button onClick={() => setUpLoadingDialog(false)}>Cancel</Button>
                     <Button onClick={() => chooseAppointment()}
                             autoFocus>Confirm</Button>
+            </DialogActions>
+        </Dialog>
+
+        <Dialog open={isConfirmedAppointmentDialogOpen} onClose={() => setIsConfirmedAppointmentDialogOpen(false)}>
+            <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogContent>{dialogContent}</DialogContent>
+            <DialogActions>
+                <Button onClick={() => handleCloseDialog()
+                
+                }>OK</Button>
             </DialogActions>
         </Dialog>
         </>

@@ -265,8 +265,8 @@ function MainDashboardAppraiser(props: MainDashboardAppraiserProps) {
             }}
             rows={dataRows}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
+            pageSize={7}
+            rowsPerPageOptions={[9]}
             disableSelectionOnClick={true}
             getRowId={(row) => {
               return row.appointmentID;

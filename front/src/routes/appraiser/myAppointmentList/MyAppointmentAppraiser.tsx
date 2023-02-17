@@ -250,7 +250,7 @@ function MainDashboardAppraiser(props: MyAppointmentAppraiserProps) {
                 }}
                 rows={dataRows}
                 columns={columns}
-                pageSize={5}
+                pageSize={7}
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick={true}
                 getRowId={(row) => {

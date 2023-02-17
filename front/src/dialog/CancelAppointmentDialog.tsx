@@ -35,6 +35,11 @@ export const CancelAppointmentDialog = (props:CancelAppointmentDialog) => {
     const userCtx = useUserContext();
     const [UpLoadingDialog, setUpLoadingDialog] = useState(false);
 
+    //Information Dialog
+    const [isCancelAppointmentDialogOpen, setIsCancelAppointmentDialogOpen] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState("");
+    const [dialogContent, setDialogContent] = useState("");
+
     const retrieveAppointmentById = () => {
         const params = new URLSearchParams();
         params.append('appointmentID',props.appointmentID.toString());
@@ -54,6 +59,19 @@ export const CancelAppointmentDialog = (props:CancelAppointmentDialog) => {
         console.log(error);
         });
     }
+     const handleCancelAppointmentConfirmed = () => {
+        setIsCancelAppointmentDialogOpen(true);
+    };
+
+    const handleCloseDialog =() => 
+    {
+        setIsCancelAppointmentDialogOpen(false);
+        setUpLoadingDialog(false);
+        setTimeout(() => {
+        // code to execute after 3 seconds
+            window.location.reload(); 
+        }, 500); 
+    }
 
     const removeAppointment = () =>
     {
@@ -71,7 +89,12 @@ export const CancelAppointmentDialog = (props:CancelAppointmentDialog) => {
             if (response.status === 200) {
                 console.log("Successfully Remove Appointment");
                 //Todo: Open Successfully Remove Appointment dialog
-                
+                setDialogTitle("Cancel Appointment Completed!");
+                setDialogContent
+                (
+                    "Your Appointment has been cancelled. An Email will be sent as a confirmation"
+                );
+                handleCancelAppointmentConfirmed();
             }
         })
         .catch((error) => {
@@ -122,6 +145,16 @@ export const CancelAppointmentDialog = (props:CancelAppointmentDialog) => {
                     <Button onClick={() => setUpLoadingDialog(false)}>Cancel</Button>
                     <Button onClick={() => removeAppointment()}
                             autoFocus>Confirm Remove</Button>
+            </DialogActions>
+        </Dialog>
+
+        <Dialog open={isCancelAppointmentDialogOpen} onClose={() => setIsCancelAppointmentDialogOpen(false)}>
+            <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogContent>{dialogContent}</DialogContent>
+            <DialogActions>
+                <Button onClick={() => handleCloseDialog()
+                
+                }>OK</Button>
             </DialogActions>
         </Dialog>
         </>

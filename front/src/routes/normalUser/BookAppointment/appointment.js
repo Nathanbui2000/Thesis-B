@@ -78,13 +78,35 @@ function  Appointment()
             .then((response) => {
                 if (response.status === 200) {
                     console.log(response);
+                    //Open Successful Dialog
+                    setAppointmentDescription("");
+                    setAppointmentDateTimeValue("");
+
+                    setDialogTitle("Appointment Booked Successfully !");
+                    setDialogContent(
+                        <Typography>
+                        <strong>Your Appointment On: {date}</strong> at <strong>{time}</strong> has been booked Successfully. 
+                        <br></br>
+
+                        An Email Will Be Sent As a Confirmation. Our Staffs will connect with you ASAP
+                        </Typography>
+                    );
+                    handlePastDate();
+                    //Clear Input Data
+
                 }
             })
             .catch((error) => {
-                console.log(error);
+                //? Open Dialog With Something Went Wrong
+                setDialogTitle("Unable To Book Appointment");
+                setDialogContent(
+                    <Typography>
+                    <strong>Book Appointment Failed.</strong> Something Went Wrong. Please Try Again Later.
+                    </Typography>
+                );
+                handlePastDate();
             });
             
-           
         }
         else 
         {
