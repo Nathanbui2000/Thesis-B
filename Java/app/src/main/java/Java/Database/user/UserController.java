@@ -3,22 +3,26 @@ package Java.Database.user;
 
 import Java.Database.role.Role;
 import Java.Security.Token.TokenHandler;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -42,11 +46,26 @@ public class UserController {
     }
 
     @GetMapping("/logged-in-user")
-    public User getUserByAccessToken
-            (@RequestParam("accessToken") String accessToken)
-    {
+    public ResponseEntity getUserByAccessToken
+            (@RequestParam("accessToken") String accessToken,
+             HttpServletResponse response,
+             HttpServletRequest request
+            ) throws IOException {
         TokenHandler tokenHandler = new TokenHandler();
-        return userService.getUserByUserName(tokenHandler.decodeToken(accessToken).getSubject());
+        DecodedJWT decodedJWT = JWT.decode(accessToken);
+        if (decodedJWT.getExpiresAt().before(new Date()))
+            //Todo: Return Token Expired
+        {
+            Map<String, String> errors = new HashMap<>();
+            /**
+            errors.put("error_mesasge", "The Token has expired");
+            response.setHeader("error", "The Token has expired");
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), errors);
+             **/
+            return ResponseEntity.status(FORBIDDEN).body("The Token has expired");
+        }
+        return ResponseEntity.ok().body(userService.getUserByUserName(tokenHandler.decodeToken(accessToken).getSubject()));
     }
 
     @PostMapping("/save-user")

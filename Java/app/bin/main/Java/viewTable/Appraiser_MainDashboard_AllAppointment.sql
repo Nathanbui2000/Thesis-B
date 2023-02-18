@@ -7,7 +7,8 @@ select appointment.appointmentid,
        user.first_name,
        user.last_name,
        user.username,
-       appointment.description
+       appointment.description,
+       appointment.professional_appraiserid
 from appointment
          left join (
     user left join user_roles ur
@@ -15,3 +16,4 @@ from appointment
         left join role r on ur.roles_role_id = r.role_id
 )
                    on appointment.antique_ownerid=user.user_id
+where appointment.professional_appraiserid is null or appointment.professional_appraiserid=0

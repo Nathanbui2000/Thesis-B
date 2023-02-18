@@ -47,7 +47,8 @@ SELECT
     user.first_name,
     user.last_name,
     appointment.description as appointment_description,
-    appointment.status as appointment_status
+    appointment.status as appointment_status,
+    user.username
 FROM
     appointment
         LEFT JOIN
