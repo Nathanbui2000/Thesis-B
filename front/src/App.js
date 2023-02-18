@@ -14,7 +14,7 @@ import DescriptionJSON from './contracts/Description.json';
 import routes from './routes'
 import { useState } from "react";
 
-// import * as DatabaseTruffle from './truffle/database'
+// import DatabaseTruffle from './truffle/DatabaseTruffle'
 import { useLocation } from 'react-router-dom'
 const lightTheme = createTheme({
   palette: {
@@ -27,146 +27,151 @@ const lightTheme = createTheme({
     },
   },
 });
-function App() {
+function App()  {
   // const location = useLocation()
   const [databaseController, setdatabaseController] = useState(null);
-
+  const [blockchainController, setBlockchainController] = useState(null);  
+  const [mainTruffleUser, setMainTruffleUser] = useState(null);   
+ 
   var databaseControllerContract;
-  const Outlet = () => useRoutes(routes(databaseController));
+  const Outlet = () => useRoutes(routes(databaseController,blockchainController,mainTruffleUser));
   
-  // const loadBlockchainData = async () =>
-  // {
-  //     // var antiqueContract;
-  //     var antiqueContractAddress;
-  //     // var descriptionContract;
-  //     var descriptionContractAddress;
-  //     // var verificationContract;
-  //     var verificationContractAddress;
-  //     var documentationContractAddress;
-  //     // var documentationContract;
-  //     // var databaseControllerContract;
-  //     var databasecontrollerContractAddress;
+  const loadBlockchainData = async () =>
+  {
+      // var antiqueContract;
+      var antiqueContractAddress;
+      // var descriptionContract;
+      var descriptionContractAddress;
+      // var verificationContract;
+      var verificationContractAddress;
+      var documentationContractAddress;
+      // var documentationContract;
+      // var databaseControllerContract;
+      var databasecontrollerContractAddress;
 
 
-  //     const blockchain = new Web3(new Web3.providers.HttpProvider('HTTP://127.0.0.1:7545'));
-  //     const networkID = await blockchain.eth.net.getId();
+      const blockchain = new Web3(new Web3.providers.HttpProvider('HTTP://127.0.0.1:7545'));
+      setBlockchainController(blockchain);
+      const networkID = await blockchain.eth.net.getId();
 
-  //     //SET: Antique Contract Address and Contract Information
-  //     // const antiqueContractAbi = AntiqueJSON.abi;
-  //     const antiqueContractNetworkData = AntiqueJSON.networks[networkID];
-  //     if (antiqueContractNetworkData) 
-  //     {
-  //       antiqueContractAddress = AntiqueJSON.networks[networkID].address;
-  //       // antiqueContract = new blockchain.eth.Contract(antiqueContractAbi,antiqueContractAddress);
-  //     }
+      //SET: Antique Contract Address and Contract Information
+      // const antiqueContractAbi = AntiqueJSON.abi;
+      const antiqueContractNetworkData = AntiqueJSON.networks[networkID];
+      if (antiqueContractNetworkData) 
+      {
+        antiqueContractAddress = AntiqueJSON.networks[networkID].address;
+        // antiqueContract = new blockchain.eth.Contract(antiqueContractAbi,antiqueContractAddress);
+      }
 
-  //     //SET: Description Contract Address and Contract Information
-  //     // const descriptionContractAbi = DescriptionJSON.abi;
-  //     const descriptionContracNetworkData = DescriptionJSON.networks[networkID];
-  //     if(descriptionContracNetworkData)
-  //     {
-  //       descriptionContractAddress = DescriptionJSON.networks[networkID].address;
-  //       // descriptionContract = new blockchain.eth.Contract(descriptionContractAbi,descriptionContractAddress);
+      //SET: Description Contract Address and Contract Information
+      // const descriptionContractAbi = DescriptionJSON.abi;
+      const descriptionContracNetworkData = DescriptionJSON.networks[networkID];
+      if(descriptionContracNetworkData)
+      {
+        descriptionContractAddress = DescriptionJSON.networks[networkID].address;
+        // descriptionContract = new blockchain.eth.Contract(descriptionContractAbi,descriptionContractAddress);
 
-  //     }
+      }
       
-  //     //SET: Verification Contract Address and Contract Information
-  //     // const verificationContractAbi = VerificationJSON.abi;
-  //     const verificationContractNetworkData = VerificationJSON.networks[networkID];
-  //     if (verificationContractNetworkData)
-  //     {
-  //       verificationContractAddress = VerificationJSON.networks[networkID].address;
-  //       // verificationContract = new blockchain.eth.Contract(verificationContractAbi, verificationContractAddress);
-  //     }
+      //SET: Verification Contract Address and Contract Information
+      // const verificationContractAbi = VerificationJSON.abi;
+      const verificationContractNetworkData = VerificationJSON.networks[networkID];
+      if (verificationContractNetworkData)
+      {
+        verificationContractAddress = VerificationJSON.networks[networkID].address;
+        // verificationContract = new blockchain.eth.Contract(verificationContractAbi, verificationContractAddress);
+      }
 
-  //     //SET: Documentation Contract Address and Contract Information 
-  //     // const documentationContractAbi = DocumentationJSON.abi;
-  //     const documentationContractNetworkData = DocumentationJSON.networks[networkID];
-  //     if(documentationContractNetworkData)
-  //     {
-  //       documentationContractAddress = DocumentationJSON.networks[networkID].address;
-  //       // documentationContract = new blockchain.eth.Contract(documentationContractAbi,documentationContractAddress);
-  //     }
+      //SET: Documentation Contract Address and Contract Information 
+      // const documentationContractAbi = DocumentationJSON.abi;
+      const documentationContractNetworkData = DocumentationJSON.networks[networkID];
+      if(documentationContractNetworkData)
+      {
+        documentationContractAddress = DocumentationJSON.networks[networkID].address;
+        // documentationContract = new blockchain.eth.Contract(documentationContractAbi,documentationContractAddress);
+      }
 
-  //     //SET: DatabaseController Contract
-  //     const databaseControllerContractAbi = DatabaseControllerJSON.abi;;
-  //     const databaseControllerContractNetworkData = DatabaseControllerJSON.networks[networkID];
-  //     if(databaseControllerContractNetworkData) 
-  //     {
-  //       console.log("Setting Database Contract Varaible Below");
-  //       databasecontrollerContractAddress = DatabaseControllerJSON.networks[networkID].address;
-  //       databaseControllerContract = new blockchain.eth.Contract(databaseControllerContractAbi,databasecontrollerContractAddress);
-  //       console.log("Data Base Controoler Contract = ");
-  //       console.log(databaseControllerContract);
-  //       setdatabaseController(databaseControllerContract);  
-  //     }
+      //SET: DatabaseController Contract
+      const databaseControllerContractAbi = DatabaseControllerJSON.abi;;
+      const databaseControllerContractNetworkData = DatabaseControllerJSON.networks[networkID];
+      if(databaseControllerContractNetworkData) 
+      {
+        console.log("Setting Database Contract Varaible Below");
+        databasecontrollerContractAddress = DatabaseControllerJSON.networks[networkID].address;
+        databaseControllerContract = new blockchain.eth.Contract(databaseControllerContractAbi,databasecontrollerContractAddress);
+        console.log("Data Base Controoler Contract = ");
+        console.log(databaseControllerContract);
+        setdatabaseController(databaseControllerContract);  
+      }
       
-  //     // const testAddress = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
-  //     const newAccount = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
+      const testAddress = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
+      setMainTruffleUser(testAddress);
+      // const newAccount = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
 
-  //     //Set Address For DatabaseControoler Contract
-  //     await databaseControllerContract.methods.setAntiqueContractAddress(antiqueContractAddress).send({from: newAccount, gas:672197 });
-  //     await databaseControllerContract.methods.setDocumentationContractAddress(documentationContractAddress).send({from: newAccount, gas:672197 });
-  //     await databaseControllerContract.methods.setVerificationContractAddress(verificationContractAddress).send({from: newAccount, gas:672197 });
-  //     await databaseControllerContract.methods.setDescriptionContractAddress(descriptionContractAddress).send({from: newAccount, gas:672197 });
+      //Set Address For DatabaseControoler Contract
+      await databaseControllerContract.methods.setAntiqueContractAddress(antiqueContractAddress).send({from: testAddress, gas:672197 });
+      await databaseControllerContract.methods.setDocumentationContractAddress(documentationContractAddress).send({from: testAddress, gas:672197 });
+      await databaseControllerContract.methods.setVerificationContractAddress(verificationContractAddress).send({from: testAddress, gas:672197 });
+      await databaseControllerContract.methods.setDescriptionContractAddress(descriptionContractAddress).send({from: testAddress, gas:672197 });
 
-  //     //!Create New Account 
+      //!Create New Account 
 
-  //     // let newAccount = await blockchain.eth.personal.newAccount("Password");
-  //     // blockchain.eth.personal.unlockAccount(newAccount,"Password",20000);
-  //     // var sendID = await blockchain.eth.sendTransaction({
-  //     //   from: testAddress,
-  //     //   to: newAccount , 
-  //     //   value : blockchain.utils.toWei('3','Ether')});
+      // let newAccount = await blockchain.eth.personal.newAccount("Password");
+      // blockchain.eth.personal.unlockAccount(newAccount,"Password",20000);
+      // var sendID = await blockchain.eth.sendTransaction({
+      //   from: testAddress,
+      //   to: newAccount , 
+      //   value : blockchain.utils.toWei('3','Ether')});
       
-  //     // console.log("Account After Send: "+ await blockchain.eth.getBalance(newAccount) )
+      // console.log("Account After Send: "+ await blockchain.eth.getBalance(newAccount) )
 
-  //     const descriptionID1 = await databaseControllerContract.methods.AddDescription(0,"Materials Test",newAccount).call();
-  //     console.log( "Description ID After 1st Call Before Send = " + descriptionID1);
+      // const descriptionID1 = await databaseControllerContract.methods.AddDescription(0,"Materials Test",1.0,1.0,1.0,newAccount).call();
+      // console.log( "Description ID After 1st Call Before Send = " + descriptionID1);
 
-  //     const descriptionID = await databaseControllerContract.methods.AddDescription(0,"Materials Test",newAccount)
-  //     .send
-  //     (
-  //       {
-  //         from: newAccount,
-  //         gas:672197
-  //       }
-  //     );
+      // const descriptionID = await databaseControllerContract.methods.AddDescription(0,"Materials Test",1.0,1.0,1.0,newAccount)
+      // .send
+      // (
+      //   {
+      //     from: newAccount,
+      //     gas:672197
+      //   }
+      // );
       
-  //     const descriptionID2 = await databaseControllerContract.methods.AddDescription(100000,"HAHAH",newAccount).call();
-  //     console.log( "Description ID After 2nd Call After 1st Send =  " + descriptionID2);
-  //     const descriptionID3 = await databaseControllerContract.methods.AddDescription(1,"Test 2",newAccount).call();
-  //     console.log( "Description ID After 3rd Call After 1st Send = " + descriptionID3);
+      // const descriptionID2 = await databaseControllerContract.methods.AddDescription(100000,"HAHAH",2.0,2.0,2.0,newAccount).call();
+      // console.log( "Description ID After 2nd Call After 1st Send =  " + descriptionID2);
+      // const descriptionID3 = await databaseControllerContract.methods.AddDescription(1,"Test 2",2.0,2.0,2.0,newAccount).call();
+      // console.log( "Description ID After 3rd Call After 1st Send = " + descriptionID3);
 
-  //     const descriptionID4 = await databaseControllerContract.methods.AddDescription(0,"Materials Test 2",newAccount)
-  //     .send
-  //     (
-  //       {
-  //         from: newAccount,
-  //         gas:672197
-  //       }
-  //     )
+      // const descriptionID4 = await databaseControllerContract.methods.AddDescription(0,"Materials Test 2",2.0,2.0,2.0,newAccount)
+      // .send
+      // (
+      //   {
+      //     from: newAccount,
+      //     gas:672197
+      //   }
+      // );
 
-  //     console.log( "Description ID Before 4rd Call After 2nd Send = " + descriptionID4);
+      // console.log( "Description ID Before 4rd Call After 2nd Send = " + descriptionID4);
 
-  //     const descriptionID5 = await databaseControllerContract.methods.AddDescription(0,"Test",newAccount).call();
-  //     console.log( "Description ID After 4rd Call After 2nd Send = " + descriptionID5);
-  //     console.log( "------------------------Retrieved description----------------------");
-  //     const currentAccount = await blockchain.eth.getAccounts();
+      // const descriptionID5 = await databaseControllerContract.methods.AddDescription(0,"Test",3.0,3.0,3.0,newAccount).call();
+      // console.log( "Description ID After 4rd Call After 2nd Send = " + descriptionID5);
+      // console.log( "------------------------Retrieved description----------------------");
+      // const currentAccount = await blockchain.eth.getAccounts();
 
-  //     console.log( "Current User Account:");
-  //     console.log(currentAccount);
+      // console.log( "Current User Account:");
+      // console.log(currentAccount);
 
-  //     var description = await databaseControllerContract.methods.GetDescriptionByID(descriptionID3).call();
-  //     console.log( "Description Object");
-  //     console.log(description);
+      // var description = await databaseControllerContract.methods.GetDescriptionByID(descriptionID3).call();
+      // console.log( "Description Object");
+      // console.log(description);
 
-  // }
+  }
 
   useEffect(() => {
-    // loadBlockchainData();
-    setdatabaseController(databaseControllerContract);
-    // DatabaseTruffle.loadBlockchainData();
+    loadBlockchainData();
+    // setdatabaseController(databaseControllerContract);
+    // DatabaseTruffle.loadBlockchainDataAffect();
+    
     // console.log(DatabaseTruffle.getDatabaseControllerContract());
   }, []);
 
@@ -180,7 +185,10 @@ function App() {
             <UserContextProvider>
               {/* <NavBar></NavBar> */}
               <Container maxWidth="xl">
-                <Outlet  databaseControllerContract = {databaseController} />
+                <Outlet  databaseControllerContract = {databaseController} 
+                          blockchainController = {blockchainController}
+                          mainTruffleUser = {mainTruffleUser}
+                />
               </Container>
             </UserContextProvider>
           </BrowserRouter>

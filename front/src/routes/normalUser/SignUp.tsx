@@ -18,8 +18,19 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
+interface SignUpNormalUserViewProps {
+  databaseControllerContract: any;
+  blockchainController: any;
+  mainTruffleUser: any;
+}
+function SignUpNormalUserView(props: SignUpNormalUserViewProps) {
+    //! Truffle Database Settings
+    const databaseControllerContract = props.databaseControllerContract;
+    const blockchainController = props.blockchainController;
+    const mainTruffleUser = props.mainTruffleUser;
+    console.log("Normal User Sign Up Truffle Database");
+    console.log(databaseControllerContract);    
 
-function SignUpNormalUserView() {
     const navigate = useNavigate();
     const emailRegex = /\S+@\S+\.\S+/;
     const [isValid, setIsValid] = React.useState(false);
@@ -47,6 +58,7 @@ function SignUpNormalUserView() {
         lastName: "",
         userRole: "",
         password: "",
+        blockchainAddress: "",
     });
 
     const retrieveUniversities = () => {
@@ -74,81 +86,81 @@ function SignUpNormalUserView() {
     //     });
     // };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        if(data.get("university") == ""){
+        if (isValid) {
+            setError("");
+            //Todo: Call Backend Truffle To Create An Account
+            let newAccount = await blockchainController.eth.personal.newAccount(data.get("password"));
+            blockchainController.eth.personal.unlockAccount(newAccount,data.get("password"),20000);
+            var sendID = await blockchainController.eth.sendTransaction({
+                from: mainTruffleUser,
+                to: newAccount , 
+                value : blockchainController.utils.toWei('3','Ether')});
+            //Todo: Call Backend Java 
+            const userDetail = {
+                firstName: data.get("firstName"),
+                lastName: data.get("lastName"),
+                username: data.get("email"),
+                password: data.get("password"),
+                blockchainAddress: newAccount,
+            };
 
-        setError("Can't leave blank box !");
+            const params = new URLSearchParams();
+            if (
+                userDetail.firstName !== null &&
+                userDetail.lastName !== null &&
+                userDetail.username !== null &&
+                userDetail.password !== null &&
+                userDetail.blockchainAddress !== null 
+            ) {
+                params.append("firstName", userDetail.firstName.toString());
+                params.append("lastName", userDetail.lastName.toString());
+                params.append("username", userDetail.username.toString());
+                params.append("password", userDetail.password.toString());
+                params.append("blockchainAddress", userDetail.blockchainAddress.toString());
+            }
+            console.log(userDetail);
+            UserRegister(params);
+            } 
+        else 
+        {
+            setError("Can't leave blank box !");
         }
-        else if (isValid) {
-        setError("");
-        //Call Backend
-        const userDetail = {
-            firstName: data.get("firstName"),
-            lastName: data.get("lastName"),
-            username: data.get("email"),
-            university: data.get("university"),
-            password: data.get("password"),
-        };
 
-        const params = new URLSearchParams();
-        if (
-            userDetail.firstName !== null &&
-            userDetail.lastName !== null &&
-            userDetail.username !== null &&
-            userDetail.university !== null &&
-            userDetail.password !== null
-        ) {
-            params.append("firstName", userDetail.firstName.toString());
-            params.append("lastName", userDetail.lastName.toString());
-            params.append("username", userDetail.username.toString());
-            params.append("university", userDetail.university.toString());
-            params.append("password", userDetail.password.toString());
-        }
-        console.log(userDetail);
-        UserRegister(params);
-        } else {
-        setError("Can't leave blank box !");
-        }
-        // console.log({
-        //   firstName: data.get('firstName'),
-        //   lastName: data.get('lastName'),
-        //   username: data.get('email'),
-        //   university: data.get('university'),
-        //   password: data.get('password'),
-        // });
     };
     const UserRegister = (params: URLSearchParams) => {
         const options = {
         method: "POST",
         headers: { "content-type": "application/x-www-form-urlencoded" },
         params,
-        url: "http://localhost:8080/api/v1/user/sign-up",
+        url: "http://localhost:8080/api/v1/user/normal-user/sign-up",
         };
-    }
 
-    // axios(options)
-    //     .then((response) => {
-    //     console.log(response);
-    //     console.log("signed up");
+    axios(options)
+        .then((response) =>
+        {
+            console.log(response);
+            console.log("signed up");
 
-    //     //? Save Token To User
-    //     //? Navigate To Main Bar
-    //     navigate("/login");
-    //     })
-    //     .catch((err) => {
-    //     console.log(err);
-    //     if (err.response.status === 403) {
-    //         //? User Not Found Or Wrong Password
-    //         setError("Error 403");
-    //     }
-    //     if (err.response.status === 500) {
-    //         setError("User already exists");
-    //     }
-    //     });
-    // };
+            //? Save Token To User
+            //? Navigate To Main Bar
+            navigate("/login");
+        })
+        .catch((err) => 
+        {
+            console.log(err);
+            if (err.response.status === 403) {
+                //? User Not Found Or Wrong Password
+                setError("Error 403");
+            }
+            if (err.response.status === 500) {
+                setError("User already exists");
+            }
+        });
+    };
 
     React.useEffect(() => {
         if (count <= 0) {

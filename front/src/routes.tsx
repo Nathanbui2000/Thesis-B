@@ -15,7 +15,8 @@ import AppraiserProfile from "./routes/appraiser/userProfile/appraiserProfile";
 import SignUpNormalUserView from "./routes/normalUser/SignUp";
 import SignUpAppraiserView from "./routes/appraiser/SignUp"
 import ForgotPassword  from "./routes/ForgotPassword";
-const routes = (databaseController: any ) => [
+import VerifyView from "./routes/VerifyView";
+const routes = (databaseController: any , blockchainController: any, mainTruffleUser: any) => [
     { path: "/normal/dashboard", 
         element: <MainDashboardNormalUser 
         databaseControllerContract = {databaseController}
@@ -63,11 +64,22 @@ const routes = (databaseController: any ) => [
         { path: "/appraiser/user-profile",
         element: <AppraiserProfile 
         /> },
+        {
+            path: "/verify/:token",
+            element: <VerifyView />
+        },
+
         { path: "/normal/sign-up",
-        element: <SignUpNormalUserView 
+        element: <SignUpNormalUserView
+            databaseControllerContract = {databaseController}
+            blockchainController= {blockchainController}
+            mainTruffleUser= {mainTruffleUser} 
         /> },
         { path: "/appraiser/sign-up",
-        element: <SignUpAppraiserView 
+        element: <SignUpAppraiserView
+            databaseControllerContract = {databaseController}
+            blockchainController = {blockchainController}
+            mainTruffleUser ={mainTruffleUser}  
         /> },
         { path: "/forgot-password",
         element: <ForgotPassword 

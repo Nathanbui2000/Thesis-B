@@ -5,10 +5,11 @@ import DocumentationJSON from '../contracts/Documentation.json';
 import VerificationJSON from '../contracts/Verification.json';
 import DescriptionJSON from '../contracts/Description.json';
 import React from 'react';
-function databaseTruffle ()
+const  DatabaseTruffle = function ()
 {
-    var databaseControllerContract;
-    const loadBlockchainData = async () =>
+    // var databaseControllerContract;
+    const [databaseControllerContract, setDatabaseControllerContract] = useState(null);
+    const loadBlockchainDataAffect = async () =>
     {
       // var antiqueContract;
         var antiqueContractAddress;
@@ -69,6 +70,7 @@ function databaseTruffle ()
         {
         databasecontrollerContractAddress = DatabaseControllerJSON.networks[networkID].address;
         databaseControllerContract = new blockchain.eth.Contract(databaseControllerContractAbi,databasecontrollerContractAddress);
+        setDatabaseControllerContract(databaseControllerContract);
         }
         // const testAddress = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
         const newAccount = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
@@ -135,4 +137,4 @@ function databaseTruffle ()
         return this.databaseControllerContract;
     }
 }
-export default databaseTruffle;
+export default DatabaseTruffle;

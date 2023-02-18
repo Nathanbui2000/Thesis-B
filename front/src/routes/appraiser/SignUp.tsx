@@ -18,8 +18,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
+interface SignUpAppraiserViewProps {
+  databaseControllerContract: any;
+  blockchainController: any;
+  mainTruffleUser: any;
+}
+function SignUpAppraiserView(props:SignUpAppraiserViewProps ) {
 
-function SignUpAppraiserView() {
+    //! Truffle Database Settings
+    const databaseControllerContract = props.databaseControllerContract;
+    const blockchainController = props.blockchainController;
+    const mainTruffleUser = props.mainTruffleUser;
+    
     const navigate = useNavigate();
     const emailRegex = /\S+@\S+\.\S+/;
     const [isValid, setIsValid] = React.useState(false);
