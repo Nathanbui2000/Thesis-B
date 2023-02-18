@@ -20,12 +20,44 @@ instance.interceptors.response.use(
     // Do something with response error
     const status = error.response.status;
     const orginialRequest = error.config;
+    const responseData = error.response.data;
+    const responseDataErrorMessage = error.response.data.error_message;
+    if (responseDataErrorMessage != null && status === 403 && responseDataErrorMessage.includes("The Token has expired"))
+    {
+        let auth = cookie.get("refresh_token")
+        ? cookie.get("refresh_token")
+        : null;
+      axios({
+        method: "get",
+        url: "http://localhost:8080/api/v1/user/token/refresh-token",
+        headers: {
+          Authorization: "Bearer " + auth,
+        },
+      })
+        .then((response) => {
+          console.log("Refresh Token Method Called");
+          console.log(response);
+          // Store New Token Into Cookie
+          cookie.set("access_token", response.data.access_Token);
+          cookie.set("refresh_token", response.data.refresh_token);
+          error.config.headers["Authorization"] =
+            "Bearer " + cookie.get("access_token");
+          error.config.params = {"accessToken":response.data.access_Token};
+          console.log("call Request Again, After Refresh Token");
 
-    if (
-      status === 403 &&
-      error.response.data.error_message.includes("The Token has expired")// TODO nathan to double check this
-    ) {
-      console.log("Request Sent --> Recieve Token expired Message ");
+          instance(orginialRequest);
+        })
+        .catch((error) => {
+          //? Refresh_Token Expired
+          alert("Token Expired, PLease Login Again");
+          cookie.set("access_token", "");
+          cookie.set("refresh_token", "");
+          NavigateLogin();
+        });
+    }
+
+    else if (responseData != null && status === 403 && responseData === "The Token has expired")
+    {
       let auth = cookie.get("refresh_token")
         ? cookie.get("refresh_token")
         : null;
@@ -44,6 +76,7 @@ instance.interceptors.response.use(
           cookie.set("refresh_token", response.data.refresh_token);
           error.config.headers["Authorization"] =
             "Bearer " + cookie.get("access_token");
+          error.config.params = {"accessToken":response.data.access_Token};
           console.log("call Request Again, After Refresh Token");
 
           instance(orginialRequest);
@@ -63,4 +96,38 @@ const NavigateLogin = () => {
   const navigate = useNavigate();
   navigate("/login");
 };
+
+// const UpdateAccessToken = (error: any, orginialRequest:any ) => 
+// {
+//   let auth = cookie.get("refresh_token")
+//         ? cookie.get("refresh_token")
+//         : null;
+//       axios({
+//         method: "get",
+//         url: "http://localhost:8080/api/v1/user/token/refresh-token",
+//         headers: {
+//           Authorization: "Bearer " + auth,
+//         },
+//       })
+//         .then((response) => {
+//           console.log("Refresh Token Method Called");
+//           console.log(response);
+//           // Store New Token Into Cookie
+//           cookie.set("access_token", response.data.access_Token);
+//           cookie.set("refresh_token", response.data.refresh_token);
+//           error.config.headers["Authorization"] =
+//             "Bearer " + cookie.get("access_token");
+//           console.log("call Request Again, After Refresh Token");
+
+//           instance(orginialRequest);
+//         })
+//         .catch((error) => {
+//           //? Refresh_Token Expired
+//           alert("Token Expired, PLease Login Again");
+//           cookie.set("access_token", "");
+//           cookie.set("refresh_token", "");
+//           NavigateLogin();
+//         });
+// }
+
 export default instance;
