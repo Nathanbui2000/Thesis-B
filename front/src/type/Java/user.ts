@@ -3,6 +3,8 @@ export interface IUser {
     firstName: string,
     lastName: string,
     blockchainAddress: string,
-    username: string
+    username: string,
+    appraiserExperiencesYear : string,
+    appraiserDriverLicence : string
 
   }

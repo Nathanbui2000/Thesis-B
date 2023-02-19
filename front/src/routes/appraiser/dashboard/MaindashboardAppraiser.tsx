@@ -9,7 +9,7 @@ import cookie from "js-cookie";
 import {AppointmentView} from "../../../dialog/appointmentView";
 import {Appointment} from "../../../type/Java/Appointment";
 import { useUserContext } from "../../../store/user-context";
-import {IUser} from "../../../types/user";
+import {IUser} from "../../../type/Java/user";
 import {ChangeAppointmentTimeDialog} from "../../../dialog/ChangeAppointmentTimeDialog"
 import { ChooseAppointmentDialog } from "../../../dialog/ChooseAppointmentDialog";
 interface MainDashboardAppraiserProps {

@@ -1,4 +1,4 @@
-import { Box,Typography,TextField, Stack, Grow } from "@mui/material";
+import { Box,Typography,TextField, Stack, Grow, DialogTitle, DialogActions,Dialog,DialogContent } from "@mui/material";
 import {GridRenderCellParams } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 
@@ -14,20 +14,109 @@ import {
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { alignProperty } from "@mui/material/styles/cssUtils";
-function OwnerDetail() {
+import axios from "axios";
+import { useUserContext } from "../../../store/user-context";
+import cookie from "js-cookie";
+import {IUser} from "../../../type/Java/user";
+
+interface OwnerDetailProps {
+    completedStep : any
+    setCompletedStep : any
+    activeStep: any
+}
+function OwnerDetail(props: OwnerDetailProps) {
+    const userCtx = useUserContext();
+    const [userData, setUserData] = useState<IUser | null>(null);
+
     const [details, setDetails] = React.useState({
         emailAddress: "",
         firstName: "",
         lastName: "",
     });
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-        email: data.get('email'),
-        password: data.get('password'),
-    });
+
+    //NOTE - Informative Dialog Data
+    const [isInformativeDialogOpen, setIsInformativeDialogOpen] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState("");
+    const [dialogContent, setDialogContent] = useState("");
+    const handleInformativeDialogOpen= () => {
+        setIsInformativeDialogOpen(true);
     };
+    const [userVerified,setUserVerified] = useState(false);
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        //NOTE -  Retrieve Data 
+        const data = new FormData(event.currentTarget);
+        const emailAddress = data.get("email") as string;
+        const firstName = data.get("UserFirstName") as string;
+        const lastName = data.get("UserLastName") as string;
+        setDetails({ emailAddress, firstName, lastName });
+        retrieveUserData(emailAddress, firstName,lastName);
+
+        //Todo: Call Backend Java - Validate Email and Firstname and LastName
+
+    };
+
+    const retrieveUserData = (emailAddress: string,firstName: string, lastName:string ) => 
+    {
+        const authorizationValue = "Bearer " + userCtx.accessToken;
+        const params = new URLSearchParams();
+        params.append("username", emailAddress);
+
+        const options = {
+            method: "GET",
+            headers: {
+            "content-type": "application/x-www-form-urlencoded",
+            Authorization: authorizationValue,
+            },
+            params,
+            url: "http://localhost:8080/api/v1/user/get-user-by-username",
+        };
+
+        axios(options)
+            .then((resp) => {
+                console.log(resp);
+                setUserData(resp.data);
+                //Open Dialog and Disable Textfield
+                setDialogTitle("User Confirmed");
+                setDialogContent
+                (
+                    "Username: "  + emailAddress + "Has been confirmed in our system. Please Process to next step" + "\n"  
+                    + "You will not be able to change the data" 
+
+                );
+                setUserVerified(true);
+                setIsInformativeDialogOpen(true);
+                StepComplete();
+            })
+            .catch((err) => {
+                console.error(err);
+                //Open Errors Dialog
+                setDialogTitle("User Not Found !");
+                setDialogContent
+                (
+                    "Username: "  + emailAddress + " Not Found In Our System, Please Try Again "
+                );
+                setIsInformativeDialogOpen(true);
+                setUserVerified(false);
+
+            });
+    } 
+  
+    function handleCloseDialog(): void {
+        setIsInformativeDialogOpen(false);
+    }
+
+    const StepComplete = () => 
+    {
+        //Update Form
+        const updatedSteps = [...props.completedStep];
+        updatedSteps[props.activeStep] = { completed: true };
+        props.setCompletedStep(updatedSteps);
+        console.log("Props Value After Update");
+        console.log(props.completedStep[props.activeStep].completed);
+    }
+
     return (
         <Stack spacing={3} sx={{ mt: 3 }}>
         <div style={{ display: "center" }}>
@@ -56,45 +145,61 @@ function OwnerDetail() {
             border: '1px solid',
             padding: '10px',
         }}>
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-            />
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="UserFirstName"
-                label="First Name"
-                autoComplete="Owner Name"
-            />  
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="UserLastName"
-                label="Last Name"
-                autoComplete="Owner Name"
-            />  
-            <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2, width: '150px' }}
+            <Box
+            component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}
             >
-                Verify User
-            </Button>
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    autoFocus
+                    disabled={userVerified}
+                />
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="UserFirstName"
+                    label="First Name"
+                    autoComplete="Owner Name"
+                    disabled={userVerified}
+                />  
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="UserLastName"
+                    label="Last Name"
+                    autoComplete="Owner Name"
+                    disabled={userVerified}
+                />  
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2, width: '150px' }}
+                >
+                    Verify User
+                </Button>
+            </Box>
         </div>
         {/* <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
         </Box> */}
-
+        <Dialog open={isInformativeDialogOpen} onClose={() => setIsInformativeDialogOpen(false)}>
+            <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogContent>{dialogContent}</DialogContent>
+            <DialogActions>
+                <Button onClick={() => handleCloseDialog()
+                
+                }>OK</Button>
+            </DialogActions>
+        </Dialog>
         </Stack>
+        
     )
 }
 export default OwnerDetail;

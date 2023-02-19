@@ -1,27 +1,49 @@
 import { Button, Grow, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import axios from "../../../utils/axios-instance";
+import axios from "../../../../utils/axios-instance";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../../../components/navbarAppraiser/NavBarAppraiser"
+import NavBar from "../../../../components/navbarAppraiser/NavBarAppraiser"
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import AntiqueDescription from "./Description"
-import AntiqueDocumentation from "./Documentation"
-import AntiqueVerification from "./AntiqueVerification"
-import AntiqueEmailVerification from "./EmailVerification"
+import AntiqueDescription from "../Description"
+import AntiqueDocumentation from "../Documentation"
+import AntiqueVerification from "../AntiqueVerification"
+import AntiqueEmailVerification from "../EmailVerification"
 import { borders } from '@mui/system';
-import OwnerDetail from "./OwnerDetail"
+import OwnerDetail from "../OwnerDetail"
+import "./AddAntique.css"
 const steps = ["Owner Details",'Antique Description', 'Antique Documentation', 'Anitque Verification','Email Verification',"Submit Data"];
 interface AddAntiqueProps {
     databaseControllerContract: any;
 }
+
+
+
+
+
+
 function AddAntique(props: AddAntiqueProps) {
     const stepComponents = [OwnerDetail, AntiqueDescription, AntiqueDocumentation,AntiqueVerification,AntiqueEmailVerification,AntiqueDescription];
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
+
+    //User StepCompleted
+    const [completedStep, setCompletedStep] = useState([
+        {completed: false}, 
+        {completed: false},
+        {completed: false},
+        {completed: false},
+        {completed: false}
+    ]);
+
+    const checkStepCompleted = (activeStep : any ) => {
+        return completedStep[activeStep].completed;
+    }
+    
+    
     const navigate = useNavigate();
     const databaseControllerContract = props.databaseControllerContract;
     console.log("Main Dashboard Database Contract Information");
@@ -131,7 +153,13 @@ function AddAntique(props: AddAntiqueProps) {
                         <React.Fragment>
                             <Typography sx={{ mt: 2, mb: 1 }}>
                                     <React.Fragment>
-                                            {React.createElement(stepComponents[activeStep])}
+                                            {React.createElement(stepComponents[activeStep],
+                                            {
+                                                completedStep: completedStep,
+                                                setCompletedStep: setCompletedStep,
+                                                activeStep: activeStep
+                                            }
+                                            )}
                                     </React.Fragment>
                             </Typography>
                             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, paddingBottom: "10px", paddingLeft: "50px", paddingRight: "50px" }}>
@@ -151,9 +179,10 @@ function AddAntique(props: AddAntiqueProps) {
                                 </Button>
                                 )}
                                 <Button onClick={handleNext}
-                                        
                                         color="primary"
-                                        style={{backgroundColor: "red", color: "white"}}
+                                        style={{backgroundColor: !checkStepCompleted(activeStep) ? "gray" : "red", color: "white"}}
+                                        disabled={!checkStepCompleted(activeStep)}
+
                                 >
                                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                                 </Button>

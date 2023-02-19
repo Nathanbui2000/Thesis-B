@@ -12,7 +12,7 @@ import {
 } 
 from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { IStudyResource } from "../../../types/study-resource";
+// import { IStudyResource } from "../../../types/study-resource";
 import { useState } from "react";
 import { storage } from "../../../firebase/firebase";
 import { getDownloadURL, ref } from "firebase/storage";
@@ -21,7 +21,7 @@ import { FileUploader } from "react-drag-drop-files";
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
 import UploadIcon from '@mui/icons-material/Upload';
 function AntiqueDocumentation() {
-    const [resource, setResource] = useState<IStudyResource | null>(null);
+    // const [resource, setResource] = useState<IStudyResource | null>(null);
     
     //Download Documentation Template
     const cors = require("cors")({ origin: true });
