@@ -15,15 +15,11 @@ import AntiqueEmailVerification from "../EmailVerification"
 import { borders } from '@mui/system';
 import OwnerDetail from "../OwnerDetail"
 import "./AddAntique.css"
+import { IUser } from "../../../../type/Java/user";
 const steps = ["Owner Details",'Antique Description', 'Antique Documentation', 'Anitque Verification','Email Verification',"Submit Data"];
 interface AddAntiqueProps {
     databaseControllerContract: any;
 }
-
-
-
-
-
 
 function AddAntique(props: AddAntiqueProps) {
     const stepComponents = [OwnerDetail, AntiqueDescription, AntiqueDocumentation,AntiqueVerification,AntiqueEmailVerification,AntiqueDescription];
@@ -31,19 +27,41 @@ function AddAntique(props: AddAntiqueProps) {
     const [skipped, setSkipped] = React.useState(new Set<number>());
 
     //User StepCompleted
-    const [completedStep, setCompletedStep] = useState([
+    const [completedStepList, setCompletedStepList] = useState([
         {completed: false}, 
         {completed: false},
         {completed: false},
         {completed: false},
         {completed: false}
     ]);
-
     const checkStepCompleted = (activeStep : any ) => {
-        return completedStep[activeStep].completed;
+        return completedStepList[activeStep].completed;
     }
+
+    //NOTE - Steps 1: Data Pass To Children Components
+    //OwnerDetail Step Data
+    const [userVerifiedData, setUserVerifiedData] = useState<IUser| null>(null);
+    const handleOwnerDetail = (data: IUser) => {
+        setUserVerifiedData(data);
+    };
+
+    const [step1UserData, setStep1USerData] = React.useState({
+        emailAddress: "",
+        firstName: "",
+        lastName: ""
+    });
+
+    const handleStep1Change = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event && event.target) {
+            setStep1USerData({
+                ...step1UserData,
+                [event.target.name]: event.target.value,
+            });
+        }
+    };
     
     
+
     const navigate = useNavigate();
     const databaseControllerContract = props.databaseControllerContract;
     console.log("Main Dashboard Database Contract Information");
@@ -155,9 +173,12 @@ function AddAntique(props: AddAntiqueProps) {
                                     <React.Fragment>
                                             {React.createElement(stepComponents[activeStep],
                                             {
-                                                completedStep: completedStep,
-                                                setCompletedStep: setCompletedStep,
-                                                activeStep: activeStep
+                                                completedStepList: completedStepList,
+                                                setCompletedStepList: setCompletedStepList,
+                                                activeStep: activeStep,
+                                                handleOwnerDetail : handleOwnerDetail,
+                                                step1UserData: step1UserData,
+                                                handleStep1Change: handleStep1Change
                                             }
                                             )}
                                     </React.Fragment>
@@ -181,7 +202,7 @@ function AddAntique(props: AddAntiqueProps) {
                                 <Button onClick={handleNext}
                                         color="primary"
                                         style={{backgroundColor: !checkStepCompleted(activeStep) ? "gray" : "red", color: "white"}}
-                                        disabled={!checkStepCompleted(activeStep)}
+                                        // disabled={!checkStepCompleted(activeStep)}
 
                                 >
                                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}

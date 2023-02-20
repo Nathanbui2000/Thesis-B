@@ -20,9 +20,13 @@ import cookie from "js-cookie";
 import {IUser} from "../../../type/Java/user";
 
 interface OwnerDetailProps {
-    completedStep : any
-    setCompletedStep : any
+    completedStepList : any
+    setCompletedStepList : any
     activeStep: any
+    handleOwnerDetail: any
+    handleStep1Change: any
+    step1UserData: any
+
 }
 function OwnerDetail(props: OwnerDetailProps) {
     const userCtx = useUserContext();
@@ -43,13 +47,16 @@ function OwnerDetail(props: OwnerDetailProps) {
     };
     const [userVerified,setUserVerified] = useState(false);
 
+    const step1UserData= props.step1UserData;
+    const handleStep1Change = props.handleStep1Change;
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         //NOTE -  Retrieve Data 
         const data = new FormData(event.currentTarget);
-        const emailAddress = data.get("email") as string;
-        const firstName = data.get("UserFirstName") as string;
-        const lastName = data.get("UserLastName") as string;
+        const emailAddress = data.get("emailAddress") as string;
+        const firstName = data.get("firstName") as string;
+        const lastName = data.get("lastName") as string;
         setDetails({ emailAddress, firstName, lastName });
         retrieveUserData(emailAddress, firstName,lastName);
 
@@ -77,6 +84,7 @@ function OwnerDetail(props: OwnerDetailProps) {
             .then((resp) => {
                 console.log(resp);
                 setUserData(resp.data);
+                props.handleOwnerDetail(userData);
                 //Open Dialog and Disable Textfield
                 setDialogTitle("User Confirmed");
                 setDialogContent
@@ -110,11 +118,11 @@ function OwnerDetail(props: OwnerDetailProps) {
     const StepComplete = () => 
     {
         //Update Form
-        const updatedSteps = [...props.completedStep];
+        const updatedSteps = [...props.completedStepList];
         updatedSteps[props.activeStep] = { completed: true };
-        props.setCompletedStep(updatedSteps);
+        props.setCompletedStepList(updatedSteps);
         console.log("Props Value After Update");
-        console.log(props.completedStep[props.activeStep].completed);
+        console.log(props.completedStepList[props.activeStep].completed);
     }
 
     return (
@@ -152,35 +160,44 @@ function OwnerDetail(props: OwnerDetailProps) {
                     margin="normal"
                     required
                     fullWidth
-                    id="email"
+
                     label="Email Address"
-                    name="email"
+                    name="emailAddress"
                     autoComplete="email"
                     autoFocus
-                    disabled={userVerified}
+                    disabled={props.completedStepList[props.activeStep].completed}
+                    value = {step1UserData.emailAddress }
+                    onChange = {props.handleStep1Change}
+                   
                 />
                 <TextField
                     margin="normal"
                     required
                     fullWidth
-                    name="UserFirstName"
+                    name="firstName"
                     label="First Name"
                     autoComplete="Owner Name"
-                    disabled={userVerified}
+                    value = {step1UserData.firstName}
+                    disabled={props.completedStepList[props.activeStep].completed}
+                    onChange = {props.handleStep1Change}
                 />  
                 <TextField
                     margin="normal"
                     required
                     fullWidth
-                    name="UserLastName"
+                    name="lastName"
                     label="Last Name"
                     autoComplete="Owner Name"
-                    disabled={userVerified}
+                    value = {step1UserData.lastName}
+                    disabled={props.completedStepList[props.activeStep].completed}
+                    onChange = {props.handleStep1Change}
+
                 />  
                 <Button
                     type="submit"
                     fullWidth
                     variant="contained"
+                    disabled={props.completedStepList[props.activeStep].completed}
                     sx={{ mt: 3, mb: 2, width: '150px' }}
                 >
                     Verify User
