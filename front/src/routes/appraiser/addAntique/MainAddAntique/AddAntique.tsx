@@ -16,6 +16,7 @@ import { borders } from '@mui/system';
 import OwnerDetail from "../OwnerDetail"
 import "./AddAntique.css"
 import { IUser } from "../../../../type/Java/user";
+import { Description } from "../../../../type/Truffle/Description";
 const steps = ["Owner Details",'Antique Description', 'Antique Documentation', 'Anitque Verification','Email Verification',"Submit Data"];
 interface AddAntiqueProps {
     databaseControllerContract: any;
@@ -26,6 +27,8 @@ function AddAntique(props: AddAntiqueProps) {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
 
+
+    //SECTION -  Steps Data State Store Information
     //User StepCompleted
     const [completedStepList, setCompletedStepList] = useState([
         {completed: false}, 
@@ -38,7 +41,7 @@ function AddAntique(props: AddAntiqueProps) {
         return completedStepList[activeStep].completed;
     }
 
-    //NOTE - Steps 1: Data Pass To Children Components
+        //NOTE - Steps 1: Data Pass To Children Components
     //OwnerDetail Step Data
     const [userVerifiedData, setUserVerifiedData] = useState<IUser| null>(null);
     const handleOwnerDetail = (data: IUser) => {
@@ -59,9 +62,47 @@ function AddAntique(props: AddAntiqueProps) {
             });
         }
     };
-    
+
+        //NOTE - Steps 2: Data Pass To Children Components
+    const [antiqueDescription, setAntiqueDescription] = useState<Description| null>(null);    
+    const [step2DescriptionInputData, setStep2DescriptionInputData] = React.useState({
+        AntiqueMaterialName: "",
+        AntiqueHeight: 0,
+        AntiqueLength: 0,
+        AntiqueWidth: 0,
+        AntiqueDescriptionFile: File,
+    });
+    const [antiqueDescriptionFile, setAntiqueDescriptionFile] = useState<File | null>(null);
+
+    const handleStep2InputDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        // if (event && event.target) {
+        //     setStep2DescriptionInputData({
+        //         ...step2DescriptionInputData,
+        //         [event.target.name]: event.target.value,
+        //     });
+        // }
+        if (event && event.target) {
+            const name = event.target.name;
+            const value = event.target.value;
+            if (name === "AntiqueDescriptionFile") {
+            const file = event.target.files ? event.target.files[0] : null;
+            setAntiqueDescriptionFile(file);
+            } else {
+            setStep2DescriptionInputData({
+                ...step2DescriptionInputData,
+                [name]: value,
+            });
+            }
+        }
+    };
+    const handleStep2UpdateDescription = (data: Description) => {
+        setAntiqueDescription(data);
+    }
+
+
     
 
+    //SECTION - Steps Process Controller Function
     const navigate = useNavigate();
     const databaseControllerContract = props.databaseControllerContract;
     console.log("Main Dashboard Database Contract Information");
@@ -71,6 +112,7 @@ function AddAntique(props: AddAntiqueProps) {
         </div>
     );
     console.log(databaseControllerContract);
+
     const isStepOptional = (step: number) => {
         return step === -1;
     };
@@ -178,7 +220,14 @@ function AddAntique(props: AddAntiqueProps) {
                                                 activeStep: activeStep,
                                                 handleOwnerDetail : handleOwnerDetail,
                                                 step1UserData: step1UserData,
-                                                handleStep1Change: handleStep1Change
+                                                handleStep1Change: handleStep1Change,
+
+                                                step2DescriptionInputData: step2DescriptionInputData,
+                                                handleStep2UpdateDescription: handleStep2UpdateDescription,
+                                                antiqueDescription: antiqueDescription,
+                                                handleStep2InputDataChange:handleStep2InputDataChange,
+                                                antiqueDescriptionFile: antiqueDescriptionFile,
+                                                setAntiqueDescriptionFile:setAntiqueDescriptionFile,
                                             }
                                             )}
                                     </React.Fragment>

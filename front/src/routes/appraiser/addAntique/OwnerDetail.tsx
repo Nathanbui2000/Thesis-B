@@ -18,17 +18,10 @@ import axios from "axios";
 import { useUserContext } from "../../../store/user-context";
 import cookie from "js-cookie";
 import {IUser} from "../../../type/Java/user";
+import StepInterface from "./StepInterface"
 
-interface OwnerDetailProps {
-    completedStepList : any
-    setCompletedStepList : any
-    activeStep: any
-    handleOwnerDetail: any
-    handleStep1Change: any
-    step1UserData: any
 
-}
-function OwnerDetail(props: OwnerDetailProps) {
+function OwnerDetail(props: StepInterface) {
     const userCtx = useUserContext();
     const [userData, setUserData] = useState<IUser | null>(null);
 
@@ -168,7 +161,6 @@ function OwnerDetail(props: OwnerDetailProps) {
                     disabled={props.completedStepList[props.activeStep].completed}
                     value = {step1UserData.emailAddress }
                     onChange = {props.handleStep1Change}
-                   
                 />
                 <TextField
                     margin="normal"

@@ -5,5 +5,6 @@ export interface Description {
     material: string,
     height: number,
     lenght: number,
-    width: number
+    width: number,
+    fileUpload: File
 }

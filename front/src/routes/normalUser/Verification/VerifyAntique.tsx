@@ -85,6 +85,7 @@ function VerifyAntique(props:VerifyAntiqueProps)
                 height: 1,
                 lenght: 1.2,
                 width: 3,
+                fileUpload: emptyFile,
             }
 
         };
