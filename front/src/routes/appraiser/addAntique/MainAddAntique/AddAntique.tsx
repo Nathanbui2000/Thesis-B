@@ -98,6 +98,9 @@ function AddAntique(props: AddAntiqueProps) {
     const handleStep2UpdateDescription = (data: Description) => {
         setAntiqueDescription(data);
     }
+        //NOTE - Step3: Documentation File 
+
+    const [step3AntiqueDocumentationFile, setStep3AntiqueDocumentationFile] = useState<File | null>(null);
 
 
     
@@ -228,6 +231,12 @@ function AddAntique(props: AddAntiqueProps) {
                                                 handleStep2InputDataChange:handleStep2InputDataChange,
                                                 antiqueDescriptionFile: antiqueDescriptionFile,
                                                 setAntiqueDescriptionFile:setAntiqueDescriptionFile,
+
+                                                
+                                                setStep3AntiqueDocumentationFile: setStep3AntiqueDocumentationFile,
+                                                step3AntiqueDocumentationFile: step3AntiqueDocumentationFile,
+
+
                                             }
                                             )}
                                     </React.Fragment>

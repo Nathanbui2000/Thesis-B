@@ -10,6 +10,9 @@ export default interface StepInterface {
     antiqueDescription: any,
     handleStep2UpdateDescription: any,
     antiqueDescriptionFile: any,
-    setAntiqueDescriptionFile: any
+    setAntiqueDescriptionFile: any,
+
+    setStep3AntiqueDocumentationFile: any,
+    step3AntiqueDocumentationFile:any,
 
 }

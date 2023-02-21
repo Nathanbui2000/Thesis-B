@@ -1,4 +1,4 @@
-import { Box,Typography,TextField, Stack, Grow } from "@mui/material";
+import { Box,Typography,TextField, Stack, Grow, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import {GridRenderCellParams } from "@mui/x-data-grid";
 import {
     Alert,
@@ -13,19 +13,33 @@ import {
 from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 // import { IStudyResource } from "../../../types/study-resource";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { storage } from "../../../firebase/firebase";
 import { getDownloadURL, ref } from "firebase/storage";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import { FileUploader } from "react-drag-drop-files";
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
 import UploadIcon from '@mui/icons-material/Upload';
-function AntiqueDocumentation() {
+import StepInterface from "./StepInterface";
+
+function AntiqueDocumentation(props:StepInterface) {
     // const [resource, setResource] = useState<IStudyResource | null>(null);
     
     //Download Documentation Template
     const cors = require("cors")({ origin: true });
     const [fileUrl, setfileUrl] = useState("");
+
+
+    //NOTE - Informative Dialog Data
+    const [isInformativeDialogOpen, setIsInformativeDialogOpen] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState("");
+    const [dialogContent, setDialogContent] = useState("");
+    const handleInformativeDialogOpen= () => {
+        setIsInformativeDialogOpen(true);
+    };
+    function handleCloseDialog(): void {
+        setIsInformativeDialogOpen(false);
+    }
 
     //Documentation Preview
     const fileTypes = ["PDF"];
@@ -37,6 +51,7 @@ function AntiqueDocumentation() {
     const [pageNumber, setPageNumber] = useState<number>(1);
     // Function Set Up Preview PDF File
     const handleChange = (file: Blob | Uint8Array | ArrayBuffer) => {
+        
         setFile(file);
     };
     const goToPrevPage = () =>
@@ -79,8 +94,27 @@ function AntiqueDocumentation() {
     }
     const handleUploadResource = () =>
     {
+        if(file === null)
+        {
+            //Error Dialog Content
+            setDialogTitle("Please Upload File !");
+            setDialogContent ("No Uploaded File Detected. Please upload a file")
+            return setIsInformativeDialogOpen(true);
+        }
 
+        props.setStep3AntiqueDocumentationFile(file);
+        const updatedSteps = [...props.completedStepList];
+        updatedSteps[props.activeStep] = { completed: true };
+        props.setCompletedStepList(updatedSteps);
+        setDialogTitle("Succesfully Uploaded File!"); 
+        setDialogContent ("Thank you for completing the Antique Documentation. Please Process to the next step.")
+        return setIsInformativeDialogOpen(true);
     }
+    useEffect(() => {
+        if (props.step3AntiqueDocumentationFile)
+            setFile(props.step3AntiqueDocumentationFile);
+    }, []);
+
     return (
         <Stack spacing={4} sx={{ mt: 3 }}>
         <div style={{ display: "center" }}>
@@ -151,6 +185,7 @@ function AntiqueDocumentation() {
                     <FileUploader 
                         handleChange={handleChange} 
                         name="file" 
+                        disabled={props.completedStepList[props.activeStep].completed}
                         types={fileTypes} 
                         style=
                         {{
@@ -193,6 +228,7 @@ function AntiqueDocumentation() {
             >
                 <Button
                     variant="contained"
+                    disabled={props.completedStepList[props.activeStep].completed}
                     startIcon={<UploadIcon />}
                     sx={{ mt: 1, mb: 2 }}
                     onClick={handleUploadResource}
@@ -202,6 +238,15 @@ function AntiqueDocumentation() {
                 </Button>
             </div> 
         </div>
+        <Dialog open={isInformativeDialogOpen} onClose={() => setIsInformativeDialogOpen(false)}>
+            <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogContent>{dialogContent}</DialogContent>
+            <DialogActions>
+                <Button onClick={() => handleCloseDialog()
+                
+                }>OK</Button>
+            </DialogActions>
+            </Dialog>
 
     </Stack>
     )
