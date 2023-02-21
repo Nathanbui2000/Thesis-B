@@ -12,6 +12,10 @@ import {
     Grid,
     Link,
     MenuItem,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     Button,  
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -32,7 +36,6 @@ function AntiqueDescription (props:StepInterface) {
 
 
 
-
     //NOTE - Content Page Data
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     // Upload Documentation
@@ -44,7 +47,7 @@ function AntiqueDescription (props:StepInterface) {
     const [pageNumber, setPageNumber] = useState<number>(1);
     // Function Set Up Preview PDF File
     const handleChange = (file: Blob | Uint8Array | ArrayBuffer) => {
-        props.handleStep2InputDataChange()
+        props.handleStep2InputDataChange;
         props.setAntiqueDescriptionFile(file);
         setFile(file);
     };
@@ -66,6 +69,18 @@ function AntiqueDescription (props:StepInterface) {
     const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
         setNumPages(numPages);
     };
+   
+    //NOTE - Informative Dialog Data
+    const [isInformativeDialogOpen, setIsInformativeDialogOpen] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState("");
+    const [dialogContent, setDialogContent] = useState("");
+    const handleInformativeDialogOpen= () => {
+        setIsInformativeDialogOpen(true);
+    };
+    function handleCloseDialog(): void {
+        setIsInformativeDialogOpen(false);
+    }
+
 
     function handleSubmit(event: FormEvent<HTMLFormElement>): void {
         event.preventDefault();
@@ -76,15 +91,51 @@ function AntiqueDescription (props:StepInterface) {
         const antiqueHeight = data.get("AntiqueHeight") as string;
         const antiqueLength = data.get("AntiqueLength") as string;
         const antiqueWidth = data.get("AntiqueWidth") as string;
-        const fileUpdate = data.get("antiqueFile") as string;
+        const fileUpdate = props.antiqueDescriptionFile;
+
+        //Validate Data Input
+        if (antiqueMaterial === null || antiqueMaterial.length <= 0)
+        {
+            setDialogTitle("Required Antiue Material !");
+            setDialogContent ("Please Enter Materials For Antique Object You are trying to add.")
+            return setIsInformativeDialogOpen(true);
+        }
+        else if (parseInt(antiqueHeight) <= 0 || parseInt(antiqueLength) <= 0 || parseInt(antiqueWidth) <= 0) 
+        {
+            setDialogTitle("Invalid Antique Dimensions !");
+            setDialogContent ("Please Enter A Valid Integer For Antique Object You are trying to add.")
+            return setIsInformativeDialogOpen(true);
+        }
+        else if (fileUpdate === null)
+        {
+            setDialogTitle("Provide Antique Description File !");
+            setDialogContent ("Please provide us some description file for Antique Objec. ")
+            return setIsInformativeDialogOpen(true);
+        }
+
 
         //Update Step Completed
         const updatedSteps = [...props.completedStepList];
         updatedSteps[props.activeStep] = { completed: true };
         props.setCompletedStepList(updatedSteps);
+        setDialogTitle("Successfully Completed !");
+        setDialogContent ("Antique description detail has been saved. Please process to the next step")
+        return setIsInformativeDialogOpen(true);
+        
 
         //Todo: Store AntiqueDescription Object into AddAntique File
 
+    }
+
+    function handleInputData (event: React.ChangeEvent<HTMLInputElement>) {
+        props.handleStep2InputDataChange(event);
+        // clearTextError()
+    }
+
+    function handleInputFileData(event: React.ChangeEvent<HTMLInputElement>) 
+    {
+        props.setAntiqueDescriptionFile(event);
+        // clearTextError();
     }
 
     useEffect(() => {
@@ -145,7 +196,7 @@ function AntiqueDescription (props:StepInterface) {
                                 autoComplete="OwnerName"
                                 disabled={props.completedStepList[props.activeStep].completed}
                                 value ={props.step2DescriptionInputData.AntiqueMaterialName}
-                                onChange={props.handleStep2InputDataChange}
+                                onChange={handleInputData}
                             /> 
                             <Typography
                             variant="h4"
@@ -164,7 +215,7 @@ function AntiqueDescription (props:StepInterface) {
                                 onKeyPress={handleKeyPress}
                                 disabled={props.completedStepList[props.activeStep].completed}
                                 value ={props.step2DescriptionInputData.AntiqueHeight}
-                                onChange = {props.handleStep2InputDataChange}
+                                onChange = {handleInputData}
                                 inputProps={{
                                     type: 'number',
                                     step: 1,
@@ -189,7 +240,7 @@ function AntiqueDescription (props:StepInterface) {
                                 disabled={props.completedStepList[props.activeStep].completed}
                                 label="Whole Number Length in cm "
                                 onKeyPress={handleKeyPress}
-                                onChange= {props.handleStep2InputDataChange}
+                                onChange= {handleInputData}
                                 value={props.step2DescriptionInputData.AntiqueLength}
                                 inputProps={{
                                     type: 'number',
@@ -215,7 +266,7 @@ function AntiqueDescription (props:StepInterface) {
                                 disabled={props.completedStepList[props.activeStep].completed}
                                 label="Whole Number Width in cm"
                                 onKeyPress={handleKeyPress}
-                                onChange ={props.handleStep2InputDataChange}
+                                onChange ={handleInputData}
                                 value = {props.step2DescriptionInputData.AntiqueWidth}
                                 inputProps={{
                                     type: 'number',
@@ -245,7 +296,7 @@ function AntiqueDescription (props:StepInterface) {
                                 disabled={props.completedStepList[props.activeStep].completed}
                                 name="AntiqueDescriptionFile" 
                                 types={fileTypes}
-                                value={props.antiqueDescriptionFile}
+                                value={handleInputFileData}
                                 onChange={props.setAntiqueDescriptionFile}
                                 
                                 />
@@ -271,6 +322,12 @@ function AntiqueDescription (props:StepInterface) {
 
                         </div>
                     </div>
+                    <div
+
+                    >
+                    {/* {error && <Alert severity="error">{error}</Alert>} */}
+
+                    </div>
                         <Button
                             type="submit"
                             fullWidth
@@ -282,6 +339,15 @@ function AntiqueDescription (props:StepInterface) {
                         </Button>
                 </div>  
             </Box>
+            <Dialog open={isInformativeDialogOpen} onClose={() => setIsInformativeDialogOpen(false)}>
+            <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogContent>{dialogContent}</DialogContent>
+            <DialogActions>
+                <Button onClick={() => handleCloseDialog()
+                
+                }>OK</Button>
+            </DialogActions>
+            </Dialog>
         </Stack>
     )
 }
