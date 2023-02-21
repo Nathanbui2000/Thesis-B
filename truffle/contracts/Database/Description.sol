@@ -12,29 +12,57 @@ contract Description {
     struct DescriptionObject {
         uint256 descriptionID;
         uint256 antiqueID;
+        //Antique Description Dimension
         string materialCreated;
         uint256 antiqueHeight;
         uint256 antiqueLength;
         uint256 anitqueWidth;
+
+        //Description File Upload
+        string filehash;
+        uint256 fileSize;
+        string fileType;
+        string fileName;
+
         uint256 uploadTime;
         address payable uploader;
     }
     event addAntiqueDescription (
         uint256 descriptionID,
         uint256 antiqueObjectID,
+
+        //Antique Description Dimension
         string materialCreated,
         uint256 antiqueHeight,
         uint256 antiqueLength,
         uint256 anitqueWidth,
+
+        //Antique Description File Upload
+        string filehash,
+        uint256 fileSize,
+        string fileType,
+        string fileName,
+
         uint256 uploadTime,
         address payable uploader
     );
+
     event updateAntiqueDescription (
         uint256 documentationID,
         string newMaterialCreated,
         uint256 antiqueHeight,
         uint256 antiqueLength,
         uint256 anitqueWidth,
+        uint256 uploadTime,
+        address payable uploader
+    );
+
+    event updateAntiqueDescriptionFileUpload (
+        uint256 descriptionID,
+        string filehash,
+        uint256 fileSize,
+        string fileType,
+        string fileName,
         uint256 uploadTime,
         address payable uploader
     );
@@ -55,7 +83,13 @@ contract Description {
         uint256 _antiqueHeight,
         uint256 _antiqueLength,
         uint256 _anitqueWidth,
+
+        string memory _filehash,
+        uint256 _fileSize,
+        string  memory _fileType,
+        string memory _fileName,
         address payable _uploader
+        
     )
     public returns (uint256)
     {
@@ -68,6 +102,11 @@ contract Description {
         require(_antiqueHeight > 0);
         require(_antiqueLength > 0);
         require(_anitqueWidth > 0);
+        require(bytes(_filehash).length > 0);
+        require(bytes(_fileType).length > 0);
+        require(bytes(_fileName).length > 0);
+        require(_fileSize >0);
+
         // require(_antiqueObjectID > 0);
         if (_antiqueObjectID > 0)
         {
@@ -87,6 +126,10 @@ contract Description {
             _antiqueHeight,
             _antiqueLength,
             _anitqueWidth,
+            _filehash,
+            _fileSize,
+            _fileType,
+            _fileName,
             block.timestamp,
             _uploader
         );
@@ -97,6 +140,10 @@ contract Description {
         _antiqueHeight,
         _antiqueLength,
         _anitqueWidth,
+        _filehash,
+        _fileSize,
+        _fileType,
+        _fileName,
         block.timestamp,
         _uploader); 
         return descriptionCount;
@@ -134,6 +181,45 @@ contract Description {
             _anitqueWidth,
             block.timestamp,
             _uploader);
+    }
+
+    //PUT: Description Upload File In Blockchain
+    function UpdateDescriptionUploadFile
+    (
+        uint256 _descriptionID,
+        string memory _filehash,
+        uint256 _fileSize,
+        string memory _fileType,
+        string memory _fileName,
+        uint256 _uploadTime,
+        address payable _uploader
+    )
+    public 
+    {
+        require(_descriptionID > 0 && _descriptionID <= descriptionCount);
+        require( _fileSize> 0);
+        require (bytes(_filehash).length > 0);
+        require (bytes(_fileType).length > 0);
+        require (bytes(_fileName).length > 0);
+        require(_uploader != address(0));
+        DescriptionObject memory _description = descriptionMap[_descriptionID];
+        _description.filehash = _filehash;
+        _description.fileSize = _fileSize;
+        _description.fileName = _fileName;
+        _description.fileType = _fileType;
+        _description.uploader = _uploader;
+        _description.uploadTime = block.timestamp;
+        descriptionMap[_descriptionID] = _description;
+        emit updateAntiqueDescriptionFileUpload
+        (
+            _descriptionID,
+            _filehash,
+            _fileSize,
+            _fileType,
+            _fileName,
+            _uploadTime,
+             _uploader
+        );
     }
 
     //GET Description By ID

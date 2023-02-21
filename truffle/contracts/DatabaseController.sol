@@ -57,55 +57,50 @@ interface IVerification {
         uint256 antiqueID;
         address payable ownerAddress;
         uint256 ownerID;
-        uint256 personVerificationID;
-
+        // uint256 personVerificationID;
+        string appraiserUsername;
         //Antique Object Data
         uint256 ioTDeviceID;
         string estimateManufactureYears;
         string antiqueRareness;
         string antiqueAuthenticity;
         string antiqueRealness;
-
         //Time And Sender Data
         uint256 uploadTime;
         address payable uploader;
     }
 
-    function AddVerification 
-    (
+    function AddVerification(
         //Owner and Appraiser Data
         address payable _ownerAddress,
         uint256 _ownerID,
-        uint256 _personVerificationID,
-        
+        // uint256 _personVerificationID,
+        string memory _appraiserUsername,
         //Antique Object Data
         uint256 _ioTDeviceID,
         string memory _estimateManufactureYears,
         string memory _antiqueRareness,
         string memory _antiqueAuthenticity,
         string memory _antiqueRealness,
-
-        //Time Data    
+        //Time Data
         address payable _uploader
-    )  external returns (uint256);
+    ) external returns (uint256);
 
-     function UpdateVerification 
-    (
+    function UpdateVerification(
         //Owner and Appraiser Data
         uint256 _verificationID,
         address payable _newOwnerAddress,
         uint256 _newOwnerID,
-        uint256 _newPersonVerificationID,
-        
+        // uint256 _newPersonVerificationID,
+        string memory _appraiserUsername,
         //Antique Object Data
         uint256 _newIoTDeviceID,
         string memory _newEstimateManufactureYears,
         string memory _newAntiqueRareness,
         string memory _newAntiqueAuthenticity,
         string memory _newAntiqueRealness,
-
         //Time Data
-        address payable _uploader    
+        address payable _uploader
     ) external;
 
     function ValidateVerificationID(uint256 _verificationID)
@@ -129,31 +124,49 @@ interface IDescription {
     struct DescriptionObject {
         uint256 descriptionID;
         uint256 antiqueID;
+        //Description Dimension
         string materialCreated;
         uint256 antiqueHeight;
         uint256 antiqueLength;
         uint256 anitqueWidth;
+        //Description File Upload
+        string filehash;
+        uint256 fileSize;
+        string fileType;
+        string fileName;
         uint256 uploadTime;
         address payable uploader;
     }
 
-     function  AddDescription
-    (
+    function AddDescription(
         uint256 _antiqueObjectID,
         string memory _materialCreated,
         uint256 _antiqueHeight,
         uint256 _antiqueLength,
         uint256 _anitqueWidth,
+        string memory filehash,
+        uint256 fileSize,
+        string memory fileType,
+        string memory fileName,
         address payable _uploader
     ) external returns (uint256);
 
-    function UpdateDescriptionMaterials 
-    (
+    function UpdateDescriptionMaterials(
         uint256 _descriptionID,
         string memory _newMaterialCreated,
         uint256 _antiqueHeight,
         uint256 _antiqueLength,
         uint256 _anitqueWidth,
+        address payable _uploader
+    ) external;
+
+    function UpdateDescriptionUploadFile(
+        uint256 _descriptionID,
+        string memory filehash,
+        uint256 fileSize,
+        string memory fileType,
+        string memory fileName,
+        uint256 _uploadTime,
         address payable _uploader
     ) external;
 
@@ -224,27 +237,27 @@ contract DatabaseController {
         antiqueContract = IAntique(_antiqueContractAddress);
     }
 
-    function setDocumentationContractAddress (address _documentationContractAddress)
-    public payable
-    {
-        require (_documentationContractAddress != address(0));
+    function setDocumentationContractAddress(
+        address _documentationContractAddress
+    ) public payable {
+        require(_documentationContractAddress != address(0));
         documentationContract = IDocumentation(_documentationContractAddress);
     }
 
-    function setVerificationContractAddress (address _verificationContractAddress)
-    public payable
-    {
-        require (_verificationContractAddress != address(0));
+    function setVerificationContractAddress(
+        address _verificationContractAddress
+    ) public payable {
+        require(_verificationContractAddress != address(0));
         verificationContract = IVerification(_verificationContractAddress);
     }
 
     function setDescriptionContractAddress(address _descriptionContractAddress)
-    public payable
+        public
+        payable
     {
-        require (_descriptionContractAddress != address(0));
+        require(_descriptionContractAddress != address(0));
         descriptionContract = IDescription(_descriptionContractAddress);
     }
-
 
     // constructor(
     //     address _antiqueContractAddress,
@@ -270,28 +283,27 @@ contract DatabaseController {
     //A. Verification Functions
 
     //1. Add Verification Function
-    function AddVerification 
-    (
+    function AddVerification(
         //Owner and Appraiser Data
         address payable _ownerAddress,
         uint256 _ownerID,
-        uint256 _personVerificationID,
-        
+        // uint256 _personVerificationID,
+        string memory _appraiserUsername,
         //Antique Object Data
         uint256 _ioTDeviceID,
         string memory _estimateManufactureYears,
         string memory _antiqueRareness,
         string memory _antiqueAuthenticity,
         string memory _antiqueRealness,
-
-        //Time Data    
+        //Time Data
         address payable _uploader
-    )  external returns (uint256) {
+    ) external returns (uint256) {
         return
             verificationContract.AddVerification(
                 payable(_ownerAddress),
                 _ownerID,
-                _personVerificationID,
+                // _personVerificationID,
+                _appraiserUsername,
                 _ioTDeviceID,
                 _estimateManufactureYears,
                 _antiqueRareness,
@@ -302,30 +314,28 @@ contract DatabaseController {
     }
 
     //2. Update Verification Function
-     function UpdateVerification 
-    (
+    function UpdateVerification(
         //Owner and Appraiser Data
         uint256 _verificationID,
         address payable _newOwnerAddress,
         uint256 _newOwnerID,
-        uint256 _newPersonVerificationID,
-        
+        // uint256 _newPersonVerificationID,
+        string memory _appraiserUsername,
         //Antique Object Data
         uint256 _newIoTDeviceID,
         string memory _newEstimateManufactureYears,
         string memory _newAntiqueRareness,
         string memory _newAntiqueAuthenticity,
         string memory _newAntiqueRealness,
-
         //Time Data
-        address payable _uploader    
-    )
-    external {
+        address payable _uploader
+    ) external {
         verificationContract.UpdateVerification(
             _verificationID,
             _newOwnerAddress,
             _newOwnerID,
-            _newPersonVerificationID,
+            // _newPersonVerificationID,
+            _appraiserUsername,
             _newIoTDeviceID,
             _newEstimateManufactureYears,
             _newAntiqueRareness,
@@ -354,13 +364,16 @@ contract DatabaseController {
     // B. Description Contract
 
     //1. Add Description Function
-     function  AddDescription
-    (
+    function AddDescription(
         uint256 _antiqueObjectID,
         string memory _materialCreated,
         uint256 _antiqueHeight,
         uint256 _antiqueLength,
         uint256 _anitqueWidth,
+        string memory _filehash,
+        uint256 _fileSize,
+        string memory _fileType,
+        string memory _fileName,
         address payable _uploader
     ) external returns (uint256) {
         return
@@ -370,13 +383,16 @@ contract DatabaseController {
                 _antiqueHeight,
                 _antiqueLength,
                 _anitqueWidth,
+                _filehash,
+                _fileSize,
+                _fileType,
+                _fileName,
                 _uploader
             );
     }
 
-    //2. Update Description Function
-    function UpdateDescriptionMaterials 
-    (
+    //2. Update Description Materials Function
+    function UpdateDescriptionMaterials(
         uint256 _descriptionID,
         string memory _newMaterialCreated,
         uint256 _antiqueHeight,
@@ -390,6 +406,26 @@ contract DatabaseController {
             _antiqueHeight,
             _antiqueLength,
             _anitqueWidth,
+            _uploader
+        );
+    }
+
+    //2.1 Update Description Upload File
+    function UpdateDescriptionUploadFile(
+        uint256 _descriptionID,
+        string memory _filehash,
+        uint256 _fileSize,
+        string memory _fileType,
+        string memory _fileName,
+        address payable _uploader
+    ) external {
+        descriptionContract.UpdateDescriptionUploadFile(
+            _descriptionID,
+            _filehash,
+            _fileSize,
+            _fileType,
+            _fileName,
+            block.timestamp,
             _uploader
         );
     }
