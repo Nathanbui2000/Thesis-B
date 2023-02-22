@@ -17,13 +17,13 @@ import OwnerDetail from "../OwnerDetail"
 import "./AddAntique.css"
 import { IUser } from "../../../../type/Java/user";
 import { Description } from "../../../../type/Truffle/Description";
-const steps = ["Owner Details",'Antique Description', 'Antique Documentation', 'Anitque Verification','Email Verification',"Submit Data"];
+const steps = ["Owner Details",'Antique Description', 'Antique Documentation', 'Anitque Verification','Email Verification'];
 interface AddAntiqueProps {
     databaseControllerContract: any;
 }
 
 function AddAntique(props: AddAntiqueProps) {
-    const stepComponents = [OwnerDetail, AntiqueDescription, AntiqueDocumentation,AntiqueVerification,AntiqueEmailVerification,AntiqueDescription];
+    const stepComponents = [OwnerDetail, AntiqueDescription, AntiqueDocumentation,AntiqueVerification,AntiqueEmailVerification];
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
 
@@ -101,7 +101,23 @@ function AddAntique(props: AddAntiqueProps) {
         //NOTE - Step3: Documentation File 
 
     const [step3AntiqueDocumentationFile, setStep3AntiqueDocumentationFile] = useState<File | null>(null);
-
+ 
+        //NOTE: Step 4: Verification Data
+    const [step4VerificationInputData, setStep4VerificationInputData] = React.useState({
+        EstimateManufactureYear: "",
+        IoTDevicesID: 0,
+        AntiqueRareness: "",
+        AntiqueAuthenticity: "",
+        AntiqueRealness: "",
+    });
+    const handleStep4Change = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event && event.target) {
+            setStep4VerificationInputData({
+                ...step4VerificationInputData,
+                [event.target.name]: event.target.value,
+            });
+        }
+    };
 
     
 
@@ -235,6 +251,9 @@ function AddAntique(props: AddAntiqueProps) {
                                                 
                                                 setStep3AntiqueDocumentationFile: setStep3AntiqueDocumentationFile,
                                                 step3AntiqueDocumentationFile: step3AntiqueDocumentationFile,
+
+                                                step4VerificationInputData:step4VerificationInputData,
+                                                handleStep4Change:handleStep4Change,
 
 
                                             }

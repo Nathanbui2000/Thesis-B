@@ -15,4 +15,7 @@ export default interface StepInterface {
     setStep3AntiqueDocumentationFile: any,
     step3AntiqueDocumentationFile:any,
 
+    step4VerificationInputData: any,
+    handleStep4Change: any,
+
 }

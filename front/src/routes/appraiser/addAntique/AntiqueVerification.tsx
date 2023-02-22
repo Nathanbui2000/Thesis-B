@@ -1,4 +1,4 @@
-import { Box,Typography,TextField, Stack, Grow } from "@mui/material";
+import { Box,Typography,TextField, Stack, Grow, DialogActions, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import {GridRenderCellParams } from "@mui/x-data-grid";
 import UploadIcon from '@mui/icons-material/Upload';
 import * as React from "react";
@@ -17,16 +17,26 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { FormEvent } from "react";
 import QRCode from "qrcode";
 import { useEffect, useRef, useState } from "react";
-function AntiqueVerification() {
+import StepInterface from "./StepInterface";
+
+function AntiqueVerification(props:StepInterface) {
     
-    //User Input Verification Data
-    const [details, setDetails] = React.useState({
-        EstimateManufactureYear: "",
-        IoTDeviceID: "",
-        AntiqueRareness: "",
-        AntiqueAuthenticity: "",
-        AntiqueReal: "",
-    });
+    // //User Input Verification Data
+        //NOTE - Informative Dialog Data
+    const [isInformativeDialogOpen, setIsInformativeDialogOpen] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState("");
+    const [dialogContent, setDialogContent] = useState("");
+    const handleInformativeDialogOpen= () => {
+        setIsInformativeDialogOpen(true);
+    };
+    function handleCloseDialog(): void {
+        setIsInformativeDialogOpen(false);
+    }
+    const handleKeyPress = (event: { key: string; preventDefault: () => void; }) => {
+        if (event.key === '.' || event.key === '-') {
+        event.preventDefault();
+        }
+    };
 
     //Choice Box Data 
     const [antiqueRealness, setAntiqueRealness ] = React.useState([
@@ -45,7 +55,29 @@ function AntiqueVerification() {
     function handleSubmit(event: FormEvent<HTMLFormElement>): void {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log("Verification Data Button Cliced!")
+        //Todo: Validate Input Data
+        if (!props.step4VerificationInputData?.EstimateManufactureYear ||
+            props.step4VerificationInputData.IoTDeviceID <= 0 ||
+            !props.step4VerificationInputData?.AntiqueRareness ||
+            !props.step4VerificationInputData?.AntiqueAuthenticity ||
+            !props.step4VerificationInputData?.AntiqueRealness ||
+            props.step4VerificationInputData.EstimateManufactureYear.length <= 0 ||
+            props.step4VerificationInputData.AntiqueRareness.length <= 0 ||
+            props.step4VerificationInputData.AntiqueAuthenticity.length <= 0 ||
+            props.step4VerificationInputData.AntiqueRealness.length <= 0)
+            {
+                setDialogTitle("Please Completed Missing Information Above !");
+                setDialogContent ("Please provide All Necessary Information for Antique Verification ");
+                return setIsInformativeDialogOpen(true);
+            }
+        //Todo: Show Completed
+        const updatedSteps = [...props.completedStepList];
+        updatedSteps[props.activeStep] = { completed: true };
+        props.setCompletedStepList(updatedSteps);
+        setDialogTitle("Successfully Completed Verification !");
+        setDialogContent ("Antique Verification detail has been saved. Please process to the next step")
+        return setIsInformativeDialogOpen(true);
+
         // Check Validate Data
         //Call Axios Bachend 
     }
@@ -61,25 +93,25 @@ function AntiqueVerification() {
     // }, [details]);
     return (
         <Stack spacing={3} sx={{ mt: 3 }}>
-        <div style={{ display: "center" }}>
-            <Typography
-            variant="h2"
-            component="div"
-            sx={{ justifySelf: "flex-start" }}
-            >
-            Antique Verification
-            </Typography>
-        </div>
-        <div style={{ display: "center" }}>
-            <Typography
-            variant="h3"
-            component="div"
-            sx={{ justifySelf: "flex-start" }}
-            >
-            Step 4: Verifying Antique Object
-            </Typography>
-        </div>
-        
+            <div style={{ display: "center" }}>
+                <Typography
+                variant="h2"
+                component="div"
+                sx={{ justifySelf: "flex-start" }}
+                >
+                Antique Verification
+                </Typography>
+            </div>
+            <div style={{ display: "center" }}>
+                <Typography
+                variant="h3"
+                component="div"
+                sx={{ justifySelf: "flex-start" }}
+                >
+                Step 4: Verifying Antique Object
+                </Typography>
+            </div>
+            
         {/* Vertical Box: Verification And Button
         <div> */}
             {/*Horizontal Box: QR Code and Antique Form*/}
@@ -112,8 +144,10 @@ function AntiqueVerification() {
                                 required
                                 name="EstimateManufactureYear"
                                 label="Estimate Manufacturer Year"
-                                autoComplete="OwnerName"
-                                id="EstimateManufactureYear"
+                                value ={props.step4VerificationInputData.EstimateManufactureYear}
+                                onChange = {props.handleStep4Change}
+                                disabled={props.completedStepList[props.activeStep].completed}
+
                             /> 
                             <Typography
                             variant="h4"
@@ -126,11 +160,23 @@ function AntiqueVerification() {
                             <TextField
                                 style={{width: '400px'}}
                                 margin="normal"
+                                type ="number"
                                 required
+                                onKeyPress={handleKeyPress}
+                                disabled={props.completedStepList[props.activeStep].completed}
                                 name="IoTDeviceID"
                                 label="IoT Device ID"
-                                autoComplete="OwnerName"
-                                id="IoTDeviceID"
+                                value = {props.step4VerificationInputData.IoTDeviceID}
+                                inputProps={{
+                                    type: 'number',
+                                    step: 1,
+                                    inputMode: 'numeric',
+                                    pattern: "[0-9]",
+                                    min: 1,
+                                }}
+                                onChange = {props.handleStep4Change}
+                                
+
                             /> 
                             <Typography
                             variant="h4"
@@ -146,8 +192,11 @@ function AntiqueVerification() {
                                 required
                                 name="AntiqueRareness"
                                 label="Antique Rareness"
-                                autoComplete="OwnerName"
-                                id = "AntiqueRareness"
+                                value = {props.step4VerificationInputData.AntiqueRareness}
+                                onChange = {props.handleStep4Change}
+                                disabled={props.completedStepList[props.activeStep].completed}
+
+
                             /> 
                             <Typography
                             variant="h4"
@@ -163,8 +212,10 @@ function AntiqueVerification() {
                                 required
                                 name="AntiqueAuthenticity"
                                 label="Authenticity of the Antique Object"
-                                autoComplete="OwnerName"
-                                id="AntiqueAuthenticity"
+                                value = {props.step4VerificationInputData.AntiqueAuthenticity}
+                                onChange = {props.handleStep4Change}
+                                disabled={props.completedStepList[props.activeStep].completed}
+
                             /> 
                             <Typography
                             variant="h4"
@@ -179,13 +230,11 @@ function AntiqueVerification() {
                                 style={{width: '400px'}}
                                 margin="normal"
                                 required
-                                name="AntiqueReal"
-                                label="AntiqueReal"
-                                id="AntiqueReal"
-                                onChange={(e) =>
-                                setDetails({ ...details, AntiqueReal: e.target.value })
-                                }
-                                value={details.AntiqueReal}
+                                name="AntiqueRealness"
+                                onChange={props.handleStep4Change}
+                                value={props.step4VerificationInputData.AntiqueRealness}
+                                disabled={props.completedStepList[props.activeStep].completed}
+
                             >
                             {antiqueRealness.map((antiqueRealness) => (
                                 <MenuItem key={antiqueRealness.id} value={antiqueRealness.value}>
@@ -205,6 +254,8 @@ function AntiqueVerification() {
                             }}
                             // onClick={handleUploadResource}
                             size="small"
+                            disabled={props.completedStepList[props.activeStep].completed}
+
                         >
                             Confirm Verification Data
                     </Button>
@@ -214,8 +265,17 @@ function AntiqueVerification() {
             {/* </div> */}
 
         {/* </div> */}
+            <Dialog open={isInformativeDialogOpen} onClose={() => setIsInformativeDialogOpen(false)}>
+                <DialogTitle>{dialogTitle}</DialogTitle>
+                <DialogContent>{dialogContent}</DialogContent>
+                <DialogActions>
+                    <Button onClick={() => handleCloseDialog()
+                    
+                    }>OK</Button>
+                </DialogActions>
+            </Dialog>
 
-    </Stack>
+        </Stack>
     )
 }
 export default AntiqueVerification;
