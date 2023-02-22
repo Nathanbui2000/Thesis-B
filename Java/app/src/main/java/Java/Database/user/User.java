@@ -121,6 +121,17 @@ public class User {
         this.roles = roles;
     }
 
+    public String getVerifyAntiqueToken() {
+        return verifyAntiqueToken;
+    }
+
+    public void setVerifyAntiqueToken(String verifyAntiqueToken) {
+        this.verifyAntiqueToken = verifyAntiqueToken;
+    }
+
+    @Column(name = "verify_antique_token")
+    private String verifyAntiqueToken;
+
     public User() {
     }
 

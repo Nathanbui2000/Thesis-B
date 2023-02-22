@@ -63,9 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests().antMatchers("/user/delete-user-by-username").hasAnyAuthority("ROLE_ADMIN");
     http.authorizeRequests().antMatchers("/user/get-user-role-by-username").permitAll();
     http.authorizeRequests().antMatchers("/user/all").permitAll();
+    http.authorizeRequests().antMatchers("/user/antique-user-verification-requested").permitAll();
 
 
-    http.authorizeRequests().antMatchers("/user/reset-password").permitAll();
+
+            http.authorizeRequests().antMatchers("/user/reset-password").permitAll();
     http.authorizeRequests().antMatchers("/user/token/refresh-token").permitAll();
 
     http.authorizeRequests().antMatchers("/user/forgot-password").permitAll().and().csrf().disable()

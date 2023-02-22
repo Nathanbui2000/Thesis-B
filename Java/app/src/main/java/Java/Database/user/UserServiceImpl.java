@@ -445,6 +445,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   }
 
+  @Override
+  public ResponseEntity sendEmailVerifyAntiqueUser(String antiqueEmailAddress,
+                                                   HttpServletResponse response)
+  {
+    if (antiqueEmailAddress == null ||
+          userRepository.findByUsername(antiqueEmailAddress) == null
+    )
+    {
+      return ResponseEntity.status(BAD_REQUEST.value()).body("Invalid AntiqueUsername Detected");
+    }
+    User antiqueUserData  = userRepository.findByUsername(antiqueEmailAddress);
+    String antiqueUserVerificationToken = getRandomNumberString();
+    antiqueUserData.setVerifyAntiqueToken(antiqueUserVerificationToken);
+    userRepository.save(antiqueUserData);
+
+    mainService.sendEmailVerifyAntiqueUserByToken
+            (antiqueUserData.getUsername(),
+                    antiqueUserData.getFirstName(),
+                    antiqueUserData.getLastName(),
+                    antiqueUserData.getVerifyAntiqueToken()
+                    );
+    return ResponseEntity.ok().body("Verification Code has been sent to your emailAddress");
+
+
+
+  }
+
   private void validateMethodParameter(String methodName, String username, List<String> parameters, HttpServletResponse response)
   {
     if(username == null)
@@ -472,6 +499,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       return;
     }
     return;
+  }
+  public static String getRandomNumberString() {
+    // It will generate 6 digit random Number.
+    // from 0 to 999999
+    Random rnd = new Random();
+    int number = rnd.nextInt(999999);
+
+    // this will convert any number sequence into 6 character.
+    return String.format("%06d", number);
   }
 
 }

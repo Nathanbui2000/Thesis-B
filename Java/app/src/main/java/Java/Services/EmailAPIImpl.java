@@ -16,7 +16,7 @@ public class EmailAPIImpl implements EmailAPI {
         String JSONbody = "";
         JSONbody += "{\"personalizations\":[{\"to\":[{\"email\":\"" + receiverEmailAddressEmail;
         JSONbody += "\",\"name\":\"" + receiverName;
-        JSONbody += "\"}],\"subject\":\"CourseMania: " + subject + "\"}],";
+        JSONbody += "\"}],\"subject\":\"AntiqueIoTChain: " + subject + "\"}],";
         JSONbody += "\"from\":{\"email\":\"" + targetEmail;
         JSONbody += "\",\"name\":\"" + senderName;
         JSONbody += "\"},";
@@ -63,7 +63,7 @@ public class EmailAPIImpl implements EmailAPI {
     @Override
     public String sendEmailForgotPasswordServices(String username, String firstName, String url) {
         String emailData = formatForgotPasswordEmailContent(firstName, url);
-        String SendEmailReturnResult = sendEmailInformation(emailData, firstName, username, "CourseMania",
+        String SendEmailReturnResult = sendEmailInformation(emailData, firstName, username, "AntiqueIoTChain",
                 "Reset Your Password");
         return SendEmailReturnResult;
     }
@@ -89,7 +89,7 @@ public class EmailAPIImpl implements EmailAPI {
     @Override
     public String sendEmailVerifyEmailServices(String username, String firstName, String url) {
         String emailData = formatVerifyEmailContent(firstName, url);
-        String SendEmailReturnResult = sendEmailInformation(emailData, firstName, username, "CourseMania",
+        String SendEmailReturnResult = sendEmailInformation(emailData, firstName, username, "AntiqueIoTChain",
                 "Verify you Account");
         return SendEmailReturnResult;
     }
@@ -97,15 +97,22 @@ public class EmailAPIImpl implements EmailAPI {
     @Override
     public String sendEmailConfirmDocumentsUpload(String userEmailAddress, String firstName, String documentationTitle) {
         String emailData = formatUploadDocumentsEmailContent(firstName,documentationTitle);
-        String SendEmailReturnResult = sendEmailInformation(emailData, firstName, userEmailAddress, "CourseMania","Your Recent Document Uploaded Successful !");
+        String SendEmailReturnResult = sendEmailInformation(emailData, firstName, userEmailAddress, "AntiqueIoTChain","Your Recent Document Uploaded Successful !");
         return SendEmailReturnResult;
     }
 
     @Override
     public String sendEmailUpdatePassword(String userEmailAddress, String firstName) {
         String emailData = formatPasswordUpdateEmail(firstName);
-        String SendEmailReturnResult = sendEmailInformation(emailData, firstName, userEmailAddress, "CourseMania","Your Password Has Been Changed!");
+        String SendEmailReturnResult = sendEmailInformation(emailData, firstName, userEmailAddress, "AntiqueIoTChain","Your Password Has Been Changed!");
         return SendEmailReturnResult;
+    }
+
+    @Override
+    public String sendEmailConfirmAntiqueUser(String antiqueEmailAddress, String firstname, String lastname, String verificationCode ) {
+       String emailContent = formatVerifyAntiqueUserEmailContent(firstname,lastname,verificationCode);
+       String sendEmailResult = sendEmailInformation(emailContent,firstname,antiqueEmailAddress,"AntiqueIoTChain","Antique User Verification Code");
+       return sendEmailResult;
     }
 
     private String formatUploadDocumentsEmailContent(String firstName, String documentationTitle) {
@@ -122,7 +129,7 @@ public class EmailAPIImpl implements EmailAPI {
         returnData += "<p>We appreciated your contribution for the community ! </p>";
         returnData += "<br><br>";
         returnData += "<p> Kind Regards </p>";
-        returnData += "<p> CourseMania Team </p>";
+        returnData += "<p> AntiqueIoTChain Team </p>";
 
         System.out.println(returnData);
         return returnData;
@@ -143,8 +150,31 @@ public class EmailAPIImpl implements EmailAPI {
         returnData += "<br><br><br>";
         returnData += "<br><br>";
         returnData += "<p> Kind Regards </p>";
-        returnData += "<p> CourseMania Team </p>";
+        returnData += "<p> AntiqueIoTChain Team </p>";
         System.out.println(returnData);
         return returnData;
+    }
+    private String formatVerifyAntiqueUserEmailContent(String firstName, String lastName, String verificationCode)
+    {
+        if (firstName == null) {
+            return null;
+        }
+        String returnData = "";
+        // * Add The Header to the data
+        returnData += "<h1>Antique Verification Code ! </h1>";
+        returnData += "Dear Mr: " + firstName + " " + lastName ;
+        returnData += "<br><br><br>";
+        returnData += " <h3> You have recently requested a verification for <strong>Add Antique Object</strong>. Below is the verification code </h3>";
+        returnData += "<br><br>";
+        returnData += "<strong>" + verificationCode +"</strong>";
+        returnData += "<br><br>";
+        returnData += " <p> If this isn't you, Please Consider Changing Your Password Immediately  </p>";
+        returnData += "<br><br><br>";
+        returnData += "<br><br>";
+        returnData += "<p> Kind Regards </p>";
+        returnData += "<p> AntiqueIoTChain Team </p>";
+        System.out.println(returnData);
+        return returnData;
+
     }
 }

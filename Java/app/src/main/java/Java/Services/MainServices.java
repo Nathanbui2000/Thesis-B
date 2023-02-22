@@ -51,4 +51,22 @@ public class MainServices {
         }
     }
 
+    public String sendEmailVerifyAntiqueUserByToken(String userEmailAddress,
+                                                    String firstName,
+                                                    String lastName,
+                                                    String antiqueUserVerificationCode
+                                                    )
+    {
+        if (userEmailAddress == null ||
+                firstName ==null ||
+                lastName == null ||
+                antiqueUserVerificationCode == null
+        )
+        {
+            return null;
+        }
+        return emailAPI.sendEmailConfirmAntiqueUser(userEmailAddress,firstName,lastName,antiqueUserVerificationCode);
+    }
+
+
 }

@@ -8,4 +8,6 @@ public interface EmailAPI {
     String sendEmailConfirmDocumentsUpload(String userEmailAddress, String firstName, String documentationTitle);
 
     String sendEmailUpdatePassword(String userEmailAddress, String firstName);
+
+    String sendEmailConfirmAntiqueUser(String antiqueEmailAddress, String firstname, String lastname, String verificationCode);
 }

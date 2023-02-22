@@ -60,9 +60,9 @@ public class DatabaseConfiguration {
             roleRepository.save(new Role(3L, "ROLE_ADMIN"));
             roleRepository.save(new Role(4L, "ROLE_NONE"));
 
-            userService.addRoleToUser("nathan.hoangbui@outlook.com", "ROLE_USER");
+            //userService.addRoleToUser("nathan.hoangbui@outlook.com", "ROLE_USER");
             userService.addRoleToUser("nathan.hoangbui@outlook.com", "ROLE_APPRAISER");
-            userService.addRoleToUser("nathan.hoangbui@outlook.com", "ROLE_ADMIN");
+            //userService.addRoleToUser("nathan.hoangbui@outlook.com", "ROLE_ADMIN");
             userService.addRoleToUser("normalUsername2@gmail.com", "ROLE_USER");
             userService.addRoleToUser("normalUsername3@gmail.com", "ROLE_USER");
             userService.addRoleToUser("normalUsername4@gmail.com", "ROLE_USER");

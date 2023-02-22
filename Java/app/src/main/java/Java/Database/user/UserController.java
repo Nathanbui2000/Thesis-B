@@ -274,6 +274,15 @@ public class UserController {
         return userService.getUserRoleByUsername(username,response);
     }
 
+    @PostMapping("/antique-user-verification-requested")
+    public ResponseEntity sendAntiqueUserVerificationCode
+            (
+                    @Param(value = "username") String username,
+                    HttpServletResponse response
+            )
+    {
+        return userService.sendEmailVerifyAntiqueUser(username,response);
+    }
 }
 
 @Data
