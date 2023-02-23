@@ -47,7 +47,7 @@ function AntiqueDescription (props:StepInterface) {
     const [pageNumber, setPageNumber] = useState<number>(1);
     // Function Set Up Preview PDF File
     const handleChange = (file: Blob | Uint8Array | ArrayBuffer) => {
-        props.handleStep2InputDataChange;
+        // props.handleStep2InputDataChange;
         props.setAntiqueDescriptionFile(file);
         setFile(file);
     };
@@ -132,11 +132,11 @@ function AntiqueDescription (props:StepInterface) {
         // clearTextError()
     }
 
-    function handleInputFileData(event: React.ChangeEvent<HTMLInputElement>) 
-    {
-        props.setAntiqueDescriptionFile(event);
-        // clearTextError();
-    }
+    // function handleInputFileData(event: React.ChangeEvent<HTMLInputElement>) 
+    // {
+    //     props.setAntiqueDescriptionFile(event);
+    //     // clearTextError();
+    // }
 
     useEffect(() => {
         if (props.antiqueDescriptionFile)
@@ -296,7 +296,7 @@ function AntiqueDescription (props:StepInterface) {
                                 disabled={props.completedStepList[props.activeStep].completed}
                                 name="AntiqueDescriptionFile" 
                                 types={fileTypes}
-                                value={handleInputFileData}
+                                value={props.antiqueDescriptionFile}
                                 onChange={props.setAntiqueDescriptionFile}
                                 
                                 />

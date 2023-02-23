@@ -64,10 +64,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests().antMatchers("/user/get-user-role-by-username").permitAll();
     http.authorizeRequests().antMatchers("/user/all").permitAll();
     http.authorizeRequests().antMatchers("/user/antique-user-verification-requested").permitAll();
+    http.authorizeRequests().antMatchers("/user/check-antique-verification-code").permitAll();
+
+
+    http.authorizeRequests().antMatchers("/antique-user/get-all-by-username").permitAll();
+    http.authorizeRequests().antMatchers("/antique-user/add-by-username").permitAll();
 
 
 
-            http.authorizeRequests().antMatchers("/user/reset-password").permitAll();
+    http.authorizeRequests().antMatchers("/user/reset-password").permitAll();
     http.authorizeRequests().antMatchers("/user/token/refresh-token").permitAll();
 
     http.authorizeRequests().antMatchers("/user/forgot-password").permitAll().and().csrf().disable()

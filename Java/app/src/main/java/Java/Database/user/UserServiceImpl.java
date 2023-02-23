@@ -472,6 +472,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   }
 
+  @Override
+  public boolean checkAntiqueVerificationCode(String username, Integer verificationCode) {
+    User user = userRepository.findByUsername(username);
+    if (user.getVerifyAntiqueToken().equals(String.valueOf(verificationCode)))
+    {
+      //Clear Verification Code
+      user.setVerifyAntiqueToken("");
+      userRepository.save(user);
+      return true;
+    }
+    return false;
+  }
+
   private void validateMethodParameter(String methodName, String username, List<String> parameters, HttpServletResponse response)
   {
     if(username == null)

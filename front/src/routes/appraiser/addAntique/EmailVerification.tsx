@@ -18,10 +18,12 @@ import cookie from "js-cookie";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { setCookie } from "../../../store/user-context";
+import StepInterface from "./StepInterface";
 import axios from "axios";
-function EmailVerification() {
+function EmailVerification(props: StepInterface) {
 
     const [searchValue, setSearchValue] = useState("");
+    const [verificationCodeInput,setVerificationCodeInput] = useState("");
     //NOTE - Informative Dialog Data
     const [isInformativeDialogOpen, setIsInformativeDialogOpen] = useState(false);
     const [dialogTitle, setDialogTitle] = useState("");
@@ -37,10 +39,45 @@ function EmailVerification() {
     function handleSubmit(event: FormEvent<HTMLFormElement>): void {
         event.preventDefault();
         console.log("EmailVerification Button CLicked!");
+        //Verify Verification Code
+        const params = new URLSearchParams();
+        params.append('username',cookie.get("userName") || "");
+        params.append('verificationCode',verificationCodeInput);
+
+        const getAppointmentOption= {
+        method: "GET",
+        params,
+        url: "http://localhost:8080/api/v1/user/check-antique-verification-code",
+        };
+        axios(getAppointmentOption)
+        .then((response) => {
+            if (response.status === 200) {
+                console.log("Successfully Verified Your Email. Please Process");
+                const updatedSteps = [...props.completedStepList];
+                updatedSteps[props.activeStep] = { completed: true };
+                props.setCompletedStepList(updatedSteps);
+
+                //Todo: Open Successfully Remove Appointment dialog
+                setDialogTitle("Verification Successfully !");
+                setDialogContent
+                (
+                    "Thank you for verifying your email. Please Process"
+                );
+                return setIsInformativeDialogOpen(true);
+                
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            setDialogTitle("Something Went Wrong !");
+            setDialogContent (error.response.data)
+            return setIsInformativeDialogOpen(true);
+        });
+
     }
 
     function handleChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
-        throw new Error("Function not implemented.");
+        setVerificationCodeInput(event.target.value);
     }
 
    const sendVerificationCode = () => {
@@ -118,18 +155,23 @@ function EmailVerification() {
 
             <div>
                 <TextField
-                    id="standard-search"
+
                     label="Enter Verification Code"
-                    type="search"
+                    type="number"
                     variant="outlined"
                     style={{ width: "50%" }}
-                    value={searchValue}
+                    value={verificationCodeInput}
+                    disabled={props.completedStepList[props.activeStep].completed}
+
                     onChange={handleChange}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
                                 <IconButton
-                                onClick={sendVerificationCode}
+                                onClick={sendVerificationCode}                              
+                                disabled={props.completedStepList[props.activeStep].completed}
+
+                                
                                 >
                                     Send Verification Code
                                 </IconButton>
@@ -146,6 +188,8 @@ function EmailVerification() {
                             type="submit"
                             startIcon={<MarkEmailReadIcon />}
                             sx={{ mt: 1, mb: 2 }}
+                            disabled={props.completedStepList[props.activeStep].completed}
+
                             // onClick={handleUploadResource}
                             size="small"
                         >

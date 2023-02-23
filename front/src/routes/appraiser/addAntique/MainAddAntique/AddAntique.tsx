@@ -17,6 +17,20 @@ import OwnerDetail from "../OwnerDetail"
 import "./AddAntique.css"
 import { IUser } from "../../../../type/Java/user";
 import { Description } from "../../../../type/Truffle/Description";
+// import ipfsClient from 'ipfs-http-client'
+const ipfsClient = require("ipfs-http-client");
+const projectId = '2K1WniY6VeM5ZhcrGF8tOWYVDt4';
+const projectSecret = '108882a8b0811cf56bb385541b7e748c';
+const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+const ipfs = ipfsClient.create({
+    host: 'ipfs.infura.io',
+    port: 5001,
+    protocol: 'https',
+    apiPath: '/api/v0',
+    headers: {
+        authorization: auth
+    }
+})
 const steps = ["Owner Details",'Antique Description', 'Antique Documentation', 'Anitque Verification','Email Verification'];
 interface AddAntiqueProps {
     databaseControllerContract: any;
@@ -43,9 +57,9 @@ function AddAntique(props: AddAntiqueProps) {
 
         //NOTE - Steps 1: Data Pass To Children Components
     //OwnerDetail Step Data
-    const [userVerifiedData, setUserVerifiedData] = useState<IUser| null>(null);
-    const handleOwnerDetail = (data: IUser) => {
-        setUserVerifiedData(data);
+    const [userVerifiedData, setStep1UserVerifiedData] = useState<IUser| null>(null);
+    const handleStep1OwnerDetail = (data: IUser) => {
+        setStep1UserVerifiedData(data);
     };
 
     const [step1UserData, setStep1USerData] = React.useState({
@@ -124,13 +138,13 @@ function AddAntique(props: AddAntiqueProps) {
     //SECTION - Steps Process Controller Function
     const navigate = useNavigate();
     const databaseControllerContract = props.databaseControllerContract;
-    console.log("Main Dashboard Database Contract Information");
+    // console.log("Main Dashboard Database Contract Information");
     const customHeader = (props: { value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
         <div style={{ fontWeight: "bold", fontSize: "18px" }}>
         {props.value}
         </div>
     );
-    console.log(databaseControllerContract);
+    // console.log(databaseControllerContract);
 
     const isStepOptional = (step: number) => {
         return step === -1;
@@ -140,6 +154,8 @@ function AddAntique(props: AddAntiqueProps) {
         return skipped.has(step);
     };
     const handleNext = () => {
+        if (activeStep === steps.length - 1)
+            handleSaveAntiqueToTruffle();
         let newSkipped = skipped;
         if (isStepSkipped(activeStep)) {
             newSkipped = new Set(newSkipped.values());
@@ -168,6 +184,27 @@ function AddAntique(props: AddAntiqueProps) {
     const handleReset = () => {
         setActiveStep(0);
     };
+
+    //SECTION - Truffle Logic 
+    function handleSaveAntiqueToTruffle() {
+        console.log("Saving...");
+        console.log("Step 1 Data")
+        console.log(userVerifiedData);
+
+        console.log("Step 2 Data");
+        console.log(step2DescriptionInputData);
+        console.log(antiqueDescriptionFile);
+
+        console.log("Step 3 Data");
+        console.log(step3AntiqueDocumentationFile);
+
+        console.log("Step 4 Data");
+        console.log(step4VerificationInputData);
+        //Todo: Save File To IPFS
+        console.log(ipfs);
+        //Todo: Save Description , Documentation, Description To Truffle
+       
+    }
 
 
     useEffect(() => {
@@ -220,6 +257,7 @@ function AddAntique(props: AddAntiqueProps) {
                     </Stepper>
                     {activeStep === steps.length ? (
                         <React.Fragment>
+                            {/*REVIEW - Fix UI For Completed All Step */}
                             <Typography sx={{ mt: 2, mb: 1 }}>
                             All steps completed - you&apos;re finished
                             </Typography>
@@ -237,9 +275,10 @@ function AddAntique(props: AddAntiqueProps) {
                                                 completedStepList: completedStepList,
                                                 setCompletedStepList: setCompletedStepList,
                                                 activeStep: activeStep,
-                                                handleOwnerDetail : handleOwnerDetail,
+                                                handleStep1OwnerDetail : handleStep1OwnerDetail,
                                                 step1UserData: step1UserData,
                                                 handleStep1Change: handleStep1Change,
+                                                setStep1UserVerifiedData:setStep1UserVerifiedData,
 
                                                 step2DescriptionInputData: step2DescriptionInputData,
                                                 handleStep2UpdateDescription: handleStep2UpdateDescription,
@@ -296,3 +335,5 @@ function AddAntique(props: AddAntiqueProps) {
 }
 
 export default AddAntique;
+
+

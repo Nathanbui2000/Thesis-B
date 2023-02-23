@@ -283,6 +283,26 @@ public class UserController {
     {
         return userService.sendEmailVerifyAntiqueUser(username,response);
     }
+
+    @GetMapping("/check-antique-verification-code")
+    public ResponseEntity checkAntiqueVerificationCode
+            (
+                    @Param(value = "username") String username,
+                    @Param(value = "verificationCode") String verificationCode,
+                    HttpServletResponse response
+            )
+    {
+        if (username == null || verificationCode == null || verificationCode == null || verificationCode.length() != 6 )
+        {
+            return ResponseEntity.badRequest().body("Invalid Verification Code");
+        }
+        boolean verifiedUser = userService.checkAntiqueVerificationCode(username,Integer.valueOf(verificationCode));
+        if (verifiedUser)
+            return ResponseEntity.ok().body("Successfully Verified User");
+        else
+            return ResponseEntity.badRequest().body("Wrong Verification Code");
+
+    }
 }
 
 @Data

@@ -77,7 +77,8 @@ function OwnerDetail(props: StepInterface) {
             .then((resp) => {
                 console.log(resp);
                 setUserData(resp.data);
-                props.handleOwnerDetail(userData);
+                props.setStep1UserVerifiedData(resp.data);
+                props.handleStep1OwnerDetail(userData);
                 //Open Dialog and Disable Textfield
                 setDialogTitle("User Confirmed");
                 setDialogContent

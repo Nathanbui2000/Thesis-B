@@ -64,4 +64,6 @@ public interface UserService {
     ResponseEntity<Collection<Role>> getUserRoleByUsername(String username, HttpServletResponse response);
     boolean validateUserContainRoleName(String username, String roleName);
     public ResponseEntity sendEmailVerifyAntiqueUser(String antiqueEmailAddress, HttpServletResponse response);
+
+    boolean checkAntiqueVerificationCode(String username, Integer verificationCode);
 }
