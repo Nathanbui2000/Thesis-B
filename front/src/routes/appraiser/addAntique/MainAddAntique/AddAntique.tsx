@@ -17,11 +17,17 @@ import OwnerDetail from "../OwnerDetail"
 import "./AddAntique.css"
 import { IUser } from "../../../../type/Java/user";
 import { Description } from "../../../../type/Truffle/Description";
+const { Buffer } = require('buffer');
+import { useUserContext } from "../../../../store/user-context";
+
 // import ipfsClient from 'ipfs-http-client'
 const ipfsClient = require("ipfs-http-client");
 const projectId = '2K1WniY6VeM5ZhcrGF8tOWYVDt4';
 const projectSecret = '108882a8b0811cf56bb385541b7e748c';
+// const auth = 'Basic ' + btoa(projectId + ':' + projectSecret);
+// const auth = 'Basic ' + Buffer.from(`${projectId}:${projectSecret}`, 'utf-8').toString('base64');
 const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+
 const ipfs = ipfsClient.create({
     host: 'ipfs.infura.io',
     port: 5001,
@@ -40,7 +46,7 @@ function AddAntique(props: AddAntiqueProps) {
     const stepComponents = [OwnerDetail, AntiqueDescription, AntiqueDocumentation,AntiqueVerification,AntiqueEmailVerification];
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
-
+    const userCtx = useUserContext();
 
     //SECTION -  Steps Data State Store Information
     //User StepCompleted
@@ -185,8 +191,38 @@ function AddAntique(props: AddAntiqueProps) {
         setActiveStep(0);
     };
 
+    const retrieveUserData = () => 
+    {
+        const authorizationValue = "Bearer " + userCtx.accessToken;
+        const params = new URLSearchParams();
+        params.append("username", step1UserData.emailAddress);
+
+        const options = {
+            method: "GET",
+            headers: {
+            "content-type": "application/x-www-form-urlencoded",
+            Authorization: authorizationValue,
+            },
+            params,
+            url: "http://localhost:8080/api/v1/user/get-user-by-username",
+        };
+
+        axios(options)
+            .then((resp) => {
+                console.log(resp);
+                setStep1UserVerifiedData(resp.data);
+            })
+            .catch((err) => {
+                console.error(err);
+                //Open Errors Dialog
+            });
+    }
+
+
     //SECTION - Truffle Logic 
-    function handleSaveAntiqueToTruffle() {
+    async function handleSaveAntiqueToTruffle()  {
+        //Retrieve USer Data
+        retrieveUserData();
         console.log("Saving...");
         console.log("Step 1 Data")
         console.log(userVerifiedData);
@@ -202,9 +238,33 @@ function AddAntique(props: AddAntiqueProps) {
         console.log(step4VerificationInputData);
         //Todo: Save File To IPFS
         console.log(ipfs);
+        // const step2DescriptionFileCID = await uploadFileToIPFS (antiqueDescriptionFile);
+        // console.log("Step 2 File Description CID");
+        // console.log(step2DescriptionFileCID);
+
+        // const step3DocumentsFileCID = await uploadFileToIPFS (step3AntiqueDocumentationFile);
+        // console.log("Step 3 File Document CID");
+        // console.log(step3AntiqueDocumentationFile);
+
         //Todo: Save Description , Documentation, Description To Truffle
-       
+        console.log(databaseControllerContract);
+        saveDataToBlockchain();
     }
+
+    const saveDataToBlockchain = () => 
+    {
+        return;
+    }
+    
+    const uploadFileToIPFS = async (file: File | null) => {
+        if (file)
+        {
+            const fileContent = Buffer.from(await file.arrayBuffer());
+            const { cid } = await ipfs.add(fileContent);
+            console.log(cid);
+            return cid.toString();
+        }
+    }; 
 
 
     useEffect(() => {
