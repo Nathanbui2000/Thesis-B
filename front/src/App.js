@@ -125,10 +125,10 @@ function App()  {
       
       // console.log("Account After Send: "+ await blockchain.eth.getBalance(newAccount) )
 
-      // const descriptionID1 = await databaseControllerContract.methods.AddDescription(0,"Materials Test",1.0,1.0,1.0,newAccount).call();
+      // const descriptionID1 = await databaseControllerContract.methods.AddDescription(0,"Materials Test",1.0,1.0,1.0,"CID",100,"PDF","File Name",newAccount).call();
       // console.log( "Description ID After 1st Call Before Send = " + descriptionID1);
 
-      // const descriptionID = await databaseControllerContract.methods.AddDescription(0,"Materials Test",1.0,1.0,1.0,newAccount)
+      // const descriptionID = await databaseControllerContract.methods.AddDescription(0,"Materials Test",1.0,1.0,1.0,"CID",100,"PDF","File Name",newAccount)
       // .send
       // (
       //   {
@@ -137,12 +137,12 @@ function App()  {
       //   }
       // );
       
-      // const descriptionID2 = await databaseControllerContract.methods.AddDescription(100000,"HAHAH",2.0,2.0,2.0,newAccount).call();
+      // const descriptionID2 = await databaseControllerContract.methods.AddDescription(0,"Materials Test",1.0,1.0,1.0,"CID",100,"PDF","File Name",newAccount).call();
       // console.log( "Description ID After 2nd Call After 1st Send =  " + descriptionID2);
-      // const descriptionID3 = await databaseControllerContract.methods.AddDescription(1,"Test 2",2.0,2.0,2.0,newAccount).call();
+      // const descriptionID3 = await databaseControllerContract.methods.AddDescription(0,"Materials Test",1.0,1.0,1.0,"CID",100,"PDF","File Name",newAccount).call();
       // console.log( "Description ID After 3rd Call After 1st Send = " + descriptionID3);
 
-      // const descriptionID4 = await databaseControllerContract.methods.AddDescription(0,"Materials Test 2",2.0,2.0,2.0,newAccount)
+      // const descriptionID4 = await databaseControllerContract.methods.AddDescription(0,"Materials Test",1.0,1.0,1.0,"CID",100,"PDF","File Name",newAccount)
       // .send
       // (
       //   {
@@ -153,7 +153,7 @@ function App()  {
 
       // console.log( "Description ID Before 4rd Call After 2nd Send = " + descriptionID4);
 
-      // const descriptionID5 = await databaseControllerContract.methods.AddDescription(0,"Test",3.0,3.0,3.0,newAccount).call();
+      // const descriptionID5 = await databaseControllerContract.methods.AddDescription(0,"Materials Test",1.0,1.0,1.0,"CID",100,"PDF","File Name",newAccount).call();
       // console.log( "Description ID After 4rd Call After 2nd Send = " + descriptionID5);
       // console.log( "------------------------Retrieved description----------------------");
       // const currentAccount = await blockchain.eth.getAccounts();

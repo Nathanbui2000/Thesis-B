@@ -10,7 +10,7 @@ import React from "react";
 import UserProfileNormalUser from "./routes/normalUser/UserProfile/userProfile"
 import MainDashboardAppraiser from "./routes/appraiser/dashboard/MaindashboardAppraiser"
 import MyAppointmentAppraiser from "./routes/appraiser/myAppointmentList/MyAppointmentAppraiser"
-import AddAppointmentAppraiser from "./routes/appraiser/addAntique/MainAddAntique/AddAntique"
+import AddAntiqueAppraiser from "./routes/appraiser/addAntique/MainAddAntique/AddAntique"
 import AppraiserProfile from "./routes/appraiser/userProfile/appraiserProfile";
 import SignUpNormalUserView from "./routes/normalUser/SignUp";
 import SignUpAppraiserView from "./routes/appraiser/SignUp"
@@ -58,8 +58,10 @@ const routes = (databaseController: any , blockchainController: any, mainTruffle
         databaseControllerContract = {databaseController}
         /> },
         { path: "/appraiser/dashboard/add-antique",
-        element: <AddAppointmentAppraiser 
+        element: <AddAntiqueAppraiser 
         databaseControllerContract = {databaseController}
+        blockchainController ={blockchainController}
+        mainTruffleUser= {mainTruffleUser}
         /> },
         { path: "/appraiser/user-profile",
         element: <AppraiserProfile 

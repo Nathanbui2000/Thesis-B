@@ -14,11 +14,12 @@ import AntiqueVerification from "../AntiqueVerification"
 import AntiqueEmailVerification from "../EmailVerification"
 import { borders } from '@mui/system';
 import OwnerDetail from "../OwnerDetail"
+import cookie from "js-cookie";
 import "./AddAntique.css"
 import { IUser } from "../../../../type/Java/user";
 import { Description } from "../../../../type/Truffle/Description";
-const { Buffer } = require('buffer');
 import { useUserContext } from "../../../../store/user-context";
+const { Buffer } = require('buffer');
 
 // import ipfsClient from 'ipfs-http-client'
 const ipfsClient = require("ipfs-http-client");
@@ -40,6 +41,8 @@ const ipfs = ipfsClient.create({
 const steps = ["Owner Details",'Antique Description', 'Antique Documentation', 'Anitque Verification','Email Verification'];
 interface AddAntiqueProps {
     databaseControllerContract: any;
+    blockchainController: any;
+    mainTruffleUser: any
 }
 
 function AddAntique(props: AddAntiqueProps) {
@@ -64,6 +67,7 @@ function AddAntique(props: AddAntiqueProps) {
         //NOTE - Steps 1: Data Pass To Children Components
     //OwnerDetail Step Data
     const [userVerifiedData, setStep1UserVerifiedData] = useState<IUser| null>(null);
+    const [appraiserUserData, setAppraiserUserData] = useState<IUser| null>(null);
     const handleStep1OwnerDetail = (data: IUser) => {
         setStep1UserVerifiedData(data);
     };
@@ -144,6 +148,8 @@ function AddAntique(props: AddAntiqueProps) {
     //SECTION - Steps Process Controller Function
     const navigate = useNavigate();
     const databaseControllerContract = props.databaseControllerContract;
+    const blockchainController = props.blockchainController;
+    const mainTruffleUser = props.mainTruffleUser;
     // console.log("Main Dashboard Database Contract Information");
     const customHeader = (props: { value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
         <div style={{ fontWeight: "bold", fontSize: "18px" }}>
@@ -191,53 +197,60 @@ function AddAntique(props: AddAntiqueProps) {
         setActiveStep(0);
     };
 
-    const retrieveUserData = () => 
-    {
+    const retrieveUserData = async (username: string) => {
         const authorizationValue = "Bearer " + userCtx.accessToken;
         const params = new URLSearchParams();
-        params.append("username", step1UserData.emailAddress);
+        params.append("username", username);
 
         const options = {
-            method: "GET",
-            headers: {
+        method: "GET",
+        headers: {
             "content-type": "application/x-www-form-urlencoded",
             Authorization: authorizationValue,
-            },
-            params,
-            url: "http://localhost:8080/api/v1/user/get-user-by-username",
+        },
+        params,
+        url: "http://localhost:8080/api/v1/user/get-user-by-username",
         };
 
-        axios(options)
-            .then((resp) => {
-                console.log(resp);
-                setStep1UserVerifiedData(resp.data);
-            })
-            .catch((err) => {
-                console.error(err);
-                //Open Errors Dialog
-            });
-    }
+        try {
+        const resp = await axios(options);
+        return resp.data;
+        } catch (err) {
+        console.error(err);
+        // throw error or return default value
+        }
+    };
 
 
-    //SECTION - Truffle Logic 
+
+
+    //SECTION - Truffle Logic
+    
     async function handleSaveAntiqueToTruffle()  {
         //Retrieve USer Data
-        retrieveUserData();
-        console.log("Saving...");
-        console.log("Step 1 Data")
+        // await retrieveUserData(step1UserData.emailAddress, setStep1UserVerifiedData);
+        // await retrieveUserData(cookie.get('userName') || "",setAppraiserUserData);
+        const [userVerifiedData, appraiserUserData] = await Promise.all([
+            retrieveUserData(step1UserData.emailAddress),
+            retrieveUserData(cookie.get('userName') || ""),
+        ]);
         console.log(userVerifiedData);
+        console.log(appraiserUserData);
+        // console.log("Saving...");
+        // console.log("Step 1 Data")
+        // console.log(userVerifiedData);
 
-        console.log("Step 2 Data");
-        console.log(step2DescriptionInputData);
-        console.log(antiqueDescriptionFile);
+        // console.log("Step 2 Data");
+        // console.log(step2DescriptionInputData);
+        // console.log(antiqueDescriptionFile);
 
-        console.log("Step 3 Data");
-        console.log(step3AntiqueDocumentationFile);
+        // console.log("Step 3 Data");
+        // console.log(step3AntiqueDocumentationFile);
 
-        console.log("Step 4 Data");
-        console.log(step4VerificationInputData);
-        //Todo: Save File To IPFS
-        console.log(ipfs);
+        // console.log("Step 4 Data");
+        // console.log(step4VerificationInputData);
+        // //Todo: Save File To IPFS
+        // console.log(ipfs);
         // const step2DescriptionFileCID = await uploadFileToIPFS (antiqueDescriptionFile);
         // console.log("Step 2 File Description CID");
         // console.log(step2DescriptionFileCID);
@@ -246,14 +259,107 @@ function AddAntique(props: AddAntiqueProps) {
         // console.log("Step 3 File Document CID");
         // console.log(step3AntiqueDocumentationFile);
 
-        //Todo: Save Description , Documentation, Description To Truffle
+        //Todo: Step 1 - Save Description , Documentation, Description To Truffle
+        //Todo: Step 2 - Save Antique To Blockchain return AntiqueID
+        //Todo: Step 3 - Save AntiqueID + Username to Backend JAVA
         console.log(databaseControllerContract);
-        saveDataToBlockchain();
+        if(antiqueDescriptionFile && step3AntiqueDocumentationFile)
+            await saveDataToBlockchain("DescriptionFile CID",
+            antiqueDescriptionFile,
+            step3AntiqueDocumentationFile,
+            userVerifiedData,
+            appraiserUserData
+            );
+            
     }
 
-    const saveDataToBlockchain = () => 
+    const saveDataToBlockchain = async (descriptionFileCID: String,antiqueDescriptionFile: File, step3AntiqueDocumentationFile: File , userVerifiedData: IUser, appraiserUserData: IUser ) => 
     {
-        return;
+        blockchainController.eth.personal.unlockAccount(userVerifiedData.blockchainAddress,"Password",20000);
+        blockchainController.eth.personal.unlockAccount(appraiserUserData.blockchainAddress,"Password",20000);
+
+        var sendID = await blockchainController.eth.sendTransaction({
+            from: mainTruffleUser,
+            to: appraiserUserData.blockchainAddress , 
+            value : blockchainController.utils.toWei('3','Ether')});
+        const accounts = await blockchainController.eth.getAccounts();
+        console.log(accounts);
+        
+        const descriptionIDBeforeSend = await 
+        databaseControllerContract.methods.AddDescription
+        (
+            0,
+            step2DescriptionInputData.AntiqueMaterialName,
+            step2DescriptionInputData.AntiqueHeight,
+            step2DescriptionInputData.AntiqueLength,
+            step2DescriptionInputData.AntiqueWidth,
+            descriptionFileCID,
+            antiqueDescriptionFile.size,
+            antiqueDescriptionFile.type,
+            antiqueDescriptionFile.name,
+            userVerifiedData.blockchainAddress
+        )
+        .call();
+        console.log("Description ID After 1st Call Before Send: "+ descriptionIDBeforeSend);
+        console.log(userVerifiedData.blockchainAddress);
+        const descriptionID = await 
+        databaseControllerContract.methods.AddDescription
+        (
+            0,
+            step2DescriptionInputData.AntiqueMaterialName,
+            step2DescriptionInputData.AntiqueHeight,
+            step2DescriptionInputData.AntiqueLength,
+            step2DescriptionInputData.AntiqueWidth,
+            descriptionFileCID,
+            antiqueDescriptionFile.size,
+            antiqueDescriptionFile.type,
+            antiqueDescriptionFile.name,
+            userVerifiedData.blockchainAddress
+        )
+        .send 
+        (
+            {
+                from: appraiserUserData.blockchainAddress,
+                gas: 672197
+            }
+        )
+        console.log(descriptionID);
+        const descriptionIDAfterSend = await 
+        databaseControllerContract.methods.AddDescription
+        (
+            0,
+            step2DescriptionInputData.AntiqueMaterialName,
+            step2DescriptionInputData.AntiqueHeight,
+            step2DescriptionInputData.AntiqueLength,
+            step2DescriptionInputData.AntiqueWidth,
+            descriptionFileCID,
+            antiqueDescriptionFile.size,
+            antiqueDescriptionFile.type,
+            antiqueDescriptionFile.name,
+            userVerifiedData.blockchainAddress
+        )
+        .call();
+        console.log( "Description ID After 2nd Call and 1st Send: "+ descriptionIDAfterSend);
+        console.log(descriptionIDAfterSend);
+        var descriptionObject = await databaseControllerContract.methods.GetDescriptionByID(parseInt(descriptionIDAfterSend)-1).call();
+        console.log( "Description Object Saved");
+        console.log(descriptionObject);
+        // const currentAccount = await blockchainController.eth.getAccounts();
+        // console.log( "Current User Account:");
+        // console.log(currentAccount);
+        // let newAccount = await blockchainController.eth.personal.newAccount("Password");
+        // blockchainController.eth.personal.unlockAccount(newAccount,"Password",20000);
+        // var sendID = await blockchainController.eth.sendTransaction({
+        //     from: mainTruffleUser,
+        //     to: newAccount , 
+        //     value : blockchainController.utils.toWei('3','Ether')});
+        
+        // console.log("Account After Send: "+ await blockchainController.eth.getBalance(newAccount) )
+        // console.log(newAccount);
+        // const currentAccountAfterCreated = await blockchainController.eth.getAccounts();
+        // console.log(currentAccountAfterCreated);
+        
+
     }
     
     const uploadFileToIPFS = async (file: File | null) => {
