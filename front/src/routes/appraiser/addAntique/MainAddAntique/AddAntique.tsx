@@ -19,6 +19,7 @@ import "./AddAntique.css"
 import { IUser } from "../../../../type/Java/user";
 import { Description } from "../../../../type/Truffle/Description";
 import { useUserContext } from "../../../../store/user-context";
+import LoadingSpinner from "../../../../components/loading/LoadingSpinner";
 const { Buffer } = require('buffer');
 
 // import ipfsClient from 'ipfs-http-client'
@@ -50,6 +51,7 @@ function AddAntique(props: AddAntiqueProps) {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
     const userCtx = useUserContext();
+    const [isLoading, setIsLoading] = useState(false);
 
     //SECTION -  Steps Data State Store Information
     //User StepCompleted
@@ -230,6 +232,8 @@ function AddAntique(props: AddAntiqueProps) {
         //Retrieve USer Data
         // await retrieveUserData(step1UserData.emailAddress, setStep1UserVerifiedData);
         // await retrieveUserData(cookie.get('userName') || "",setAppraiserUserData);
+        setIsLoading(true);
+        
         const [userVerifiedData, appraiserUserData] = await Promise.all([
             retrieveUserData(step1UserData.emailAddress),
             retrieveUserData(cookie.get('userName') || ""),
@@ -251,24 +255,27 @@ function AddAntique(props: AddAntiqueProps) {
         // console.log(step4VerificationInputData);
         // //Todo: Save File To IPFS
         // console.log(ipfs);
-        // const step2DescriptionFileCID = await uploadFileToIPFS (antiqueDescriptionFile);
+        const step2DescriptionFileCID = await uploadFileToIPFS (antiqueDescriptionFile);
         // console.log("Step 2 File Description CID");
         // console.log(step2DescriptionFileCID);
 
-        // const step3DocumentsFileCID = await uploadFileToIPFS (step3AntiqueDocumentationFile);
+        const step3DocumentsFileCID = await uploadFileToIPFS (step3AntiqueDocumentationFile);
         // console.log("Step 3 File Document CID");
         // console.log(step3AntiqueDocumentationFile);
 
-        //Todo: Step 1 - Save Description , Documentation, Description To Truffle
-        //Todo: Step 2 - Save Antique To Blockchain return AntiqueID
-        //Todo: Step 3 - Save AntiqueID + Username to Backend JAVA
         console.log(databaseControllerContract);
         if(antiqueDescriptionFile && step3AntiqueDocumentationFile)
-            await saveDataToBlockchain("DescriptionFile CID", "Documentation CID",
-            antiqueDescriptionFile,
-            step3AntiqueDocumentationFile,
-            userVerifiedData,
-            appraiserUserData
+            //Todo: Step 1 - Save Description , Documentation, Description To Truffle
+            //Todo: Step 2 - Save Antique To Blockchain return AntiqueID
+            //Todo: Step 3 - Save AntiqueID + Username to Backend JAVA
+            await saveDataToBlockchain
+            (
+                step2DescriptionFileCID, 
+                step3DocumentsFileCID,
+                antiqueDescriptionFile,
+                step3AntiqueDocumentationFile,
+                userVerifiedData,
+                appraiserUserData
             );
             
     }
@@ -474,14 +481,11 @@ function AddAntique(props: AddAntiqueProps) {
         catch (err)
         {
             console.error(err);
-        // throw error or return default value
+            setIsLoading(false); 
+            
+            // throw error or return default value
         }
-        
-        // console.log(databaseControllerContract.methods.GetDocumentationByID(VerificationIDCall-1));
-        // console.log(databaseControllerContract.methods.GetAntiqueByID(AntiqueIDCall-1));
-        // console.log(databaseControllerContract.methods.GetDescriptionByID(DescriptionIDCall-1));
-        // console.log(databaseControllerContract.methods.GetVerificationByID(VerificationIDCall-1));
-
+        setIsLoading(false);        
     }
     
     const uploadFileToIPFS = async (file: File | null) => {
@@ -503,120 +507,151 @@ function AddAntique(props: AddAntiqueProps) {
         <div>
             <NavBar/>
             <Stack spacing={3} sx={{ mt: 3 }}>
-            <div style={{ display: "center" }}>
-                <Typography
-                    variant="h3"
-                    component="div"
-                    sx={{ justifySelf: "flex-start" }}
-                    >
-                    Add Antique Data Process
-                </Typography>
-                <Box 
-                    sx={{ 
-                        width: '100%',
-                        borderRadius: '16px',
-                        borderColor: "black",
-                        paddingTop: 5,
-                        paddingleft:2,
-                        paddingright:2,
-                    }}
-                    
-                >
-                    <Stepper activeStep={activeStep}>
-                    {steps.map((label, index) => {
-                        const stepProps: { completed?: boolean } = {};
-                        const labelProps: {
-                        optional?: React.ReactNode;
-                        } = {};
-                        if (isStepOptional(index)) {
-                        labelProps.optional = (
-                            <Typography variant="caption">Optional</Typography>
-                        );
-                        }
-                        if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                        }
-                        return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                        );
-                    })}
-                    </Stepper>
-                    {activeStep === steps.length ? (
-                        <React.Fragment>
-                            {/*REVIEW - Fix UI For Completed All Step */}
-                            <Typography sx={{ mt: 2, mb: 1 }}>
-                            All steps completed - you&apos;re finished
-                            </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                            <Box sx={{ flex: '1 1 auto' }} />
-                            <Button onClick={handleReset}>Reset</Button>
-                            </Box>
-                        </React.Fragment>
-                        ) : (
-                        <React.Fragment>
-                            <Typography sx={{ mt: 2, mb: 1 }}>
-                                    <React.Fragment>
-                                            {React.createElement(stepComponents[activeStep],
-                                            {
-                                                completedStepList: completedStepList,
-                                                setCompletedStepList: setCompletedStepList,
-                                                activeStep: activeStep,
-                                                handleStep1OwnerDetail : handleStep1OwnerDetail,
-                                                step1UserData: step1UserData,
-                                                handleStep1Change: handleStep1Change,
-                                                setStep1UserVerifiedData:setStep1UserVerifiedData,
+                {isLoading && 
+                <div id="loading-spinner" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                    <LoadingSpinner />
+                </div>
+                }
+                {!isLoading && 
+                    <div style={{ display: "center" }}>
+                        <Typography
+                            variant="h3"
+                            component="div"
+                            sx={{ justifySelf: "flex-start" }}
+                            >
+                            Add Antique Data Process
+                        </Typography>
+                        <Box 
+                            sx={{ 
+                                width: '100%',
+                                borderRadius: '16px',
+                                borderColor: "black",
+                                paddingTop: 5,
+                                paddingleft:2,
+                                paddingright:2,
+                            }}
+                            
+                        >
+                            <Stepper activeStep={activeStep}>
+                            {steps.map((label, index) => {
+                                const stepProps: { completed?: boolean } = {};
+                                const labelProps: {
+                                optional?: React.ReactNode;
+                                } = {};
+                                if (isStepOptional(index)) {
+                                labelProps.optional = (
+                                    <Typography variant="caption">Optional</Typography>
+                                );
+                                }
+                                if (isStepSkipped(index)) {
+                                stepProps.completed = false;
+                                }
+                                return (
+                                <Step key={label} {...stepProps}>
+                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                </Step>
+                                );
+                            })}
+                            </Stepper>
+                            {activeStep === steps.length ? (
+                                // <React.Fragment>
+                                //     {/*REVIEW - Fix UI For Completed All Step */}
+                                //     <Typography sx={{ mt: 2, mb: 1 }}>
+                                //     All steps completed - you&apos;re finished
+                                //     </Typography>
+                                //     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                                //     <Box sx={{ flex: '1 1 auto' }} />
+                                //     <Button onClick={handleReset}>Reset</Button>
+                                //     </Box>
+                                // </React.Fragment>
+                                <React.Fragment>
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            p: 5,
+                                            bgcolor: "#f3f3f3",
+                                            borderRadius: "10px",
+                                        }}
+                                    >
+                                        <Typography variant="h5" gutterBottom>
+                                            Congratulations!
+                                        </Typography>
+                                        <Typography variant="subtitle1" gutterBottom>
+                                            You have successfully added the antique data.
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                                        <Box sx={{ flex: "1 1 auto" }} />
+                                        <Button onClick={handleReset}>Reset</Button>
+                                    </Box>
+                                </React.Fragment>
 
-                                                step2DescriptionInputData: step2DescriptionInputData,
-                                                handleStep2UpdateDescription: handleStep2UpdateDescription,
-                                                antiqueDescription: antiqueDescription,
-                                                handleStep2InputDataChange:handleStep2InputDataChange,
-                                                antiqueDescriptionFile: antiqueDescriptionFile,
-                                                setAntiqueDescriptionFile:setAntiqueDescriptionFile,
+                                ) : (
+                                <React.Fragment>
+                                    <Typography sx={{ mt: 2, mb: 1 }}>
+                                            <React.Fragment>
+                                                    {React.createElement(stepComponents[activeStep],
+                                                    {
+                                                        completedStepList: completedStepList,
+                                                        setCompletedStepList: setCompletedStepList,
+                                                        activeStep: activeStep,
+                                                        handleStep1OwnerDetail : handleStep1OwnerDetail,
+                                                        step1UserData: step1UserData,
+                                                        handleStep1Change: handleStep1Change,
+                                                        setStep1UserVerifiedData:setStep1UserVerifiedData,
 
-                                                
-                                                setStep3AntiqueDocumentationFile: setStep3AntiqueDocumentationFile,
-                                                step3AntiqueDocumentationFile: step3AntiqueDocumentationFile,
+                                                        step2DescriptionInputData: step2DescriptionInputData,
+                                                        handleStep2UpdateDescription: handleStep2UpdateDescription,
+                                                        antiqueDescription: antiqueDescription,
+                                                        handleStep2InputDataChange:handleStep2InputDataChange,
+                                                        antiqueDescriptionFile: antiqueDescriptionFile,
+                                                        setAntiqueDescriptionFile:setAntiqueDescriptionFile,
 
-                                                step4VerificationInputData:step4VerificationInputData,
-                                                handleStep4Change:handleStep4Change,
+                                                        
+                                                        setStep3AntiqueDocumentationFile: setStep3AntiqueDocumentationFile,
+                                                        step3AntiqueDocumentationFile: step3AntiqueDocumentationFile,
+
+                                                        step4VerificationInputData:step4VerificationInputData,
+                                                        handleStep4Change:handleStep4Change,
 
 
-                                            }
-                                            )}
-                                    </React.Fragment>
-                            </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, paddingBottom: "10px", paddingLeft: "50px", paddingRight: "50px" }}>
-                                <Button
-                                color="inherit"
-                                disabled={activeStep === 0}
-                                onClick={handleBack}
-                                sx={{ mr: 1 }}
-                                style={{backgroundColor: "red", color: "white"}}
-                                >
-                                Back
-                                </Button>
-                                <Box sx={{ flex: '1 1 auto' }} />
-                                {isStepOptional(activeStep) && (
-                                <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                                    Skip
-                                </Button>
+                                                    }
+                                                    )}
+                                            </React.Fragment>
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, paddingBottom: "10px", paddingLeft: "50px", paddingRight: "50px" }}>
+                                        <Button
+                                        color="inherit"
+                                        disabled={activeStep === 0}
+                                        onClick={handleBack}
+                                        sx={{ mr: 1 }}
+                                        style={{backgroundColor: "red", color: "white"}}
+                                        >
+                                        Back
+                                        </Button>
+                                        <Box sx={{ flex: '1 1 auto' }} />
+                                        {isStepOptional(activeStep) && (
+                                        <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+                                            Skip
+                                        </Button>
+                                        )}
+                                        <Button onClick={handleNext}
+                                                color="primary"
+                                                style={{backgroundColor: !checkStepCompleted(activeStep) ? "gray" : "red", color: "white"}}
+                                                // disabled={!checkStepCompleted(activeStep)}
+
+                                        >
+                                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                        </Button>
+                                    </Box>
+                                </React.Fragment>
                                 )}
-                                <Button onClick={handleNext}
-                                        color="primary"
-                                        style={{backgroundColor: !checkStepCompleted(activeStep) ? "gray" : "red", color: "white"}}
-                                        // disabled={!checkStepCompleted(activeStep)}
-
-                                >
-                                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                </Button>
-                            </Box>
-                        </React.Fragment>
-                        )}
-                </Box>
-            </div>
-
+                        </Box>
+                    </div>
+                }
             </Stack>
         </div>
     )
