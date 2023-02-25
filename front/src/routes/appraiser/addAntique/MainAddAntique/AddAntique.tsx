@@ -129,7 +129,7 @@ function AddAntique(props: AddAntiqueProps) {
         //NOTE: Step 4: Verification Data
     const [step4VerificationInputData, setStep4VerificationInputData] = React.useState({
         EstimateManufactureYear: "",
-        IoTDevicesID: 0,
+        IoTDeviceID: 0,
         AntiqueRareness: "",
         AntiqueAuthenticity: "",
         AntiqueRealness: "",
@@ -264,7 +264,7 @@ function AddAntique(props: AddAntiqueProps) {
         //Todo: Step 3 - Save AntiqueID + Username to Backend JAVA
         console.log(databaseControllerContract);
         if(antiqueDescriptionFile && step3AntiqueDocumentationFile)
-            await saveDataToBlockchain("DescriptionFile CID",
+            await saveDataToBlockchain("DescriptionFile CID", "Documentation CID",
             antiqueDescriptionFile,
             step3AntiqueDocumentationFile,
             userVerifiedData,
@@ -273,10 +273,10 @@ function AddAntique(props: AddAntiqueProps) {
             
     }
 
-    const saveDataToBlockchain = async (descriptionFileCID: String,antiqueDescriptionFile: File, step3AntiqueDocumentationFile: File , userVerifiedData: IUser, appraiserUserData: IUser ) => 
+    const saveDataToBlockchain = async (documentationFileCID: string ,descriptionFileCID: String,antiqueDescriptionFile: File, step3AntiqueDocumentationFile: File , userVerifiedData: IUser, appraiserUserData: IUser ) => 
     {
-        blockchainController.eth.personal.unlockAccount(userVerifiedData.blockchainAddress,"Password",20000);
-        blockchainController.eth.personal.unlockAccount(appraiserUserData.blockchainAddress,"Password",20000);
+        // blockchainController.eth.personal.unlockAccount(userVerifiedData.blockchainAddress,"Password",20000);
+        // blockchainController.eth.personal.unlockAccount(appraiserUserData.blockchainAddress,"Password",20000);
 
         var sendID = await blockchainController.eth.sendTransaction({
             from: mainTruffleUser,
@@ -285,24 +285,24 @@ function AddAntique(props: AddAntiqueProps) {
         const accounts = await blockchainController.eth.getAccounts();
         console.log(accounts);
         
-        const descriptionIDBeforeSend = await 
-        databaseControllerContract.methods.AddDescription
-        (
-            0,
-            step2DescriptionInputData.AntiqueMaterialName,
-            step2DescriptionInputData.AntiqueHeight,
-            step2DescriptionInputData.AntiqueLength,
-            step2DescriptionInputData.AntiqueWidth,
-            descriptionFileCID,
-            antiqueDescriptionFile.size,
-            antiqueDescriptionFile.type,
-            antiqueDescriptionFile.name,
-            userVerifiedData.blockchainAddress
-        )
-        .call();
-        console.log("Description ID After 1st Call Before Send: "+ descriptionIDBeforeSend);
-        console.log(userVerifiedData.blockchainAddress);
-        const descriptionID = await 
+        // const descriptionIDBeforeSend = await 
+        // databaseControllerContract.methods.AddDescription
+        // (
+        //     0,
+        //     step2DescriptionInputData.AntiqueMaterialName,
+        //     step2DescriptionInputData.AntiqueHeight,
+        //     step2DescriptionInputData.AntiqueLength,
+        //     step2DescriptionInputData.AntiqueWidth,
+        //     descriptionFileCID,
+        //     antiqueDescriptionFile.size,
+        //     antiqueDescriptionFile.type,
+        //     antiqueDescriptionFile.name,
+        //     userVerifiedData.blockchainAddress
+        // )
+        // .call();
+        // console.log("Description ID After 1st Call Before Send: "+ descriptionIDBeforeSend);
+        // console.log(userVerifiedData.blockchainAddress);
+        const DescriptionIDSend = await 
         databaseControllerContract.methods.AddDescription
         (
             0,
@@ -323,8 +323,8 @@ function AddAntique(props: AddAntiqueProps) {
                 gas: 672197
             }
         )
-        console.log(descriptionID);
-        const descriptionIDAfterSend = await 
+        console.log(DescriptionIDSend);
+        const DescriptionIDCall = await 
         databaseControllerContract.methods.AddDescription
         (
             0,
@@ -339,11 +339,13 @@ function AddAntique(props: AddAntiqueProps) {
             userVerifiedData.blockchainAddress
         )
         .call();
-        console.log( "Description ID After 2nd Call and 1st Send: "+ descriptionIDAfterSend);
-        console.log(descriptionIDAfterSend);
-        var descriptionObject = await databaseControllerContract.methods.GetDescriptionByID(parseInt(descriptionIDAfterSend)-1).call();
-        console.log( "Description Object Saved");
-        console.log(descriptionObject);
+
+
+        // console.log( "Description ID After 2nd Call and 1st Send: "+ descriptionIDAfterSend);
+        // console.log(descriptionIDAfterSend);
+        // var descriptionObject = await databaseControllerContract.methods.GetDescriptionByID(parseInt(descriptionIDAfterSend)-1).call();
+        // console.log( "Description Object Saved");
+        // console.log(descriptionObject);
         // const currentAccount = await blockchainController.eth.getAccounts();
         // console.log( "Current User Account:");
         // console.log(currentAccount);
@@ -358,7 +360,127 @@ function AddAntique(props: AddAntiqueProps) {
         // console.log(newAccount);
         // const currentAccountAfterCreated = await blockchainController.eth.getAccounts();
         // console.log(currentAccountAfterCreated);
+
+        //Todo: Save Documentation To Blockchain
+        const DocumentationIDSend = await databaseControllerContract.methods.AddDocumentation
+        (
+            documentationFileCID,
+            step3AntiqueDocumentationFile.size,
+            step3AntiqueDocumentationFile.type,
+            step3AntiqueDocumentationFile.name,
+            "File Description",
+            userVerifiedData.blockchainAddress
+        )
+        .send
+        (
+            {
+                from: appraiserUserData.blockchainAddress,
+                gas: 672197
+            }
+        );
+        const DocumentationIDCall = await databaseControllerContract.methods.AddDocumentation
+        (
+            documentationFileCID,
+            step3AntiqueDocumentationFile.size,
+            step3AntiqueDocumentationFile.type,
+            step3AntiqueDocumentationFile.name,
+            "File Description",
+            userVerifiedData.blockchainAddress
+        )
+        .call()
+
+        //Todo: Save Verification To Blockchain
+        const VerificationIDSend = await databaseControllerContract.methods.AddVerification
+        (
+            userVerifiedData.blockchainAddress,
+            userVerifiedData.userId,
+            appraiserUserData.username,
+            step4VerificationInputData.IoTDeviceID,
+            step4VerificationInputData.EstimateManufactureYear,
+            step4VerificationInputData.AntiqueRareness,
+            step4VerificationInputData.AntiqueAuthenticity,
+            step4VerificationInputData.AntiqueRealness,
+            appraiserUserData.blockchainAddress
+        )
+        .send
+        (
+            {
+                from: appraiserUserData.blockchainAddress,
+                gas: 672197
+            }
+        );
+        const VerificationIDCall = await databaseControllerContract.methods.AddVerification
+        (
+            userVerifiedData.blockchainAddress,
+            userVerifiedData.userId,
+            appraiserUserData.username,
+            step4VerificationInputData.IoTDeviceID,
+            step4VerificationInputData.EstimateManufactureYear,
+            step4VerificationInputData.AntiqueRareness,
+            step4VerificationInputData.AntiqueAuthenticity,
+            step4VerificationInputData.AntiqueRealness,
+            appraiserUserData.blockchainAddress
+        ).call();
+
+        //Todo: Save Antique Object Using ID
+        const AntiqueIDSend = await databaseControllerContract.methods.AddAntique
+        (
+            DocumentationIDCall-1,
+            VerificationIDCall-1,
+            DescriptionIDCall - 1,
+            appraiserUserData.blockchainAddress
+        )
+        .send 
+        (
+            {
+                from: appraiserUserData.blockchainAddress,
+                gas: 672197
+            }
+        );
+        const AntiqueIDCall= await databaseControllerContract.methods.AddAntique
+        (
+            DocumentationIDCall -1,
+            VerificationIDCall - 1,
+            DescriptionIDCall - 1,
+            appraiserUserData.blockchainAddress
+        ).call()
+
+        //NOTE -  Call Backend To Save AntiqueID
+        const authorizationValue = "Bearer " + userCtx.accessToken;
+        const params = new URLSearchParams();
+        params.append("username", userVerifiedData.username);
+        params.append("AntiqueID", String(AntiqueIDCall-1));
+
+        const options = {
+        method: "POST",
+        headers: {
+            "content-type": "application/x-www-form-urlencoded",
+            Authorization: authorizationValue,
+        },
+        params,
+        url: "http://localhost:8080/api/v1/antique-user/add-by-username",
+        };
+
+        try 
+        {
+            const resp = await axios(options);
+            console.log(resp);
+            console.log(await databaseControllerContract.methods.GetDocumentationByID(VerificationIDCall-1).call());
+            console.log(await databaseControllerContract.methods.GetAntiqueByID(AntiqueIDCall-1).call());
+            console.log(await databaseControllerContract.methods.GetDescriptionByID(DescriptionIDCall-1).call());
+            console.log(await databaseControllerContract.methods.GetVerificationByID(VerificationIDCall-1).call());
+
+        } 
+        catch (err)
+        {
+            console.error(err);
+        // throw error or return default value
+        }
         
+        // console.log(databaseControllerContract.methods.GetDocumentationByID(VerificationIDCall-1));
+        // console.log(databaseControllerContract.methods.GetAntiqueByID(AntiqueIDCall-1));
+        // console.log(databaseControllerContract.methods.GetDescriptionByID(DescriptionIDCall-1));
+        // console.log(databaseControllerContract.methods.GetVerificationByID(VerificationIDCall-1));
 
     }
     
