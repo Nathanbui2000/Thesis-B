@@ -16,7 +16,7 @@ import { getDownloadURL, ref } from "firebase/storage";
 // import cookie from "js-cookie";
 // import { useUserContext } from "../store/user-context";
 import NavBar from "../../../components/navbar/NavBar";
-function userProfile(){
+function UserProfile(){
     // const userCtx = useUserContext();
     const { userId } = useParams();
 
@@ -150,4 +150,4 @@ function userProfile(){
             
     );
 }
-export default userProfile;
+export default UserProfile;

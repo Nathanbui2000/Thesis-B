@@ -13,7 +13,7 @@ interface MyAntiqueProps {
 function MyAntiqueList(props:MyAntiqueProps ) {
   const navigate = useNavigate();
   const databaseControllerContract = props.databaseControllerContract;
-  console.log("My AntiqueList Database Contract Information");''
+  console.log("My AntiqueList Database Contract Information");  
   console.log(databaseControllerContract);
   const columns: GridColDef[] = [
     { 
