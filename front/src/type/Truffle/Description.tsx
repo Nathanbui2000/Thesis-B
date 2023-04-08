@@ -2,7 +2,7 @@
 
 export interface Description {
     id: number;
-    material: string,
+    materialCreated: string,
     height: number,
     lenght: number,
     width: number,

@@ -11,5 +11,5 @@ export interface AntiqueObject {
     professionalVerifier: Appraiser,
     documentation: Documentation,
     description: Description,
-    verification: Verification,
+    verification: Verification
   }

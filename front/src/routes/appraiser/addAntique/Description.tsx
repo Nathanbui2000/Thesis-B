@@ -178,6 +178,7 @@ function AntiqueDescription (props:StepInterface) {
                         <div style={{ 
                             textAlign: 'left',
                             paddingLeft: "50px",
+                            paddingTop: '50px',
                             fontWeight: "bold"
                         }}>
                             <Typography
@@ -185,14 +186,14 @@ function AntiqueDescription (props:StepInterface) {
                             component="div"
                             sx={{ justifySelf: "flex-start" , fontStyle: "bold"}}
                             >
-                                Antique Material Created
+                                Antique Name/Material Created
                             </Typography>
                             <TextField
                                 style={{width: '400px'}}
                                 margin="normal"
                                 required
                                 name="AntiqueMaterialName"
-                                label="Materials Details "
+                                label="Name or Materials Details "
                                 autoComplete="OwnerName"
                                 disabled={props.completedStepList[props.activeStep].completed}
                                 value ={props.step2DescriptionInputData.AntiqueMaterialName}

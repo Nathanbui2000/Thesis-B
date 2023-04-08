@@ -1,4 +1,4 @@
-import { Grow, Box, Stack, Typography, TextField, InputAdornment, IconButton, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { Grow, Box, Stack, Typography, TextField, InputAdornment, IconButton, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axios from "../../../utils/axios-instance";
 // import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -6,9 +6,12 @@ import { useNavigate } from "react-router-dom";
 // import { makeStyles } from "@material-ui/core/styles";
 
 import {AntiqueObject} from '../../../type/Truffle/AntiqueObject'
+import {Description} from '../../../type/Truffle/Description'
+import {AntiqueTruffleData} from '../../../type/Truffle/Antique'
+import {Documentation} from '../../../type/Truffle/Documentation'
+import {Verification} from '../../../type/Truffle/Verification'
 import moment from 'moment';
-
-
+import {IUser} from "../../../type/Java/user";
 import NavBar from "../../../components/navbar/NavBar"
 import "./Verification.css"
 // import { Search as SearchIcon } from "@material-ui/icons";
@@ -31,65 +34,173 @@ interface VerifyAntiqueProps {
   databaseControllerContract: any;
 }
 
+
 function VerifyAntique(props:VerifyAntiqueProps) 
 {
 
     const databaseControllerContract = props.databaseControllerContract;
-    console.log("Verify Antique Database Contract Information");
+    // console.log("Verify Antique Database Contract Information");
 
-    console.log(databaseControllerContract);
+    // console.log(databaseControllerContract);
     const headers = ['UID', 'Antique Name', 'Owner Name', 'Owner Unique Address', 'Verifier Name', 'Estimated Manufactuer Year', 'Approve Date', 'Verification ID'];
-    const [searchResults, setSearchResults] = useState<AntiqueObject | null>(null);
+    const [antiqueTruffleData, setAntiqueTruffleData] = useState<AntiqueTruffleData | null>(null);
+    const [antiqueVerificationTruffleData, setAntiqueVerificationTruffleData] = useState<Verification | null>();
+    const [antiqueDescriptionTruffleData, setAntiqueDescriptionTruffleData] = useState<Description | null>(null);
+    const [antiqueDocumentationTruffleData, setAntiqueDocumentationTruffleData] = useState<Documentation | null>();
+    const [antiqueOwnerData, setAntiqueOwnerData] = useState<IUser | null>(null);
+    const [verifierData, setVerifierData] = useState<IUser | null>(null);
     const [searchValue, setSearchValue] = useState("");
     // const classes = useStyles();
     
+    //Dialog Informations 
+    const [isInformativeDialogOpen, setIsInformativeDialogOpen] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState("");
+    const [dialogContent, setDialogContent] = useState("");
+    const handleInformativeDialogOpen= () => {
+        setIsInformativeDialogOpen(true);
+    };
+
+    function handleCloseDialog(): void {
+        setIsInformativeDialogOpen(false);
+    }
+
     const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(event.target.value);
     }
+
+    const retrieveVerifierData = async () => 
+    {
+        const params = new URLSearchParams();
+        if (antiqueVerificationTruffleData != null)
+        {
+            params.append("blockchainAddress",antiqueVerificationTruffleData.uploader);
+            const retrieveAppraiserUserData = 
+            {
+                method: "GET",
+                headers: { "content-type": "application/x-www-form-urlencoded" },
+                params,
+                url: "http://localhost:8080/api/v1/user/get-user-by-blockchain-address",
+            };
+            axios(retrieveAppraiserUserData)
+            .then((response) => {
+                if (response.status === 200) 
+                {
+                    setVerifierData(response.data);
+                }
+            })
+            .catch((error) => 
+            {
+                setAntiqueTruffleData(null);
+                setDialogTitle("Invalid Antique UID Number" );
+                setDialogContent(
+                        "Antique Appraiser Not Found !.Please Try Another Antique UID Number"
+                );
+                setIsInformativeDialogOpen(true);
+            });
+        
+        }
+        else 
+        {
+
+        }
+    }
+
+    const retrieveAntiqueData = async () =>
+    {
+        //Todo: Call Blockchain With Provided ID:
+        setAntiqueTruffleData(await databaseControllerContract.methods.GetAntiqueByID(searchValue).call())
+        console.log(antiqueTruffleData);
+        const descriptionData = await databaseControllerContract.methods.GetDescriptionByID(antiqueTruffleData?.descriptionID).call();
+        // Wait for 2 milliseconds
+        setAntiqueDescriptionTruffleData(descriptionData);
+
+        setAntiqueDocumentationTruffleData(await databaseControllerContract.methods.GetDocumentationByID(antiqueTruffleData?.documentationID).call());
+        setAntiqueVerificationTruffleData(await databaseControllerContract.methods.GetVerificationByID(antiqueTruffleData?.verificationID).call());
+
+        console.log(antiqueDescriptionTruffleData);
+        console.log(antiqueVerificationTruffleData);
+        console.log(antiqueDocumentationTruffleData);
+        await retrieveVerifierData();        
+    }
     const handleClick = () => {
         console.log(searchValue);
+        //Todo: Send Request to server 
+        //Step 1: Retrieve Owner User Data
+        const params = new URLSearchParams();
+        if (searchValue != null) 
+        {
+            params.append("antiqueID", searchValue);
+        }
+        const retrieveOwnerUserData = {
+            method: "GET",
+            headers: { "content-type": "application/x-www-form-urlencoded" },
+            params,
+            url: "http://localhost:8080/api/v1/antique-user/get-user-by-antiqueID",
+        };
+        axios(retrieveOwnerUserData)
+            .then((response) => {
+                if (response.status === 200) 
+                {
+                    //Step 2: Retrieve Antique Object Data
+                    setAntiqueOwnerData(response.data);
+                    retrieveAntiqueData();
+                    // console.log(response);
+                }
+            })
+            .catch((error) => 
+            {
+                setAntiqueTruffleData(null);
+                setDialogTitle("Invalid Antique UID Number" );
+                setDialogContent(
+                        "Antique UID Number: "  + searchValue  + " is not found !. Please try again"
+                );
+                setIsInformativeDialogOpen(true);
+            });
+        
+
+
         const emptyFile = new File([new Blob()], "empty.txt", {
                 type: "text/plain"
         });
         // Perform the search here using the searchValue
-        const antiqueObject: AntiqueObject = {
-            antiqueID: 1234567890,
-            name: "Vase",
-            owner: {
-                id:1,
-                firstName: "John",
-                lastName: "Smith",
-                uniqueAddress: "0x1234567890abcdef"
-            },
-            professionalVerifier: {
-                id:1,
-                firstName: "Jane",
-                lastName: "Doe",
-                uniqueAddress: "0x0987654321fedcba"
-            },
-            verification: {
-                estimateManufacturYear: "1910",
-                approveDate: new Date("2022-01-01"),
-                id: 1,
-                IotDeviceId: 1,
-                authenticity: "True",
-                rareness: "rare"
-            },
-            documentation: {
-                id: 1,
-                documentationFile: emptyFile
-            },
-            description: {
-                id:1,
-                material: "Materials 1",
-                height: 1,
-                lenght: 1.2,
-                width: 3,
-                fileUpload: emptyFile,
-            }
+        // const antiqueObject: AntiqueObject = {
+        //     antiqueID: 1234567890,
+        //     name: "Vase",
+        //     owner: {
+        //         id:1,
+        //         firstName: "John",
+        //         lastName: "Smith",
+        //         uniqueAddress: "0x1234567890abcdef"
+        //     },
+        //     professionalVerifier: {
+        //         id:1,
+        //         firstName: "Jane",
+        //         lastName: "Doe",
+        //         uniqueAddress: "0x0987654321fedcba"
+        //     },
+        //     verification: {
+        //         estimateManufacturYear: "1910",
+        //         approveDate: new Date("2022-01-01"),
+        //         id: 1,
+        //         IotDeviceId: 1,
+        //         authenticity: "True",
+        //         rareness: "rare"
+        //     },
+        //     documentation: {
+        //         id: 1,
+        //         documentationFile: emptyFile
+        //     },
+        //     description: {
+        //         id:1,
+        //         material: "Materials 1",
+        //         height: 1,
+        //         lenght: 1.2,
+        //         width: 3,
+        //         fileUpload: emptyFile,
+        //     }
 
-        };
-        setSearchResults(antiqueObject);
+        // };
+        // setSearchResults(antiqueObject);
         //Set searchResult Array
     }
     const navigate = useNavigate();
@@ -103,14 +214,14 @@ function VerifyAntique(props:VerifyAntiqueProps)
                 component="div"
                 sx={{ justifySelf: "flex-start" }}
                 >
-                Verify Your Antique UID
+                Verify Antique UID
                 </Typography>
             </div>
             <div>
                 <TextField
                     id="standard-search"
-                    label="Insert Name or UID Here"
-                    type="search"
+                    label="Insert Antique UID Here"
+                    type="number"
                     variant="outlined"
                     style={{ width: "50%" }}
                     value={searchValue}
@@ -129,7 +240,7 @@ function VerifyAntique(props:VerifyAntiqueProps)
                     }}
                 />
             </div>
-            {searchResults !== null && (
+            {antiqueTruffleData !== null && (
                 <TableContainer className="result-table">
                     <Table>
                         <TableHead>
@@ -143,32 +254,31 @@ function VerifyAntique(props:VerifyAntiqueProps)
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                                <TableRow key={searchResults.antiqueID}>
-                                    <TableCell>{searchResults.antiqueID}</TableCell>
-                                    <TableCell>{searchResults.name}</TableCell>
-                                    <TableCell>{searchResults.owner.firstName + " " +searchResults.owner.lastName}</TableCell>
-                                    <TableCell>{searchResults.owner.uniqueAddress}</TableCell>
-                                    <TableCell>{searchResults.professionalVerifier.firstName + " " +searchResults.professionalVerifier.lastName}</TableCell>
-                                    <TableCell>{searchResults.verification.estimateManufacturYear}</TableCell>
-                                    <TableCell>{moment(searchResults.verification.approveDate).format('MM/DD/YYYY')}</TableCell>
-                                    <TableCell>{searchResults.verification.id}</TableCell>
+                                <TableRow key={antiqueTruffleData?.antiqueID}>
+                                    <TableCell>{antiqueTruffleData?.antiqueID}</TableCell>
+                                    <TableCell>{antiqueDescriptionTruffleData?.materialCreated}</TableCell>
+                                    <TableCell>{antiqueOwnerData?.firstName + " " + antiqueOwnerData?.lastName}</TableCell>
+                                    <TableCell>{antiqueOwnerData?.blockchainAddress}</TableCell>
+                                    <TableCell>{verifierData?.firstName + " " +  verifierData?.lastName}</TableCell>
+                                    <TableCell>{antiqueVerificationTruffleData?.estimateManufactureYears}</TableCell>
+                                    <TableCell>{moment(antiqueVerificationTruffleData?.approveDate).format('MM/DD/YYYY')}</TableCell>
+                                    <TableCell>{antiqueVerificationTruffleData?.verificationID}</TableCell>
                                 </TableRow>
                         </TableBody>
                     </Table>
 
                 </TableContainer>
+                
             )}
-            {/* {searchResults !== null ? (
-                <Box border={1} p={2}>
-                    <Typography>UID: {searchResults.antiqueID}</Typography>
-                    <Typography>Name: {searchResults.name}</Typography>
-                    <Typography>Owner: {searchResults.owner.firstName} {searchResults.owner.lastName}</Typography>
-                    <Typography>Verifier: {searchResults.professionalVerifier.firstName} {searchResults.professionalVerifier.lastName}</Typography>
-                    <Typography>Estimated Manufacture Year: {searchResults.verification.estimateManufacturYear}</Typography>
-                    <Typography>Approve Date: {moment(searchResults.verification.approveDate).format('MM/DD/YYYY')}</Typography>
-                    <Typography>Verification ID: {searchResults.verification.id}</Typography>
-                </Box>
-            ) : null} */}
+            <Dialog open={isInformativeDialogOpen} onClose={() => setIsInformativeDialogOpen(false)}>
+                        <DialogTitle>{dialogTitle}</DialogTitle>
+                        <DialogContent>{dialogContent}</DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => handleCloseDialog()
+                            
+                            }>OK</Button>
+                        </DialogActions>
+            </Dialog>
         </Stack>
         </div>
     )

@@ -92,6 +92,7 @@ function AddAntique(props: AddAntiqueProps) {
         //NOTE - Steps 2: Data Pass To Children Components
     const [antiqueDescription, setAntiqueDescription] = useState<Description| null>(null);    
     const [step2DescriptionInputData, setStep2DescriptionInputData] = React.useState({
+        AntiqueName: "",
         AntiqueMaterialName: "",
         AntiqueHeight: 0,
         AntiqueLength: 0,
@@ -457,7 +458,7 @@ function AddAntique(props: AddAntiqueProps) {
         const params = new URLSearchParams();
         params.append("username", userVerifiedData.username);
         params.append("AntiqueID", String(AntiqueIDCall-1));
-
+        params.append("AntiqueNameOrMaterial", String(step2DescriptionInputData.AntiqueMaterialName));
         const options = {
         method: "POST",
         headers: {
