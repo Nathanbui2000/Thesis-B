@@ -1,5 +1,7 @@
 package Java;
 
+import Java.Database.Antique.AntiqueUserRepository;
+import Java.Database.Antique.AntiqueUserServicesImpl;
 import Java.Database.appointment.Appointment;
 import Java.Database.appointment.AppointmentRepository;
 import Java.Database.appointment.AppointmentServicesImpl;
@@ -23,7 +25,8 @@ public class DatabaseConfiguration {
                                         UserServiceImpl userService,
                                         UserRepository userRepository,
                                         AppointmentServicesImpl appointmentServices,
-                                        AppointmentRepository appointmentRepository
+                                        AppointmentRepository appointmentRepository,
+                                        AntiqueUserServicesImpl antiqueUserServices
                                         )
     {
         return args -> {
@@ -31,9 +34,9 @@ public class DatabaseConfiguration {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             String nathanPassword = passwordEncoder.encode("1234");
             String encodedPassword = passwordEncoder.encode("1234");
-            User nathan = new User("nathan.hoangbui@outlook.com","Firstname1","Lastname1",encodedPassword,"Blockchain Address 1",null);
-            User testUser1 = new User("normalUsername1@gmail.com","normalFirstname1","normalLastname1",encodedPassword,"normalBlockchain Address 1",null);
-            User testUser2 = new User("normalUsername2@gmail.com","normalFirstname2","normalLastname2",encodedPassword,"normalBlockchain Address 2",null);
+            User nathan = new User("nathan.hoangbui@outlook.com","Nathan","Bui",encodedPassword,"0x15D095B5425aB56a68F9C8063726f436c18AE0B9",null);
+            User testUser1 = new User("normalUsername1@gmail.com","normalFirstname1","normalLastname1",encodedPassword,"0xa40Bdb5Ae9d85a7059449127F6d8eFfcE85b8be7",null);
+            User testUser2 = new User("normalUsername2@gmail.com","normalFirstname2","normalLastname2",encodedPassword,"0x40c707EdD7b6e36EF6300d2B1046c877c005cA9C",null);
 
             User testUser3 = new User("normalUsername3@gmail.com","normalFirstname3","normalLastname3",encodedPassword,"normalBlockchain Address 3",null);
 
@@ -168,7 +171,13 @@ public class DatabaseConfiguration {
                     appointmentRepository.findAppointmentByAppointmentID(18L).getAppointmentID(),
                     9L);
 
-
+            //? Antique Object Data Set UP
+            antiqueUserServices.addAntiqueIDByUsername("normalUsername2@gmail.com","0", "Antique Name 0");
+            antiqueUserServices.addAntiqueIDByUsername("normalUsername2@gmail.com","1", "Antique Name 1");
+            antiqueUserServices.addAntiqueIDByUsername("normalUsername2@gmail.com","2","Antique Materials 2");
+            antiqueUserServices.addAntiqueIDByUsername("normalUsername3@gmail.com","3", "Antique Materials 3");
+            antiqueUserServices.addAntiqueIDByUsername("normalUsername4@gmail.com","4", "Antique Materials 4");
+            antiqueUserServices.addAntiqueIDByUsername("nathan.hoangbui@outlook.com","5", "Antique Name 5");
         };
     }
 

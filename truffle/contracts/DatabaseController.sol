@@ -34,9 +34,9 @@ interface IDocumentation {
         address payable _uploader
     ) external;
 
-    function ValidateDocumentationID(uint256 _documentationID)
-        external
-        returns (bool);
+    function ValidateDocumentationID(
+        uint256 _documentationID
+    ) external returns (bool);
 
     function SetAntiqueIDByDocumentationID(
         uint256 _documentationID,
@@ -44,9 +44,9 @@ interface IDocumentation {
         address payable _uploader
     ) external;
 
-    function GetDocumentationByID(uint256 _documentationID)
-        external
-        returns (DocumentationObject memory);
+    function GetDocumentationByID(
+        uint256 _documentationID
+    ) external returns (DocumentationObject memory);
 }
 
 //B. Verification Contract
@@ -103,9 +103,9 @@ interface IVerification {
         address payable _uploader
     ) external;
 
-    function ValidateVerificationID(uint256 _verificationID)
-        external
-        returns (bool);
+    function ValidateVerificationID(
+        uint256 _verificationID
+    ) external returns (bool);
 
     function SetAntiqueIDByVerificationID(
         uint256 _verificationID,
@@ -113,9 +113,9 @@ interface IVerification {
         address payable _uploader
     ) external;
 
-    function GetVerificationByID(uint256 _verificationID)
-        external
-        returns (VerificateionObject memory);
+    function GetVerificationByID(
+        uint256 _verificationID
+    ) external returns (VerificateionObject memory);
 }
 
 //C. Description Contract
@@ -170,9 +170,9 @@ interface IDescription {
         address payable _uploader
     ) external;
 
-    function ValidateDescriptionID(uint256 _descriptionID)
-        external
-        returns (bool);
+    function ValidateDescriptionID(
+        uint256 _descriptionID
+    ) external returns (bool);
 
     function SetAntiqueIDByDescriptionID(
         uint256 _descriptionID,
@@ -180,9 +180,9 @@ interface IDescription {
         address payable _uploader
     ) external;
 
-    function GetDescriptionByID(uint256 _descriptionID)
-        external
-        returns (DescriptionObject memory);
+    function GetDescriptionByID(
+        uint256 _descriptionID
+    ) external returns (DescriptionObject memory);
 }
 
 // D. Antique Contract
@@ -211,9 +211,9 @@ interface IAntique {
 
     function ValidateAntiqueID(uint256 _antiqueID) external returns (bool);
 
-    function GetAntiqueByID(uint256 _antiqueID)
-        external
-        returns (AntiqueObject memory);
+    function GetAntiqueByID(
+        uint256 _antiqueID
+    ) external returns (AntiqueObject memory);
 }
 
 contract DatabaseController {
@@ -229,10 +229,9 @@ contract DatabaseController {
     IDescription descriptionContract;
     IAntique antiqueContract;
 
-    function setAntiqueContractAddress(address _antiqueContractAddress)
-        public
-        payable
-    {
+    function setAntiqueContractAddress(
+        address _antiqueContractAddress
+    ) public payable {
         require(_antiqueContractAddress != address(0));
         antiqueContract = IAntique(_antiqueContractAddress);
     }
@@ -251,10 +250,9 @@ contract DatabaseController {
         verificationContract = IVerification(_verificationContractAddress);
     }
 
-    function setDescriptionContractAddress(address _descriptionContractAddress)
-        public
-        payable
-    {
+    function setDescriptionContractAddress(
+        address _descriptionContractAddress
+    ) public payable {
         require(_descriptionContractAddress != address(0));
         descriptionContract = IDescription(_descriptionContractAddress);
     }
@@ -346,18 +344,16 @@ contract DatabaseController {
     }
 
     //3. Validate Verification ID
-    function ValidateVerificationID(uint256 _verificationID)
-        external
-        returns (bool)
-    {
+    function ValidateVerificationID(
+        uint256 _verificationID
+    ) external returns (bool) {
         return verificationContract.ValidateVerificationID(_verificationID);
     }
 
     //4. Get Verification By ID
-    function GetVerificationByID(uint256 _verificationID)
-        external
-        returns (IVerification.VerificateionObject memory)
-    {
+    function GetVerificationByID(
+        uint256 _verificationID
+    ) external returns (IVerification.VerificateionObject memory) {
         return verificationContract.GetVerificationByID(_verificationID);
     }
 
@@ -431,18 +427,16 @@ contract DatabaseController {
     }
 
     //3. Validate Description ID
-    function ValidateDescriptionID(uint256 _descriptionID)
-        external
-        returns (bool)
-    {
+    function ValidateDescriptionID(
+        uint256 _descriptionID
+    ) external returns (bool) {
         return descriptionContract.ValidateDescriptionID(_descriptionID);
     }
 
     //4. Get Description By Description ID
-    function GetDescriptionByID(uint256 _descriptionID)
-        external
-        returns (IDescription.DescriptionObject memory)
-    {
+    function GetDescriptionByID(
+        uint256 _descriptionID
+    ) external returns (IDescription.DescriptionObject memory) {
         return descriptionContract.GetDescriptionByID(_descriptionID);
     }
 
@@ -491,18 +485,16 @@ contract DatabaseController {
     }
 
     //3. Validate Documentation
-    function ValidateDocumentationID(uint256 _documentationID)
-        external
-        returns (bool)
-    {
+    function ValidateDocumentationID(
+        uint256 _documentationID
+    ) external returns (bool) {
         return documentationContract.ValidateDocumentationID(_documentationID);
     }
 
     //4. Get Documentation By ID
-    function GetDocumentationByID(uint256 _documentationID)
-        external
-        returns (IDocumentation.DocumentationObject memory)
-    {
+    function GetDocumentationByID(
+        uint256 _documentationID
+    ) external returns (IDocumentation.DocumentationObject memory) {
         return documentationContract.GetDocumentationByID(_documentationID);
     }
 
@@ -628,10 +620,9 @@ contract DatabaseController {
     }
 
     //4. Get Antique By ID
-    function GetAntiqueByID(uint256 _antiqueID)
-        public
-        returns (IAntique.AntiqueObject memory)
-    {
+    function GetAntiqueByID(
+        uint256 _antiqueID
+    ) public returns (IAntique.AntiqueObject memory) {
         return antiqueContract.GetAntiqueByID(_antiqueID);
     }
 }

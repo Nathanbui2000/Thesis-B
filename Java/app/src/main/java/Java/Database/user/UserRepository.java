@@ -13,5 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByToken(String token);
     void deleteByUsername(String username);
+    User findByBlockchainAddress(String blockchainAddress);
 
 }

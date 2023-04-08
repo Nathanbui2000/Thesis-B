@@ -20,7 +20,6 @@ public interface UserService {
     User getUserByUserName(String userName);
 
     User getUserByUserId(Long userId);
-
     User updateNormalUser(String firstName, String lastName, String username);
 
     User getUserByToken(String token);
@@ -66,4 +65,9 @@ public interface UserService {
     public ResponseEntity sendEmailVerifyAntiqueUser(String antiqueEmailAddress, HttpServletResponse response);
 
     boolean checkAntiqueVerificationCode(String username, Integer verificationCode);
+
+    User getByBlockchainAddress
+            (
+                    String blockchainAddress
+            );
 }

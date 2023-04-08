@@ -51,11 +51,13 @@ public class MainServices {
         }
     }
 
-    public String sendEmailVerifyAntiqueUserByToken(String userEmailAddress,
-                                                    String firstName,
-                                                    String lastName,
-                                                    String antiqueUserVerificationCode
-                                                    )
+    public String sendEmailVerifyAntiqueUserByToken
+            (
+                    String userEmailAddress,
+                    String firstName,
+                    String lastName,
+                    String antiqueUserVerificationCode
+            )
     {
         if (userEmailAddress == null ||
                 firstName ==null ||
@@ -67,6 +69,32 @@ public class MainServices {
         }
         return emailAPI.sendEmailConfirmAntiqueUser(userEmailAddress,firstName,lastName,antiqueUserVerificationCode);
     }
-
+    public String sendEmailAddAntiqueSuccessful
+            (
+                    String userEmailAddress,
+                    String firstName,
+                    String lastName,
+                    String antiqueID,
+                    String antiqueNameOrMaterial
+    )
+    {
+        if (userEmailAddress == null ||
+                firstName ==null ||
+                lastName == null ||
+                antiqueID == null ||
+                antiqueNameOrMaterial == null
+        )
+        {
+            return null;
+        }
+        return emailAPI.sendEmailAddAntiqueSuccessful
+                (
+                        userEmailAddress,
+                        firstName,
+                        lastName,
+                        antiqueID,
+                        antiqueNameOrMaterial
+                );
+    }
 
 }

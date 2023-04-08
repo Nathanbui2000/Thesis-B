@@ -8,5 +8,6 @@ import java.util.List;
 @Repository
 public interface AntiqueUserRepository extends JpaRepository<AntiqueUser, Long> {
     List<AntiqueUser> findAllByUsername(String username);
+    AntiqueUser findByAntiqueID(Long AntiqueID);
 
 }

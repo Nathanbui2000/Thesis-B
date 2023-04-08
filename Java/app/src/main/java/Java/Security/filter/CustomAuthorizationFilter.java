@@ -48,14 +48,15 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 request.getServletPath().equals("/user/token/refresh-token") ||
                 request.getServletPath().equals("/user/get-user-role-by-username") ||
                 request.getServletPath().equals("/user/all") ||
+                request.getServletPath().equals("/user/get-user-by-blockchain-address") ||
                 request.getServletPath().equals("/user/logged-in-user") ||
                 request.getServletPath().equals("/user/antique-user-verification-requested") ||
                 request.getServletPath().equals("/user/check-antique-verification-code") ||
-
+                request.getServletPath().equals("/user/check-antique-verification-code") ||
                 request.getServletPath().equals("/antique-user/get-all-by-username") ||
                 request.getServletPath().equals("/antique-user/add-by-username") ||
-
-
+                request.getServletPath().equals("/antique-user/get-user-by-antiqueID") ||
+                request.getServletPath().equals("/antique-user/get-user-by-blockchainAddress") ||
                 request.getServletPath().equals("/appointment/appraiser-user-cancel-appointment") ||
                 request.getServletPath().equals("/appointment/get-appointment-by-id") ||
 

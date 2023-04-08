@@ -10,4 +10,12 @@ public interface EmailAPI {
     String sendEmailUpdatePassword(String userEmailAddress, String firstName);
 
     String sendEmailConfirmAntiqueUser(String antiqueEmailAddress, String firstname, String lastname, String verificationCode);
+    String sendEmailAddAntiqueSuccessful
+            (
+                    String userEmailAddress,
+                    String firstName,
+                    String lastName,
+                    String antiqueID,
+                    String antiqueNameOrMaterial
+            );
 }

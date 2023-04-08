@@ -5,15 +5,12 @@ import Java.Database.role.Role;
 import Java.Security.Token.TokenHandler;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,11 +19,10 @@ import java.net.URI;
 import java.util.*;
 
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping(path = "/user")
+    @RequestMapping(path = "/user")
 public class UserController {
     private final UserServiceImpl userService;
 
@@ -258,7 +254,19 @@ public class UserController {
             return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok().body(userFound);
     }
-    
+
+    @GetMapping("/get-user-by-blockchain-address")
+    public ResponseEntity<User> getUserByBlockchainAddress
+            (
+                    @Param(value = "blockchainAddress") String blockchainAddress,
+                    HttpServletResponse response
+            )
+    {
+        User userFound = userService.getByBlockchainAddress(blockchainAddress);
+        if(userFound == null)
+            return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok().body(userFound);
+    }
     @DeleteMapping("/delete-user-by-username")
     public ResponseEntity<String> deleteUserByUsername
             (@Param(value = "username") String username,
@@ -302,6 +310,18 @@ public class UserController {
         else
             return ResponseEntity.badRequest().body("Wrong Verification Code");
 
+    }
+
+    @GetMapping("/get-user-by-blockchainAddress")
+    public ResponseEntity checkAntiqueVerificationCode
+            (
+                    @Param(value = "blockchainAddress") String blockchainAddress,
+                    HttpServletResponse response
+            )
+    {
+        if (blockchainAddress == null)
+            return ResponseEntity.badRequest().body("BlockchainAddress Can not be null");
+        return ResponseEntity.ok().body(userService.getByBlockchainAddress(blockchainAddress));
     }
 }
 

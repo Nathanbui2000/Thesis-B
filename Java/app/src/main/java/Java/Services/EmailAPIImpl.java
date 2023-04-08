@@ -115,6 +115,33 @@ public class EmailAPIImpl implements EmailAPI {
        return sendEmailResult;
     }
 
+    @Override
+    public String sendEmailAddAntiqueSuccessful
+            (
+                    String userEmailAddress,
+                    String firstName,
+                    String lastName,
+                    String antiqueID,
+                    String antiqueNameOrMaterial
+            )
+    {
+        String emailContent = formatNormalUserAddAntiqueSuccessful
+                (
+                        firstName,
+                        lastName,
+                        antiqueID,
+                        antiqueNameOrMaterial
+                );
+        String sendEmailResult = sendEmailInformation
+                (
+                        emailContent,
+                        firstName,
+                        userEmailAddress,
+                        "AntiqueIoTChain",
+                        "Antique Object Successfully Verified !");
+        return sendEmailResult;
+    }
+
     private String formatUploadDocumentsEmailContent(String firstName, String documentationTitle) {
         if (firstName == null || documentationTitle ==null) {
             return null;
@@ -171,6 +198,34 @@ public class EmailAPIImpl implements EmailAPI {
         returnData += " <p> If this isn't you, Please Consider Changing Your Password Immediately  </p>";
         returnData += "<br><br><br>";
         returnData += "<br><br>";
+        returnData += "<p> Kind Regards </p>";
+        returnData += "<p> AntiqueIoTChain Team </p>";
+        System.out.println(returnData);
+        return returnData;
+
+    }
+
+    private String formatNormalUserAddAntiqueSuccessful
+            (
+                    String firstName,
+                    String lastName,
+                    String antiqueID,
+                    String antiqueNameOrMaterial
+            )
+    {
+        if (firstName == null) {
+            return null;
+        }
+        String returnData = "";
+        // * Add The Header to the data
+        returnData += "<h1>Antique Verification Successful!</h1>";
+        returnData += "Dear Mr: " + firstName + " " + lastName ;
+        returnData += "<br><br>";
+        returnData += " <h3> We have recently completed your antique Verification for:  <strong>" +  antiqueNameOrMaterial + "</strong>.</h3>";
+        returnData += "<br><br>";
+        returnData += " <p> The Unique Antique Object For "+ antiqueNameOrMaterial +" <strong>: " + antiqueID + " </strong>  </p>";
+        returnData += "<br>";
+        returnData += "<br>";
         returnData += "<p> Kind Regards </p>";
         returnData += "<p> AntiqueIoTChain Team </p>";
         System.out.println(returnData);

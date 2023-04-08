@@ -19,9 +19,22 @@ public class AntiqueUser {
     @Column(name = "AntiqueUserID")
     private Long AntiqueUserID;
 
+    public Long getAntiqueID() {
+        return antiqueID;
+    }
+
+    public void setAntiqueID(Long antiqueID) {
+        this.antiqueID = antiqueID;
+    }
+
+    public AntiqueUser(Long antiqueID, String username) {
+        this.antiqueID = antiqueID;
+        this.username = username;
+    }
+
     @Basic
     @Column(name = "AntiqueID")
-    private Long AntiqueID;
+    private Long antiqueID;
 
     @Basic
     @Column(name = "Username")
@@ -40,13 +53,7 @@ public class AntiqueUser {
         AntiqueUserID = antiqueUserID;
     }
 
-    public Long getAntiqueID() {
-        return AntiqueID;
-    }
 
-    public void setAntiqueID(Long antiqueID) {
-        AntiqueID = antiqueID;
-    }
 
     public String getUsername() {
         return username;
@@ -56,8 +63,5 @@ public class AntiqueUser {
         this.username = username;
     }
 
-    public AntiqueUser(Long antiqueID, String username) {
-        AntiqueID = antiqueID;
-        this.username = username;
-    }
+
 }

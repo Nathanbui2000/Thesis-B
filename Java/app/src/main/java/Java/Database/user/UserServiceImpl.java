@@ -113,7 +113,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     log.info("Finding User By ID {} ", userId);
     return userRepository.findByUserId(userId);
   }
-
   @Override
   public List<User> getUsers() {
     log.info("Finding all User {} ");
@@ -483,6 +482,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       return true;
     }
     return false;
+  }
+
+  @Override
+  public User getByBlockchainAddress(String blockchainAddress)
+  {
+    if (blockchainAddress == null)
+      return null;
+    return  userRepository.findByBlockchainAddress(blockchainAddress);
   }
 
   private void validateMethodParameter(String methodName, String username, List<String> parameters, HttpServletResponse response)

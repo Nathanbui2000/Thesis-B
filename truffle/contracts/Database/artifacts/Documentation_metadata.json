@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.17+commit.8df45f5f"
+		"version": "0.8.18+commit.87f61d96"
 	},
 	"language": "Solidity",
 	"output": {
@@ -445,9 +445,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"Database/Database/Documentation.sol": "Documentation"
+			"contracts/Database/Documentation.sol": "Documentation"
 		},
-		"evmVersion": "london",
+		"evmVersion": "paris",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -459,12 +459,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"Database/Database/Documentation.sol": {
-			"keccak256": "0xdfdd233c42bfc5ab134b09b11a591d426af909fa48c9bb64aa37f77aa445ee11",
+		"contracts/Database/Documentation.sol": {
+			"keccak256": "0x2a1480c168f676d169b8d4fd4d531ed7a0f015c0d6085c4008d390cca93eac5f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://51a454bda858a19ea7e7603d3e5d57ca1aed25f23765c2abdfa3a15955899e81",
-				"dweb:/ipfs/QmcdtkqrybzE3xajCSy2Hpn5KNdiCZTU4cLVFy1LPpfUW5"
+				"bzz-raw://a7522bbb6db642ec1406ceb4c1508d81736169bd2bda480da2a7c44275e6d82e",
+				"dweb:/ipfs/QmPViB4G9ngSB2shWWoiHW7LhL67RPLCMn88hbSCfhfzpV"
 			]
 		}
 	},
