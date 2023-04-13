@@ -66,7 +66,7 @@ function MyAntiqueList(props:MyAntiqueProps ) {
       editable: false,
       align: "left",
       headerAlign: "center",
-      minWidth: 200,
+      minWidth: 150,
       headerClassName: "bold-header"
     },
     {
@@ -85,6 +85,17 @@ function MyAntiqueList(props:MyAntiqueProps ) {
       field: "Rareness",
       headerName: "Rareness ",
       description: "Indicates the rareness of the Anitque",
+      flex: 1,
+      align: "right",
+      headerAlign: "center",
+      editable: false,
+      type: "string",
+      headerClassName: "bold-header"
+    },
+    {
+      field: "Realness",
+      headerName: "Realness",
+      description: "Indicates the realness of the Anitque",
       flex: 1,
       align: "right",
       headerAlign: "center",

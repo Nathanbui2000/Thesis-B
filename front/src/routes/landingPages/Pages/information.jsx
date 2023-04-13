@@ -33,7 +33,7 @@ function information() {
                 Sign in
             </button>
             </a>    
-            <a href="/login">
+            <a href="/landing">
                 <button className="btn btn-important" type="button">
                 Try for free
                 </button>
@@ -45,9 +45,9 @@ function information() {
         <div className="centered-container">
             <div className="summary-container">
             <h1 className="heading-primary">Secure Your Antique Ownership</h1>
-            <p className="product-description">Hello World</p>
+            <p className="product-description">Connect platform for both Antique's Owner and Professional Appraiser</p>
             <div className="btn-container">
-                <a href="/login">
+                <a href="/landing">
                 <button className="btn btn-important" type="button">
                     Try for free
                 </button>
@@ -67,28 +67,28 @@ function information() {
                     Highly Secure Blockchain Application
                 </h2>
                 </div>
-                <p className="feature-description">Icon1</p>
+                <p className="feature-description">Modern blockchain technology application to protect your antique's ownership</p>
             </div>
             <div className="feature">
                 <div>
                 <i className="ph-money-bold icon" />
-                <h2 className="heading-secondary">Evaluate Your Antique's Price</h2>
+                <h2 className="heading-secondary">Evaluate Your Antique's</h2>
                 </div>
-                <p className="feature-description">Icon2</p>
+                <p className="feature-description">Get Your Antique Object Verified by our leading industry appraiser</p>
             </div>
             <div className="feature">
                 <div>
                 <i className="ph-identification-card-bold icon" />
                 <h2 className="heading-secondary">Ownership Verification</h2>
                 </div>
-                <p className="feature-description">Icon3</p>
+                <p className="feature-description">Easily verify your ownership through our secure system</p>
             </div>
             <div className="feature">
                 <div>
                 <i className="ph-number-circle-one-bold icon" />
                 <h2 className="heading-secondary">Top Leading Industry</h2>
                 </div>
-                <p className="feature-description">Icon4</p>
+                <p className="feature-description">Trending technology for Antique Industry</p>
             </div>
             </section>
         </div>

@@ -3,6 +3,7 @@
     border-radius: 5px;
     box-shadow: 2px 2px 2px #ddd;
     padding: 10px;
+    overflow-x: scroll;
 }
 
 
@@ -11,3 +12,10 @@
     padding-right: 0 
 }
 
+.bold-header {
+    background-color: #3874cb;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    border-bottom: 3px solid #000;
+}

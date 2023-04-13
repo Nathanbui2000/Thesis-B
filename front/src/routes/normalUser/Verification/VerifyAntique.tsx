@@ -42,7 +42,7 @@ function VerifyAntique(props:VerifyAntiqueProps)
     // console.log("Verify Antique Database Contract Information");
 
     // console.log(databaseControllerContract);
-    const headers = ['UID', 'Antique Name', 'Owner Name', 'Owner Unique Address', 'Verifier Name', 'Estimated Manufactuer Year', 'Approve Date', 'Verification ID'];
+    const headers = ['UID', 'Antique Name', 'Owner Name', 'Owner Unique Address', 'Verifier Name', 'Estimated Manufactuer Year', 'Approve Date', 'Verification ID',"Documentation","Verification Details","Description Data"];
     const [antiqueTruffleData, setAntiqueTruffleData] = useState<AntiqueTruffleData | null>(null);
     const [antiqueVerificationTruffleData, setAntiqueVerificationTruffleData] = useState<Verification | null>();
     const [antiqueDescriptionTruffleData, setAntiqueDescriptionTruffleData] = useState<Description | null>(null);
@@ -242,31 +242,41 @@ function VerifyAntique(props:VerifyAntiqueProps)
             </div>
             {antiqueTruffleData !== null && (
                 <TableContainer className="result-table">
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                    {headers.map(header => 
-                                    <TableCell>
-                                            <Typography variant="h6" component="th" gutterBottom>
-                                                {header}
-                                            </Typography>
-                                    </TableCell>)}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                                <TableRow key={antiqueTruffleData?.antiqueID}>
-                                    <TableCell>{antiqueTruffleData?.antiqueID}</TableCell>
-                                    <TableCell>{antiqueDescriptionTruffleData?.materialCreated}</TableCell>
-                                    <TableCell>{antiqueOwnerData?.firstName + " " + antiqueOwnerData?.lastName}</TableCell>
-                                    <TableCell>{antiqueOwnerData?.blockchainAddress}</TableCell>
-                                    <TableCell>{verifierData?.firstName + " " +  verifierData?.lastName}</TableCell>
-                                    <TableCell>{antiqueVerificationTruffleData?.estimateManufactureYears}</TableCell>
-                                    <TableCell>{moment(antiqueVerificationTruffleData?.approveDate).format('MM/DD/YYYY')}</TableCell>
-                                    <TableCell>{antiqueVerificationTruffleData?.verificationID}</TableCell>
+                    <div style={{width: '100%', overflowX: 'auto'}}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                        {headers.map(header => 
+                                        <TableCell>
+                                                <Typography variant="h6" component="th" gutterBottom>
+                                                    {header}
+                                                </Typography>
+                                        </TableCell>)}
                                 </TableRow>
-                        </TableBody>
-                    </Table>
-
+                            </TableHead>
+                            <TableBody>
+                                    <TableRow key={antiqueTruffleData?.antiqueID}>
+                                        <TableCell>{antiqueTruffleData?.antiqueID}</TableCell>
+                                        <TableCell>{antiqueDescriptionTruffleData?.materialCreated}</TableCell>
+                                        <TableCell>{antiqueOwnerData?.firstName + " " + antiqueOwnerData?.lastName}</TableCell>
+                                        <TableCell>
+                                            <a
+                                                href = {"https://etherscan.io/address/" + antiqueOwnerData?.blockchainAddress}
+                                                rel = "noopener noreferrer"
+                                                target = "_blank"
+                                            >
+                                                {antiqueOwnerData?.blockchainAddress.substring(0,10)}...
+                                            </a>
+                                        
+                                        </TableCell>
+                                        <TableCell>{verifierData?.firstName + " " +  verifierData?.lastName}</TableCell>
+                                        <TableCell>{antiqueVerificationTruffleData?.estimateManufactureYears}</TableCell>
+                                        <TableCell>{moment(antiqueVerificationTruffleData?.approveDate).format('MM/DD/YYYY')}</TableCell>
+                                        <TableCell>{antiqueVerificationTruffleData?.verificationID}</TableCell>
+                                    </TableRow>
+                            </TableBody>
+                        </Table>
+                    </div>
                 </TableContainer>
                 
             )}

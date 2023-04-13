@@ -7,12 +7,15 @@ import NavBar from "../../../components/navbar/NavBar"
 import "./dashboard.css"
 import { useUserContext } from "../../../store/user-context";
 import cookie from "js-cookie";
+import {IUser} from "../../../type/Java/user";
+
 interface MainDashboardProps {
   databaseControllerContract: any;
 }
 function MainDashboard(props: MainDashboardProps) {
   const navigate = useNavigate();
   const userCtx = useUserContext();
+  const [userData, setUserData] = useState<IUser | null>(null);
   const databaseControllerContract = props.databaseControllerContract;
   console.log("Main Dashboard Database Contract Information");
   
@@ -131,24 +134,46 @@ function MainDashboard(props: MainDashboardProps) {
     const username= cookie.get("userName") || "" ;
     params.append('antiqueOwnerUsername',username);
     params.append('accessToken',userCtx.userSession.accessToken);
-    const getAppointmentOption= {
+    const getUserDataOption= {
       method: "GET",
       params,
       url: "http://localhost:8080/api/v1/normal-user-appointment-view/find-all-by-username",
     };
+    axios(getUserDataOption)
+    .then((response) => {
+        if (response.status === 200) {
+            setUserData(response.data);
+        }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+  
+  const RetrieveUserData = () => 
+  {
+    const params = new URLSearchParams();
+    const username= cookie.get("userName") || "" ;
+    params.append('username',username);
+    const getAppointmentOption= {
+      method: "GET",
+      params,
+      url: "http://localhost:8080/api/v1/user/get-user-by-username",
+    };
     axios(getAppointmentOption)
     .then((response) => {
         if (response.status === 200) {
-            setDataRows(response.data);
+            setUserData(response.data);
         }
     })
     .catch((error) => {
       console.log(error);
       });
-  };
+  }
 
   useEffect(() => {
     RetrieveUserAppointmentList()
+    RetrieveUserData()
     // axios
     //   .get("/uos", { params: {} })
     //   .then((resp) => {
@@ -181,7 +206,7 @@ function MainDashboard(props: MainDashboardProps) {
           component="div"
           sx={{ justifySelf: "flex-start" }}
         >
-          username, here is your upcoming appointment
+          Hi {userData?.firstName} {userData?.lastName}  , here is your upcoming appointment
         </Typography>
       </div>
 
