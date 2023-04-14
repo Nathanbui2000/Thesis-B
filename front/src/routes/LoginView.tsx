@@ -220,7 +220,7 @@ function LoginView(props: LoginViewProps) {
                   autoComplete="current-password"
                   onChange={clearTextError}
               />
-            <TextField
+            {/* <TextField
                   select
                   margin="normal"
                   required
@@ -240,7 +240,7 @@ function LoginView(props: LoginViewProps) {
                       {userRoleListElement.value}
                     </MenuItem>
                   ))}
-            </TextField>
+            </TextField> */}
             {error && <Alert severity="error">{error}</Alert>}
               <Button
                   type="submit"

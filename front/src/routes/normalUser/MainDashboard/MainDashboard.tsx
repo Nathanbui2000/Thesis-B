@@ -142,7 +142,7 @@ function MainDashboard(props: MainDashboardProps) {
     axios(getUserDataOption)
     .then((response) => {
         if (response.status === 200) {
-            setUserData(response.data);
+            setDataRows(response.data);
         }
     })
     .catch((error) => {
