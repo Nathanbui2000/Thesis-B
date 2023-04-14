@@ -108,19 +108,21 @@ function VerifyAntique(props:VerifyAntiqueProps)
     const retrieveAntiqueData = async () =>
     {
         //Todo: Call Blockchain With Provided ID:
-        setAntiqueTruffleData(await databaseControllerContract.methods.GetAntiqueByID(searchValue).call())
+        const truffleData = await databaseControllerContract.methods.GetAntiqueByID(searchValue).call()
+        setAntiqueTruffleData(truffleData);
         console.log(antiqueTruffleData);
-        const descriptionData = await databaseControllerContract.methods.GetDescriptionByID(antiqueTruffleData?.descriptionID).call();
+        const descriptionData = await databaseControllerContract.methods.GetDescriptionByID(truffleData?.descriptionID).call();
         // Wait for 2 milliseconds
         setAntiqueDescriptionTruffleData(descriptionData);
 
-        setAntiqueDocumentationTruffleData(await databaseControllerContract.methods.GetDocumentationByID(antiqueTruffleData?.documentationID).call());
-        setAntiqueVerificationTruffleData(await databaseControllerContract.methods.GetVerificationByID(antiqueTruffleData?.verificationID).call());
+        setAntiqueDocumentationTruffleData(await databaseControllerContract.methods.GetDocumentationByID(truffleData?.documentationID).call());
+        setAntiqueVerificationTruffleData(await databaseControllerContract.methods.GetVerificationByID(truffleData?.verificationID).call());
 
         console.log(antiqueDescriptionTruffleData);
         console.log(antiqueVerificationTruffleData);
         console.log(antiqueDocumentationTruffleData);
-        await retrieveVerifierData();        
+        await retrieveVerifierData();
+                
     }
     const handleClick = () => {
         console.log(searchValue);
