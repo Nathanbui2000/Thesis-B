@@ -103,16 +103,40 @@ function App()  {
         console.log(databaseControllerContract);
         setdatabaseController(databaseControllerContract);  
       }
-      
-      const testAddress = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
+      const accounts = await blockchain.eth.getAccounts();
+      const testAddress = accounts[0].toString();
+      // const testAddress = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
       setMainTruffleUser(testAddress);
       // const newAccount = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
 
       //Set Address For DatabaseControoler Contract
-      await databaseControllerContract.methods.setAntiqueContractAddress(antiqueContractAddress).send({from: testAddress, gas:672197 });
-      await databaseControllerContract.methods.setDocumentationContractAddress(documentationContractAddress).send({from: testAddress, gas:672197 });
-      await databaseControllerContract.methods.setVerificationContractAddress(verificationContractAddress).send({from: testAddress, gas:672197 });
-      await databaseControllerContract.methods.setDescriptionContractAddress(descriptionContractAddress).send({from: testAddress, gas:672197 });
+      await databaseControllerContract.methods.setAntiqueContractAddress
+      (antiqueContractAddress)
+      .send
+      (
+        {from: testAddress, gas:672197 }
+      );
+
+      await databaseControllerContract.methods.setDocumentationContractAddress
+      (documentationContractAddress)
+      .send
+      (
+        {from: testAddress, gas:672197 }
+      );
+
+      await databaseControllerContract.methods.setVerificationContractAddress
+      (verificationContractAddress)
+      .send
+      (
+        {from: testAddress, gas:672197 }
+      );
+
+      await databaseControllerContract.methods.setDescriptionContractAddress
+      (descriptionContractAddress)
+      .send
+      (
+        {from: testAddress, gas:672197 }
+      );
 
       //!Create New Account 
 
