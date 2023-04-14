@@ -105,9 +105,7 @@ function App()  {
       }
       const accounts = await blockchain.eth.getAccounts();
       const testAddress = accounts[0].toString();
-      // const testAddress = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
       setMainTruffleUser(testAddress);
-      // const newAccount = "0x9E81BF84bf7e23FB03D7Ac1f00eC88cE0f8f1644";
 
       //Set Address For DatabaseControoler Contract
       await databaseControllerContract.methods.setAntiqueContractAddress

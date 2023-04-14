@@ -275,6 +275,29 @@ function VerifyAntique(props:VerifyAntiqueProps)
                                         <TableCell>{antiqueVerificationTruffleData?.estimateManufactureYears}</TableCell>
                                         <TableCell>{moment(antiqueVerificationTruffleData?.approveDate).format('MM/DD/YYYY')}</TableCell>
                                         <TableCell>{antiqueVerificationTruffleData?.verificationID}</TableCell>
+
+                                        <TableCell>
+                                            <a
+                                                href = {"https://cloudflare-ipfs.com/ipfs/" + antiqueDocumentationTruffleData?.filehash}
+                                                rel = "noopener noreferrer"
+                                                target = "_blank"
+                                            >
+                                                {antiqueDocumentationTruffleData?.fileName}
+                                                
+                                            </a>
+                                        </TableCell>
+
+                                        <TableCell>{antiqueVerificationTruffleData?.antiqueRealness}</TableCell>
+                                        <TableCell>
+                                            <a
+                                                href = {"https://cloudflare-ipfs.com/ipfs/" + antiqueDescriptionTruffleData?.filehash}
+                                                rel = "noopener noreferrer"
+                                                target = "_blank"
+                                            >
+                                                {antiqueDescriptionTruffleData?.fileName}
+                                                
+                                            </a>
+                                        </TableCell>
                                     </TableRow>
                             </TableBody>
                         </Table>
