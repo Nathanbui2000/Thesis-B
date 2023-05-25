@@ -72,25 +72,8 @@ function SignUpAppraiserView(props:SignUpAppraiserViewProps ) {
             url: "http://localhost:8080/api/v1/university/all",
         };
     }
-
-    // axios(options)
-    //     .then((response) => {
-    //         for (const university of response.data) {
-    //         setUniversities((unis) => [
-    //             ...unis,
-    //             {
-    //             id: university.id,
-    //             value: university.name,
-    //             },
-    //         ]);
-    //         }
-    //     })
-    //     .catch((err) => {
-    //         console.error(err);
-    //     });
-    // };
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
@@ -101,12 +84,20 @@ function SignUpAppraiserView(props:SignUpAppraiserViewProps ) {
         else if (isValid) {
         setError("");
         //Call Backend
+        let newAccount = await blockchainController.eth.personal.newAccount(data.get("password"));
+            blockchainController.eth.personal.unlockAccount(newAccount,data.get("password"),20000);
+            var sendID = await blockchainController.eth.sendTransaction({
+                from: mainTruffleUser,
+                to: newAccount , 
+                value : blockchainController.utils.toWei('3','Ether')});
         const userDetail = {
             firstName: data.get("firstName"),
             lastName: data.get("lastName"),
             username: data.get("email"),
-            university: data.get("university"),
+            userExperiences: data.get("UserExperience"),
+            userDriverLince: data.get("userDriverLince"),
             password: data.get("password"),
+            blockchainAddress: newAccount,
         };
 
         const params = new URLSearchParams();
@@ -114,14 +105,20 @@ function SignUpAppraiserView(props:SignUpAppraiserViewProps ) {
             userDetail.firstName !== null &&
             userDetail.lastName !== null &&
             userDetail.username !== null &&
-            userDetail.university !== null &&
+            userDetail.userExperiences != null &&
+            userDetail.userDriverLince != null &&
             userDetail.password !== null
         ) {
             params.append("firstName", userDetail.firstName.toString());
             params.append("lastName", userDetail.lastName.toString());
             params.append("username", userDetail.username.toString());
-            params.append("university", userDetail.university.toString());
+            params.append("appraiserExperience", userDetail.userExperiences.toString());
+            params.append("nswDriverLicence", userDetail.userDriverLince.toString());
             params.append("password", userDetail.password.toString());
+            params.append("blockchainAddress", userDetail.blockchainAddress.toString());
+
+            //Todo: Retrieve Blockchain address
+            
         }
         console.log(userDetail);
         UserRegister(params);
@@ -141,31 +138,30 @@ function SignUpAppraiserView(props:SignUpAppraiserViewProps ) {
         method: "POST",
         headers: { "content-type": "application/x-www-form-urlencoded" },
         params,
-        url: "http://localhost:8080/api/v1/user/sign-up",
+        url: "http://localhost:8080/api/v1/user/appraiser-user/sign-up",
         };
-    }
+        axios(options)
+        .then((response) => {
+        console.log(response);
+        console.log("signed up");
 
-    // axios(options)
-    //     .then((response) => {
-    //     console.log(response);
-    //     console.log("signed up");
+        //? Save Token To User
+        //? Navigate To Main Bar
+        navigate("/login");
+        })
+        .catch((err) => {
+        console.log(err);
+        if (err.response.status === 403) {
+            //? User Not Found Or Wrong Password
+            setError("Error 403");
+        }
+        if (err.response.status === 500) {
+            setError("User already exists");
+        }
+        });
+    };
 
-    //     //? Save Token To User
-    //     //? Navigate To Main Bar
-    //     navigate("/login");
-    //     })
-    //     .catch((err) => {
-    //     console.log(err);
-    //     if (err.response.status === 403) {
-    //         //? User Not Found Or Wrong Password
-    //         setError("Error 403");
-    //     }
-    //     if (err.response.status === 500) {
-    //         setError("User already exists");
-    //     }
-    //     });
-    // };
-
+    
     React.useEffect(() => {
         if (count <= 0) {
         retrieveUniversities();
@@ -276,10 +272,6 @@ function SignUpAppraiserView(props:SignUpAppraiserViewProps ) {
                     autoComplete="userDriverLince"
                     ></TextField>
                 </Grid>
-                
-                
-
-                
                 {error && <Alert severity="error">{error}</Alert>}
                 <Button
                 type="submit"

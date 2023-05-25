@@ -89,6 +89,7 @@ public class EmailAPIImpl implements EmailAPI {
     @Override
     public String sendEmailVerifyEmailServices(String username, String firstName, String url) {
         String emailData = formatVerifyEmailContent(firstName, url);
+        System.out.println("Account Verification URL:" + url);
         String SendEmailReturnResult = sendEmailInformation(emailData, firstName, username, "AntiqueIoTChain",
                 "Verify you Account");
         return SendEmailReturnResult;

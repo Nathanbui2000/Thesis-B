@@ -41,7 +41,7 @@ public class DatabaseConfiguration {
             User testUser3 = new User("normalUsername3@gmail.com","normalFirstname3","normalLastname3",encodedPassword,"normalBlockchain Address 3",null);
 
             User testUser4 = new User("normalUsername4@gmail.com","normalFirstName4","normalLastName4",encodedPassword,"Normal Blockchain Address 4 ",null);
-            User testUser5 = new User("Appraiser1@gmail.com","AppraiserFirstname5","AppraiserLastname5",encodedPassword,"Appraiser Blockchain Address 5",null);
+            User testUser5 = new User("Appraiser1@gmail.com","AppraiserFirstname5","AppraiserLastname5",encodedPassword,"0xfb55b313630A8B8fF579584518a6f72f2Cd172ee",null);
             User testUser6 = new User("Appraiser2@gmail.com","AppraiserFirstname6","AppraiserLastname6",encodedPassword,"Appraiser Blockchain Address 6",null);
             User testUser7 = new User("Appraiser3@gmail.com","AppraiserFirstname7","AppraiserLastname7",encodedPassword,"Appraiser Blockchain Address 7",null);
 

@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping(path = "/user")
+@RequestMapping(path = "/user")
 public class UserController {
     private final UserServiceImpl userService;
 

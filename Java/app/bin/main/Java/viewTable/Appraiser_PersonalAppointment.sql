@@ -1,5 +1,3 @@
-
---? Appraiser Personal Appointment Data
 select appointment.appointmentid,appointment.appointment_date, appointment.appointment_time,appointment.professional_appraiserid,user.first_name,user.last_name
 from appointment
          left join (

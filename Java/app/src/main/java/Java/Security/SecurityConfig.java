@@ -46,7 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             corsConfiguration.setAllowedOriginPatterns(list);
             corsConfiguration.setExposedHeaders(List.of("Authorization"));
 
-    // You can customize the following part based on your project, it's only a
+
+            // You can customize the following part based on your project, it's only a
     // sample
 
            /* http.csrf().disable();

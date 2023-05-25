@@ -23,7 +23,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Table(name = "`User`") // backtick to force quote table name in generated hibernate SQL.
-public class User {
+public class    User {
 
     @Id
     @GeneratedValue(strategy = AUTO)

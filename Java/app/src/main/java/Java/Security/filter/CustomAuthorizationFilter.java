@@ -48,6 +48,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 request.getServletPath().equals("/user/token/refresh-token") ||
                 request.getServletPath().equals("/user/get-user-role-by-username") ||
                 request.getServletPath().equals("/user/all") ||
+
                 request.getServletPath().equals("/user/get-user-by-blockchain-address") ||
                 request.getServletPath().equals("/user/logged-in-user") ||
                 request.getServletPath().equals("/user/antique-user-verification-requested") ||
