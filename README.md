@@ -93,7 +93,19 @@ $ docker-compose up
 
 ### C. React Project
 
-The React Project is a Front End UI for this AntiqueIoTChain Project.
+The React Project is a Front End UI for this AntiqueIoTChain Project. 
+
+- Step 1: Open **front** folder in VSCode
+- Step 2: Download required packages 
+
+```sh
+# Go To "front" Directory if not already in 
+$ cd front
+
+# Install required packages
+$ npm install
+```
+
 ## FAQ
 
 - __How do I use this with Ganache (or any other network)?__
