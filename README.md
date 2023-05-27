@@ -106,11 +106,22 @@ $ cd front
 $ npm install
 ```
 
+- Step 3: Start The Server
+```sh
+# Go To "front" Directory if not already in 
+$ cd front
+
+# Install required packages
+$ npm start
+```
+
+Follow the above instructions and checkout Youtube Video linked in each step to correctly start the application.
+
 ## FAQ
 
-- __How do I use this with Ganache (or any other network)?__
+- __How Do I Create An Account With AntiqueIoTChain Application?__
 
-  The Truffle project is set to deploy to Ganache by default. If you'd like to change this, it's as easy as modifying the Truffle config file! Check out [our documentation on adding network configurations](https://trufflesuite.com/docs/truffle/reference/configuration/#networks). From there, you can run `truffle migrate` pointed to another network, restart the React dev server, and see the change take place.
+
 
 - __Where can I find more resources?__
 

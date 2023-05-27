@@ -4,8 +4,10 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 
 public class EmailAPIImpl implements EmailAPI {
-    public static String api_key = "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";
-    public static String targetEmail = "nathan.bui@sbm.com.au";
+
+    //TODO: Add SendGrid Account
+    public static String api_key = "";
+    public static String targetEmail = "";
 
     public EmailAPIImpl() {
 
